@@ -3,133 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Directory | Archive</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📁</text></svg>">
+    <title>Cursed Archive | Easy Admin</title>
     <style>
-        :root {
-            --bg: #050507;
-            --panel: #0d0d12;
-            --accent: #00f2ff;
-            --secondary: #8b5cf6;
-            --text: #e2e8f0;
-            --text-dim: #64748b;
-            --border: #1f1f2e;
-        }
-
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', -apple-system, sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container { width: 100%; max-width: 650px; }
-
-        header { padding: 50px 0 30px; text-align: left; }
-
-        h1 {
-            font-size: 1.2rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--secondary);
-            border-left: 3px solid var(--accent);
-            padding-left: 15px;
-        }
-
-        .list { display: flex; flex-direction: column; gap: 12px; }
-
-        .item {
-            background: var(--panel);
-            padding: 18px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            transition: 0.2s;
-        }
-
-        .item:hover {
-            border-color: var(--accent);
-            background: #16161f;
-            transform: translateX(5px);
-        }
-
-        .icon-box {
-            width: 40px;
-            height: 40px;
-            background: #000;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-
-        .content { flex: 1; }
-
-        .name { font-weight: 700; font-size: 1rem; display: block; margin-bottom: 2px; }
+        :root { --bg: #050507; --panel: #0d0d12; --accent: #00f2ff; --secondary: #8b5cf6; --text: #e2e8f0; --border: #1f1f2e; --text-dim: #64748b; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 600px; margin-top: 40px; }
         
-        .desc { font-size: 0.8rem; color: var(--text-dim); line-height: 1.4; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-left: 4px solid var(--secondary); padding-left: 20px; }
+        .list { display: flex; flex-direction: column; gap: 12px; }
+        .item { background: var(--panel); padding: 18px; border-radius: 12px; border: 1px solid var(--border); text-decoration: none; color: inherit; transition: 0.3s; }
+        .item:hover { border-color: var(--accent); transform: translateX(5px); }
 
-        .type-tag {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--secondary);
-            margin-bottom: 4px;
-            display: block;
-        }
-
-        .arrow { color: var(--text-dim); font-size: 1.2rem; }
+        /* Admin UI */
+        #admin-panel { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); padding: 20px; z-index: 100; overflow-y: auto; }
+        .form-card { background: var(--panel); border: 1px solid var(--border); padding: 15px; border-radius: 10px; margin-bottom: 15px; position: relative; }
+        input, select { width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 10px; margin: 5px 0 10px; border-radius: 5px; box-sizing: border-box; }
+        .btn { background: var(--secondary); color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .del-btn { background: #b91c1c; padding: 5px 10px; font-size: 0.7rem; position: absolute; top: 10px; right: 10px; }
+        .admin-btn { cursor: pointer; opacity: 0.2; font-size: 1.2rem; transition: 0.3s; }
+        .admin-btn:hover { opacity: 1; color: var(--accent); }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1 id="hub-title">LOADING DIRECTORY...</h1>
+        <h1 id="hub-title">DIRECTORY</h1>
+        <span class="admin-btn" onclick="toggleAdmin(true)">⚙️</span>
     </header>
     <div class="list" id="links-list"></div>
 </div>
 
-<script>
-    const JSON_URL = 'https://domainofarnoy.vercel.app/h.json'; 
+<div id="admin-panel">
+    <div style="max-width:600px; margin:auto;">
+        <h2 style="color:var(--secondary)">DASHBOARD</h2>
+        <input type="text" id="edit-hub-title" placeholder="Hub Title">
+        <hr style="border:0; border-top:1px solid #333; margin:20px 0;">
+        
+        <div id="form-container"></div>
+        
+        <button class="btn" onclick="addLinkRow()" style="background:#222; width:100%; margin-bottom:20px;">+ ADD NEW LINK</button>
+        
+        <div style="display:flex; gap:10px; position:sticky; bottom:0; background:var(--bg); padding:10px 0;">
+            <button class="btn" onclick="saveData()">SAVE CHANGES</button>
+            <button class="btn" style="background:#333" onclick="toggleAdmin(false)">CANCEL</button>
+        </div>
+    </div>
+</div>
 
-    async function fetchLinks() {
+<script>
+    const GIST_CONFIG = {
+        ID: '4ae65e9ab4110926b892fe1af648d0c0',
+        FILE_NAME: 'directory.json',
+        OBFUSCATED_TOKEN: '25-1u-2i-39-2r-r-21-36-t-3d-27-2i-1v-2s-3c-3d-3d-2a-s-2r-1v-26-3f-3h-v-32-3d-2j-36-36-33-u-2s-21-p-21-1w-u-36-20',
+        SALT: 42
+    };
+
+    let currentData = { hub_title: "", links: [] };
+
+    function getClearToken() {
+        return GIST_CONFIG.OBFUSCATED_TOKEN.split('-').map(part => 
+            String.fromCharCode(parseInt(part, 36) ^ GIST_CONFIG.SALT)
+        ).join('');
+    }
+
+    async function load() {
         try {
-            const res = await fetch(JSON_URL);
-            const data = await res.json();
-            
-            document.getElementById('hub-title').innerText = data.hub_title;
-            const list = document.getElementById('links-list');
-            
-            list.innerHTML = data.links.map(link => `
-                <a href="${link.url}" class="item">
-                    <div class="icon-box">/</div>
-                    <div class="content">
-                        <span class="type-tag">${link.type}</span>
-                        <span class="name">${link.name}</span>
-                        ${link.desc ? `<div class="desc">${link.desc}</div>` : ''}
-                    </div>
-                    <div class="arrow">→</div>
-                </a>
-            `).join('');
-        } catch (e) {
-            document.getElementById('hub-title').innerText = "CONNECTION FAILED";
+            const res = await fetch(`https://api.github.com/gists/${GIST_CONFIG.ID}`);
+            const gist = await res.json();
+            currentData = JSON.parse(gist.files[GIST_CONFIG.FILE_NAME].content);
+            renderView();
+        } catch (e) { alert("Load Failed"); }
+    }
+
+    function renderView() {
+        document.getElementById('hub-title').innerText = currentData.hub_title;
+        document.getElementById('links-list').innerHTML = currentData.links.map(l => `
+            <a href="${l.url}" class="item">
+                <div style="font-size:0.6rem; color:var(--accent); font-weight:800;">${l.type}</div>
+                <div style="font-weight:700; font-size:1.1rem; margin-top:4px;">${l.name}</div>
+                ${l.desc ? `<div style="font-size:0.8rem; color:var(--text-dim); margin-top:5px;">${l.desc}</div>` : ''}
+            </a>`).join('');
+    }
+
+    function toggleAdmin(show) {
+        if(show) {
+            document.getElementById('edit-hub-title').value = currentData.hub_title;
+            const container = document.getElementById('form-container');
+            container.innerHTML = "";
+            currentData.links.forEach((l, i) => addLinkRow(l));
+            document.getElementById('admin-panel').style.display = 'block';
+        } else {
+            document.getElementById('admin-panel').style.display = 'none';
         }
     }
 
-    fetchLinks();
+    function addLinkRow(data = {name:'', type:'Player', url:'', desc:''}) {
+        const div = document.createElement('div');
+        div.className = 'form-card';
+        div.innerHTML = `
+            <button class="btn del-btn" onclick="this.parentElement.remove()">REMOVE</button>
+            <input type="text" placeholder="Link Name" value="${data.name}" class="f-name">
+            <input type="text" placeholder="Type (e.g. Movie, Player)" value="${data.type}" class="f-type">
+            <input type="text" placeholder="URL" value="${data.url}" class="f-url">
+            <input type="text" placeholder="Description (Optional)" value="${data.desc}" class="f-desc">
+        `;
+        document.getElementById('form-container').appendChild(div);
+    }
+
+    async function saveData() {
+        const rows = document.querySelectorAll('.form-card');
+        const updatedLinks = Array.from(rows).map(r => ({
+            name: r.querySelector('.f-name').value,
+            type: r.querySelector('.f-type').value,
+            url: r.querySelector('.f-url').value,
+            desc: r.querySelector('.f-desc').value
+        }));
+
+        const newJson = {
+            hub_title: document.getElementById('edit-hub-title').value,
+            links: updatedLinks
+        };
+
+        try {
+            const res = await fetch(`https://api.github.com/gists/${GIST_CONFIG.ID}`, {
+                method: 'PATCH',
+                headers: { 'Authorization': `token ${getClearToken()}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ files: { [GIST_CONFIG.FILE_NAME]: { content: JSON.stringify(newJson, null, 4) } } })
+            });
+            if (res.ok) location.reload();
+            else alert("Save failed");
+        } catch (e) { alert("Error"); }
+    }
+
+    load();
 </script>
 </body>
 </html>
-
-
