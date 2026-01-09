@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSC 2026 Revised Routine</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* SLATE / DIM BLUE THEME */
+            --primary: #475569;   /* Slate 600 */
+            --secondary: #64748b; /* Slate 500 */
+            --accent: #334155;    
+            
+            --bg: #f1f5f9;        /* Soft grey background */
+            --card-bg: #ffffff;
+            --text: #0f172a;      /* Almost black */
+            --text-muted: #64748b;
+            
+            --success: #059669;   
+            --danger: #dc2626;    /* Red for 0 gap */
+            --warning: #d97706;   
+            
+            --border: #e2e8f0;
+            --gap-highlight: #f8fafc;
+            --gap-danger-bg: #fef2f2;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            
+            --cal-exam-border: #475569;
+        }
+
+        [data-theme="dark"] {
+            --primary: #94a3b8;   
+            --secondary: #64748b;
+            --accent: #cbd5e1;
+
+            --bg: #0f172a;        /* Deep blue-black */
+            --card-bg: #1e293b;   /* Slate 800 */
+            --text: #f8fafc;      /* White-ish */
+            --text-muted: #94a3b8;
+            
+            --border: #334155;
+            --gap-highlight: #0f172a;
+            --gap-danger-bg: #450a0a;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.5);
+
+            --cal-exam-border: #64748b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Hind Siliguri', sans-serif; transition: background 0.3s, color 0.3s, border-color 0.3s; }
+        
+        body { background-color: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 50px; }
+
+        /* Header */
+        header {
+            background: linear-gradient(to right, #334155, #475569);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; letter-spacing: -0.5px; }
+        .college-name { font-weight: 600; font-size: 1rem; margin-bottom: 5px; display: block; opacity: 0.9; }
+        
+        /* Countdown */
+        .countdown-box {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 8px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 15px;
+            font-weight: 500;
+            border: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+        }
+
+        /* Controls */
+        .controls {
+            max-width: 900px;
+            margin: 20px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+        }
+
+        .toggle-group {
+            display: flex;
+            background: var(--card-bg);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .view-btn {
+            background: transparent;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .view-btn.active {
+            background: var(--primary);
+            color: var(--bg);
+        }
+        
+        [data-theme="dark"] .view-btn.active { color: #0f172a; }
+        [data-theme="light"] .view-btn.active { color: white; }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* List View */
+        .exam-list { display: flex; flex-direction: column; gap: 15px; }
+
+        .exam-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .exam-card.completed { border-left: 4px solid var(--success); opacity: 0.6; }
+        .exam-card.today { border: 2px solid var(--primary); transform: scale(1.01); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .exam-card.upcoming { border-left: 4px solid var(--warning); }
+
+        .date-box {
+            text-align: center;
+            padding-right: 15px;
+            border-right: 1px solid var(--border);
+            min-width: 80px;
+        }
+        .date-box .day { font-size: 1.5rem; font-weight: 700; color: var(--primary); line-height: 1; }
+        .date-box .month { font-size: 0.8rem; text-transform: uppercase; font-weight: 600; color: var(--text-muted); }
+        .date-box .weekday { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+
+        .subject-box { padding-left: 15px; flex-grow: 1; }
+        .subject-name { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; color: var(--text); }
+        .subject-code { font-size: 0.85rem; color: var(--text-muted); background: var(--bg); padding: 2px 8px; border-radius: 4px; display: inline-block; }
+
+        /* Gap Indicator */
+        .gap-indicator {
+            margin-top: -10px;
+            margin-bottom: -10px;
+            text-align: center;
+            font-size: 0.8rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 0;
+        }
+        .gap-indicator::before, .gap-indicator::after {
+            content: ''; height: 1px; background: var(--border); flex-grow: 1;
+        }
+        .gap-badge {
+            background: var(--bg);
+            color: var(--text-muted);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            border: 1px solid var(--border);
+            z-index: 1;
+        }
+        .gap-badge.danger {
+            background: var(--gap-danger-bg);
+            color: var(--danger);
+            border-color: var(--danger);
+            font-weight: 700;
+        }
+
+        /* Calendar View */
+        .calendar-view { display: none; background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--border); }
+        .cal-header { text-align: center; margin-bottom: 15px; font-weight: 700; font-size: 1.1rem; color: var(--text); }
+        
+        .cal-grid { 
+            display: grid; 
+            grid-template-columns: repeat(7, 1fr); 
+            gap: 6px; 
+            text-align: center; 
+        }
+        
+        .cal-day-name { font-weight: 600; font-size: 0.85rem; color: var(--text-muted); padding-bottom: 8px;}
+        
+        .cal-date { 
+            background: transparent;
+            border-radius: 6px; 
+            min-height: 85px; 
+            padding: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            border: 1px solid transparent;
+            position: relative;
+        }
+        
+        .cal-num { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; color: var(--text-muted); }
+        
+        .cal-date.has-exam { 
+            background: var(--card-bg); 
+            border: 1px solid var(--cal-exam-border);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .cal-date.has-exam .cal-num { color: var(--primary); font-weight: 800; }
+        
+        .cal-subject-text {
+            font-size: 0.7rem;
+            line-height: 1.2;
+            color: var(--text); 
+            background: var(--bg);
+            padding: 4px;
+            border-radius: 4px;
+            width: 100%;
+            word-wrap: break-word;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+        }
+        
+        .cal-date.completed { opacity: 0.5; filter: grayscale(1); }
+        .cal-date.today { border: 2px solid var(--primary); }
+
+        @media (max-width: 600px) {
+            .exam-card { flex-direction: row; }
+            .date-box { min-width: 65px; }
+            .subject-name { font-size: 1rem; }
+            .cal-grid { gap: 3px; }
+            .cal-date { min-height: 65px; padding: 2px; }
+            .cal-subject-text { font-size: 0.6rem; padding: 2px; line-height: 1.1; }
+            .cal-num { font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <span class="college-name">Brahmanbaria Govt. College</span>
+        <h1>Revised Selection Exam 2026</h1>
+        <p>Science Group (Updated 06 Jan)</p>
+        <div class="countdown-box" id="countdown">Calculating...</div>
+    </header>
+
+    <div class="controls">
+        <div class="toggle-group">
+            <button class="view-btn active" onclick="switchView('list')">List View</button>
+            <button class="view-btn" onclick="switchView('calendar')">Calendar</button>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">
+            🌙
+        </button>
+    </div>
+
+    <div class="container">
+        <!-- List View -->
+        <div id="listView" class="exam-list"></div>
+
+        <!-- Calendar View -->
+        <div id="calendarView" class="calendar-view">
+            <div class="cal-header">January 2026</div>
+            <div class="cal-grid" id="calGridJan"></div>
+            <br>
+            <div class="cal-header">February 2026</div>
+            <div class="cal-grid" id="calGridFeb"></div>
+        </div>
+    </div>
+
+    <script>
+        // NEW REVISED ROUTINE DATA (Jan 06 Update)
+        // ICT Removed
+        const exams = [
+            { date: "2026-01-12", subject: "বাংলা ১ম পত্র", code: "১০১" },
+            { date: "2026-01-13", subject: "বাংলা ২য় পত্র", code: "১০২" },
+            { date: "2026-01-15", subject: "ইংরেজি ১ম পত্র", code: "১০৭" },
+            { date: "2026-01-19", subject: "ইংরেজি ২য় পত্র", code: "১০৮" },
+            { date: "2026-01-20", subject: "পদার্থবিজ্ঞান ১ম পত্র", code: "১৭৪" },
+            { date: "2026-01-22", subject: "পদার্থবিজ্ঞান ২য় পত্র", code: "১৭৫" },
+            { date: "2026-01-25", subject: "রসায়ন ১ম পত্র", code: "১৭৬" },
+            { date: "2026-01-26", subject: "রসায়ন ২য় পত্র", code: "১৭৭" },
+            { date: "2026-01-28", subject: "উচ্চতর গণিত ১ম পত্র", code: "২৬৫" },
+            { date: "2026-02-02", subject: "উচ্চতর গণিত ২য় পত্র", code: "২৬৬" },
+            { date: "2026-02-03", subject: "জীববিজ্ঞান ১ম পত্র (উদ্ভিদবিজ্ঞান)", code: "১৭৮" },
+            { date: "2026-02-05", subject: "জীববিজ্ঞান ২য় পত্র (প্রাণিবিজ্ঞান)", code: "১৭৯" }
+        ];
+
+        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
+        // Setup
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        document.body.setAttribute('data-theme', currentTheme);
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', currentTheme);
+            localStorage.setItem('theme', currentTheme);
+            document.querySelector('.theme-toggle').textContent = currentTheme === 'light' ? '🌙' : '☀️';
+        }
+
+        function switchView(view) {
+            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.view-btn[onclick="switchView('${view}')"]`).classList.add('active');
+            
+            document.getElementById('listView').style.display = view === 'list' ? 'flex' : 'none';
+            document.getElementById('calendarView').style.display = view === 'calendar' ? 'block' : 'none';
+        }
+
+        function renderList() {
+            const container = document.getElementById('listView');
+            container.innerHTML = '';
+            
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0];
+
+            exams.forEach((exam, index) => {
+                const examDate = new Date(exam.date);
+                
+                // Gap Logic
+                if (index > 0) {
+                    const prevDate = new Date(exams[index-1].date);
+                    const diffTime = examDate - prevDate;
+                    const dayDiff = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                    const gapDays = dayDiff - 1;
+
+                    let gapHtml = '';
+                    if (gapDays === 0) {
+                         gapHtml = `
+                            <div class="gap-indicator">
+                                <span class="gap-badge danger">⚠️ 0 Days Gap!</span>
+                            </div>
+                        `;
+                    } else {
+                        gapHtml = `
+                            <div class="gap-indicator">
+                                <span class="gap-badge">☕ ${gapDays} Day${gapDays > 1 ? 's' : ''} Gap</span>
+                            </div>
+                        `;
+                    }
+                    container.innerHTML += gapHtml;
+                }
+
+                let statusClass = 'upcoming';
+                if (exam.date < todayStr) statusClass = 'completed';
+                if (exam.date === todayStr) statusClass = 'today';
+
+                const dayName = days[examDate.getDay()];
+                const dateNum = examDate.getDate();
+                const monthName = months[examDate.getMonth()];
+
+                const html = `
+                    <div class="exam-card ${statusClass}">
+                        <div class="date-box">
+                            <div class="day">${dateNum}</div>
+                            <div class="month">${monthName}</div>
+                            <div class="weekday">${dayName.substring(0,3)}</div>
+                        </div>
+                        <div class="subject-box">
+                            <div class="subject-name">${exam.subject}</div>
+                            <div class="subject-code">Code: ${exam.code}</div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+        }
+
+        function renderCalendar(monthIndex, year, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            const dayHeaders = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+            dayHeaders.forEach(d => {
+                container.innerHTML += `<div class="cal-day-name">${d}</div>`;
+            });
+
+            const firstDay = new Date(year, monthIndex, 1).getDay();
+            const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+
+            for(let i=0; i<firstDay; i++) {
+                container.innerHTML += `<div class="cal-date empty"></div>`;
+            }
+
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0];
+
+            for(let d=1; d<=daysInMonth; d++) {
+                const dateStr = `${year}-${String(monthIndex+1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const exam = exams.find(e => e.date === dateStr);
+                
+                let classes = 'cal-date';
+                let content = `<div class="cal-num">${d}</div>`;
+                
+                if (exam) {
+                    classes += ' has-exam';
+                    if (dateStr < todayStr) classes += ' completed';
+                    if (dateStr === todayStr) classes += ' today';
+                    content += `<div class="cal-subject-text">${exam.subject}</div>`;
+                }
+
+                container.innerHTML += `
+                    <div class="${classes}">
+                        ${content}
+                    </div>
+                `;
+            }
+        }
+
+        function updateCountdown() {
+            const now = new Date();
+            const nextExam = exams.find(e => new Date(e.date + "T13:00:00") > now);
+            const el = document.getElementById('countdown');
+            
+            if (!nextExam) {
+                el.innerHTML = "All Exams Finished!";
+                return;
+            }
+
+            const examDate = new Date(nextExam.date + "T13:00:00");
+            const diff = examDate - now;
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            el.innerHTML = `Next: ${nextExam.subject.split(' ')[0]} in ${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        // Init
+        renderList();
+        renderCalendar(0, 2026, 'calGridJan'); 
+        renderCalendar(1, 2026, 'calGridFeb');
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+        document.querySelector('.theme-toggle').textContent = currentTheme === 'light' ? '🌙' : '☀️';
+
+    </script>
+</body>
+</html>
