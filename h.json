@@ -1,0 +1,24 @@
+{
+  "hub_title": "CURSED DIRECTORY",
+  "links": [
+    {
+      "name": "Test routine",
+      "type": "Important",
+      "desc": "Routine",
+      "url": "test-routine.html"
+    },
+    {
+      "name": "JJk Player",
+      "type": "External",
+      "desc": "", 
+      "url": "jjk.html"
+    }
+
+        {
+      "name": "Editor",
+      "type": "External",
+      "desc": "", 
+      "url": ""
+    }
+  ]
+}
