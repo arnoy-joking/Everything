@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JJK | Cursed Energy Player</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>">
+    <style>
+        :root {
+            /* NEW COLOR PALETTE: Cursed Energy Theme */
+            --bg-body: #050507;
+            --bg-panel: #0d0d12;
+            --bg-card: #16161f;
+            --bg-card-hover: #1f1f2e;
+            --accent: #00f2ff; /* Neon Cyan */
+            --accent-dim: #0a3a40;
+            --secondary: #8b5cf6; /* Cursed Purple */
+            --text-main: #e2e8f0;
+            --text-sub: #94a3b8;
+            --border: #222233;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            font-family: 'Inter', -apple-system, sans-serif;
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+        }
+
+        /* --- HEADER --- */
+        header {
+            background-color: var(--bg-panel);
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            z-index: 20;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .brand { font-size: 1rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+        .brand span { color: var(--secondary); text-shadow: 0 0 10px var(--secondary); }
+        
+        .btn-reset {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-sub);
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            border-radius: 20px;
+            transition: 0.2s;
+        }
+        .btn-reset:active { background: var(--accent); color: #000; border-color: var(--accent); }
+
+        /* --- LAYOUT --- */
+        .layout { display: flex; flex-direction: column; flex: 1; overflow: hidden; position: relative; }
+
+        .stage-area { width: 100%; background: #000; flex-shrink: 0; position: sticky; top: 0; z-index: 10; }
+
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; width: 100%; }
+
+        video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        /* Controls / Info */
+        .meta-bar {
+            padding: 15px;
+            background: var(--bg-panel);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .info h2 { font-size: 1.1rem; color: var(--accent); margin-bottom: 4px; }
+        .info p { color: var(--text-sub); font-size: 0.8rem; }
+
+        .ext-btn {
+            background: var(--secondary);
+            color: #fff;
+            text-decoration: none;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+        
+        /* Playlist Area */
+        .playlist-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+        .season-tabs { display: flex; background: var(--bg-panel); padding: 5px; gap: 5px; }
+
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            color: var(--text-sub);
+            font-weight: 700;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            transition: 0.3s;
+        }
+        .tab.active { color: #fff; background: var(--secondary); }
+
+        .list-container { flex: 1; overflow-y: auto; padding: 12px; }
+
+        .ep-card {
+            background: var(--bg-card);
+            padding: 14px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            transition: 0.2s;
+        }
+        .ep-card.active { border-color: var(--accent); background: var(--bg-card-hover); box-shadow: 0 0 15px rgba(0, 242, 255, 0.1); }
+        
+        .ep-title { font-size: 0.9rem; font-weight: 600; color: var(--text-main); margin-bottom: 8px; display: block; }
+        .ep-card.active .ep-title { color: var(--accent); }
+
+        .ep-tags { display: flex; gap: 6px; }
+        .tag { font-size: 0.6rem; background: #000; padding: 3px 8px; border-radius: 4px; color: var(--secondary); border: 1px solid #222; }
+
+        .progress-bg { height: 4px; background: #000; width: 100%; margin-top: 10px; border-radius: 2px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s ease; box-shadow: 0 0 8px var(--accent); }
+
+        #resume-banner {
+            background: var(--secondary);
+            color: white;
+            padding: 12px 15px;
+            font-size: 0.85rem;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        @media (min-width: 768px) {
+            .layout { flex-direction: row; }
+            .stage-area { flex: 1; height: 100%; overflow-y: auto; }
+            .video-wrapper { padding-bottom: 0; height: 70vh; }
+            .playlist-area { width: 380px; border-left: 1px solid var(--border); }
+            .meta-bar { flex-direction: row; justify-content: space-between; padding: 25px 40px; }
+            .ext-btn { width: auto; padding: 10px 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">JJK | <span>CURSED PLAYER</span></div>
+        <button class="btn-reset" onclick="resetHistory()">CLEAR CACHE</button>
+    </header>
+
+    <div id="resume-banner" onclick="resumeLast()">
+        <span>Continue your journey?</span>
+        <strong>RESUME ▶</strong>
+    </div>
+
+    <div class="layout">
+        <div class="stage-area">
+            <div class="video-wrapper">
+                <video id="player" controls playsinline poster="https://wallpapers.com/images/hd/jujutsu-kaisen-purple-aesthetic-pc-q4k3w4w4w4w4w4w4.jpg"></video>
+            </div>
+            <div class="meta-bar">
+                <div class="info">
+                    <h2 id="vid-title">Select Episode</h2>
+                    <p>Sorcery Grade: 1080p High Definition • Multi-Audio</p>
+                </div>
+                <a href="#" id="ext-player-btn" class="ext-btn">EXTERNAL PLAYER</a>
+            </div>
+        </div>
+
+        <div class="playlist-area">
+            <div class="season-tabs">
+                <div class="tab active" onclick="loadSeason(1)">SEASON 01</div>
+                <div class="tab" onclick="loadSeason(2)">SEASON 02</div>
+            </div>
+            <div id="playlist" class="list-container"></div>
+        </div>
+    </div>
+
+    <script>
+        // Data kept from original
+        const s1_raw = [
+            { t: "Ep 01: Ryomen Sukuna", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E01.Ryomen.Sukuna.1080p.x264.Hindi.English.Japanese.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 02: For Myself", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E02.For.Myself.1080p.x264.Hindi.English.Japanese.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 03: Girl Of Steel", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E03.Girl.Of.Steel.1080p.x264.Hindi.English.Japanese.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 04: Curse Womb Must Die", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E04.Curse.Womb.Must.Die.1080p.x264.Hindi.English.Japanese.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 05: Curse Womb Must Die II", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E05.Curse.Womb.Must.Die.-II-.1080p.x264.Hindi.English.Japanese.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 06: After Rain", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E06.After.Rain.1080p.x264.Hindi.English.Japanese.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 07: Assault", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E07.Assault.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 08: Boredom", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E08.Boredom.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 09: Small Fry And Reverse Retribution", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E09.Small.Fry.And.Reverse.Retribution.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 10: Idle Transfiguration", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E10.Idle.Transfiguration.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 11: Narrow Minded", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E11.Narrow-Minded.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 12: To You Someday", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E12.To.You.Someday.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 13: Tomorrow", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E13.Tomorrow.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 14: Kyoto Sister School Exchange", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E14.Kyoto.Sister.School.Exchange.Event.-.Group.Battle.0.-.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 15: Exchange Event - Group Battle 1", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E15.Kyoto.Sister.School.Exchange.Event.-.Group.Battle.1.-.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 16: Exchange Event - Group Battle 2", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E16.Kyoto.Sister.School.Exchange.Event.-.Group.Battle.2.-.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 17: Exchange Event - Group Battle 3", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E17.Kyoto.Sister.School.Exchange.Event.-.Group.Battle.3.-.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 18: Sage", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E18.Sage.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 19: Black Flash", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E19.Black.Flash.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 20: Nonstandard", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E20.Nonstandard.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 21: Jujutsu Koshien", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E21.Jujutsu.Koshien.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 22: The Origin Of Blind Obedience", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E22.The.Origin.Of.Blind.Obedience.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 23: The Origin Of Blind Obedience II", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E23.The.Origin.Of.Blind.Obedience.-.2.-.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 24: Accomplices", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%201/Jujutsu.Kaisen.S01E24.Accomplices.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" }
+        ];
+
+        const s2_raw = [
+            { t: "Ep 01: Hidden Inventory", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/Jujutsu.Kaisen.S02E01.Hidden.Inventory.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 02: Hidden Inventory 2", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/Jujutsu.Kaisen.S02E02.Hidden.Inventory.2.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 03: Hidden Inventory 3", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/JUJUTSU.KAISEN.S02E03.Hidden.Inventory.3.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 04: Hidden Inventory 4", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/JUJUTSU.KAISEN.S02E05.Hidden.Inventory.4.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 05: Premature Death", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/JUJUTSU.KAISEN.S02E05.Premature.Death.1080p.x264.Hindi.Japanese.English.Esubs.MoviesMod.org.Dual.mkv" },
+            { t: "Ep 06: Shibuya Incident - Gate Open", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/Jujutsu%20Kaisen%20-%20S02E06%20%5B1080p%5D%5BHEVC%2010bit%20x265%5D%5BAAC%5D%5BMulti%20Sub%5D.mkv" },
+            { t: "Ep 07: Shibuya Incident", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/Jujutsu%20Kaisen%20-%20S02E07%20%5B1080p%5D%5BHEVC%2010bit%20x265%5D%5BAAC%5D%5BMulti%20Sub%5D.mkv" },
+            { t: "Ep 08: The Shibuya Incident", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/Jujutsu%20Kaisen%20-%20S02E08%20%5B1080p%5D%5BHEVC%2010bit%20x265%5D%5BAAC%5D%5BMulti%20Sub%5D.mkv" },
+            { t: "Ep 09: Opening Gate", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/Jujutsu%20Kaisen%20-%20S02E09%20%5B1080p%5D%5BHEVC%2010bit%20x265%5D%5BAAC%5D%5BMulti%20Sub%5D.mkv" },
+            { t: "Ep 10: Pandemonium", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/Jujutsu%20Kaisen%20-%20S02E10%20%5B1080p%5D%5BHEVC%2010bit%20x265%5D%5BAAC%5D%5BMulti%20Sub%5D.mkv" },
+            { t: "Ep 11: Seance", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/Jujutsu%20Kaisen%20-%20S02E11%20%5B1080p%5D%5BHEVC%2010bit%20x265%5D%5BAAC%5D%5BMulti%20Sub%5D.mkv" },
+            { t: "Ep 12: Dull Knife", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/Jujutsu%20Kaisen%20-%20S02E12%20%5B1080p%5D%5BHEVC%2010bit%20x265%5D%5BAAC%5D%5BMulti%20Sub%5D.mkv" },
+            { t: "Ep 13: Red Scale", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/Jujutsu%20Kaisen%20-%20S02E13%20%5B1080p%5D%5BHEVC%2010bit%20x265%5D%5BAAC%5D%5BMulti%20Sub%5D.mkv" },
+            { t: "Ep 14: Fluctuations", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/Jujutsu%20Kaisen%20-%20S02E14%20%5B1080p%5D%5BHEVC%2010bit%20x265%5D%5BAAC%5D%5BMulti%20Sub%5D.mkv" },
+            { t: "Ep 15: Fluctuations 2", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/Jujutsu%20Kaisen%20-%20S02E15%20%5B1080p%5D%5BHEVC%2010bit%20x265%5D%5BAAC%5D%5BMulti%20Sub%5D.mkv" },
+            { t: "Ep 16: Thunderclap", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/Jujutsu%20Kaisen%20-%20S02E16%20%5B1080p%5D%5BHEVC%2010bit%20x265%5D%5BAAC%5D%5BMulti%20Sub%5D.mkv" },
+            { t: "Ep 17: Thunderclap 2", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/Jujutsu%20Kaisen%20-%20S02E17%20%5B1080p%5D%5BHEVC%2010bit%20x265%5D%5BAAC%5D%5BMulti%20Sub%5D.mkv" },
+            { t: "Ep 18: Right and Wrong", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/Jujutsu%20Kaisen%20-%20S02E18%20%5B1080p%5D%5BHEVC%2010bit%20x265%5D%5BAAC%5D%5BMulti%20Sub%5D.mkv" },
+            { t: "Ep 19: Right and Wrong 2", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/Jujutsu%20Kaisen%20-%20S02E19%20%5B1080p%5D%5BHEVC%2010bit%20x265%5D%5BAAC%5D%5BMulti%20Sub%5D.mkv" },
+            { t: "Ep 20: Right and Wrong 3", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/Jujutsu%20Kaisen%20-%20S02E20%20%5B1080p%5D%5BHEVC%2010bit%20x265%5D%5BAAC%5D%5BMulti%20Sub%5D.mkv" },
+            { t: "Ep 21: Metamorphosis", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/Jujutsu%20Kaisen%20-%20S02E21%20%5B1080p%5D%5BHEVC%2010bit%20x265%5D%5BAAC%5D%5BMulti%20Sub%5D.mkv" },
+            { t: "Ep 22: Metamorphosis 2", u: "https://server5.ftpbd.net/FTP-5/Anime--Cartoon-TV-Series/Jujutsu%20Kaisen%20%28Tv%20series%202020%29/Season%202%201080p%20Hin%20Eng%20Jpn/Jujutsu%20Kaisen%20-%20S02E22-1080p-%5BHIN-ENG-JAP%5D_reencoded.mp4" },
+            { t: "Ep 23: Shibuya Incident - Close", u: "https://cds2.discoveryftp.net/Animation%20Tv%20Series/Jujutsu%20Kaisen%20%282020%29/Season%202/Jujutsu%20Kaisen%20-%20S02E23%20%5B1080p%5D%5BHEVC%2010bit%20x265%5D%5BAAC%5D%5BMulti%20Sub%5D.mkv" }
+        ];
+
+        const seasons = { 1: s1_raw, 2: s2_raw };
+        let currentSeason = 1;
+        let currentIndex = -1;
+        const STORE_KEY = "jjk_player_v2_cursed";
+        const video = document.getElementById('player');
+
+        function getState() {
+            try { return JSON.parse(localStorage.getItem(STORE_KEY)) || { history: {}, last: null }; }
+            catch { return { history: {}, last: null }; }
+        }
+
+        // Updated for Live progress
+        function saveProgress(time, total) {
+            if(currentIndex === -1 || !total) return;
+            const state = getState();
+            const epKey = `s${currentSeason}_e${currentIndex}`;
+            state.history[epKey] = { time: Math.floor(time), duration: Math.floor(total) };
+            state.last = { s: currentSeason, i: currentIndex };
+            localStorage.setItem(STORE_KEY, JSON.stringify(state));
+            
+            const activeCard = document.querySelector('.ep-card.active');
+            if (activeCard) {
+                const fill = activeCard.querySelector('.progress-fill');
+                if (fill) fill.style.width = (time / total * 100) + '%';
+            }
+        }
+
+        function resetHistory() {
+            if(confirm("Exorcise your watch history?")) {
+                localStorage.removeItem(STORE_KEY);
+                location.reload();
+            }
+        }
+
+        function loadSeason(num) {
+            currentSeason = num;
+            document.querySelectorAll('.tab').forEach((t, i) => {
+                t.classList.toggle('active', (i + 1) === num);
+            });
+            renderList();
+        }
+
+        function renderList() {
+            const list = document.getElementById('playlist');
+            list.innerHTML = "";
+            const state = getState();
+
+            seasons[currentSeason].forEach((ep, idx) => {
+                const isActive = (state.last && state.last.s === currentSeason && state.last.i === idx);
+                const epKey = `s${currentSeason}_e${idx}`;
+                const history = state.history[epKey];
+                const pct = (history && history.duration > 0) ? (history.time / history.duration) * 100 : 0;
+
+                const el = document.createElement('div');
+                el.className = `ep-card ${isActive ? 'active' : ''}`;
+                el.dataset.index = idx;
+                el.onclick = () => playEpisode(idx);
+                el.innerHTML = `
+                    <span class="ep-title">${ep.t}</span>
+                    <div class="ep-tags"><span class="tag">MKV</span><span class="tag">1080P</span></div>
+                    <div class="progress-bg"><div class="progress-fill" style="width: ${pct}%"></div></div>
+                `;
+                list.appendChild(el);
+                
+                if(isActive && !window.hasScrolled) {
+                    setTimeout(() => el.scrollIntoView({block: 'center', behavior: 'smooth'}), 500);
+                    window.hasScrolled = true;
+                }
+            });
+        }
+
+        function playEpisode(index) {
+            currentIndex = index;
+            const ep = seasons[currentSeason][index];
+            const state = getState();
+            const epKey = `s${currentSeason}_e${index}`;
+
+            document.getElementById('vid-title').innerText = ep.t;
+            video.src = ep.u;
+            document.getElementById('ext-player-btn').href = `intent:${ep.u}#Intent;action=android.intent.action.VIEW;type=video/*;S.title=${encodeURIComponent(ep.t)};end;`;
+
+            const history = state.history[epKey];
+            if(history) video.currentTime = history.time;
+
+            video.play().catch(() => {});
+            document.getElementById('resume-banner').style.display = 'none';
+            
+            document.querySelectorAll('.ep-card').forEach(c => c.classList.remove('active'));
+            const activeCard = document.querySelector(`.ep-card[data-index="${index}"]`);
+            if(activeCard) activeCard.classList.add('active');
+        }
+
+        function resumeLast() {
+            const state = getState();
+            if(state.last) {
+                loadSeason(state.last.s);
+                playEpisode(state.last.i);
+            }
+        }
+
+        video.addEventListener('timeupdate', () => {
+            if(video.currentTime > 2 && Math.floor(video.currentTime) % 3 === 0) {
+                saveProgress(video.currentTime, video.duration);
+            }
+        });
+
+        video.addEventListener('ended', () => {
+            saveProgress(video.duration, video.duration); 
+            if(currentIndex < seasons[currentSeason].length - 1) playEpisode(currentIndex + 1);
+        });
+
+        window.onload = () => {
+            const state = getState();
+            if(state.last) {
+                document.getElementById('resume-banner').style.display = 'flex';
+                loadSeason(state.last.s);
+            } else {
+                loadSeason(1);
+            }
+        };
+    </script>
+</body>
+</html>
