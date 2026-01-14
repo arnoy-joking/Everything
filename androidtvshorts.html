@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shorts TV Lite (Feed Fix)</title>
+    <title>Shorts TV Lite (Sound On)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.css" rel="stylesheet">
     <style>
@@ -85,6 +85,15 @@
                         <img id="badge-likes" class="h-5 opacity-90">
                      </div>
                 </div>
+
+                <!-- Volume Status Indicator -->
+                <div id="vol-indicator" class="absolute top-4 right-4 bg-black/50 p-2 rounded-full text-white opacity-0 transition-opacity duration-500">
+                    <i data-lucide="volume-2" id="vol-icon"></i>
+                </div>
+            </div>
+            
+            <div class="absolute bottom-4 right-4 text-zinc-500 text-xs hidden md:block">
+                UP/DOWN: Change Video • ENTER: Mute/Unmute • BACK: Close
             </div>
         </div>
     </div>
@@ -100,7 +109,7 @@
         let COOKIES = "";
         let videos = [];
         let currentIndex = 0;
-        let isMuted = true;
+        let isMuted = false; // CHANGED: Default to Unmuted
         let isFetching = false;
         let playerOpen = false;
         let lastShortsApiId = ""; 
@@ -154,7 +163,6 @@
                     views: v.views
                 })).filter(v => v.videoId);
                 
-                // For homepage, we just set the list
                 videos = newVids;
                 renderGrid();
             } catch (e) { console.log(e); } 
@@ -183,7 +191,6 @@
                     }));
                 
                 if (newVids.length > 0) {
-                    // Append to master list
                     videos = [...videos, ...newVids];
                 }
             } catch (e) { console.log(e); } 
@@ -192,7 +199,7 @@
 
         function renderGrid() {
             const grid = document.getElementById('video-grid');
-            grid.innerHTML = ''; // Full redraw for simplicity on Lite
+            grid.innerHTML = ''; 
             
             videos.forEach((v, idx) => {
                 const el = document.createElement('div');
@@ -217,36 +224,24 @@
 
         // --- LITE PLAYER LOGIC ---
         function openPlayer(index) {
-            // CRITICAL CHANGE FOR "NEXT SHORT FROM API":
-            // 1. Set current video
             currentIndex = index;
-            lastShortsApiId = videos[currentIndex].videoId; // Set seed for API
+            lastShortsApiId = videos[currentIndex].videoId; 
             
-            // 2. Memory Opt: Remove all homepage videos AFTER this one
-            // This ensures that when we fetch next, we are appending to THIS video, 
-            // not to the end of a long homepage list.
-            // Also helps TV memory.
+            // Slice array to free memory
             videos = videos.slice(0, currentIndex + 1);
             
-            // 3. Open Player UI
             playerOpen = true;
             focusContext = 'player';
             document.getElementById('player-overlay').classList.remove('hidden');
             loadSingleVideo();
-
-            // 4. Immediately fetch the NEXT video based on this one
             fetchNextBatch();
         }
 
         function closePlayer() {
             playerOpen = false;
             focusContext = 'grid';
-            
-            // Since we sliced the array, the grid will now only show visited videos.
-            // This is actually better for TV performance.
             renderGrid(); 
-            focusIndex = currentIndex; // Restore focus to the video we just watched
-
+            focusIndex = currentIndex; 
             document.getElementById('player-overlay').classList.add('hidden');
             document.getElementById('active-video-container').innerHTML = '';
             updateFocus();
@@ -261,6 +256,8 @@
             document.getElementById('badge-likes').src = `https://img.shields.io/youtube/likes/${v.videoId}?style=flat-square&logo=youtube&color=red&labelColor=222`;
 
             const origin = window.location.origin === 'file://' || !window.location.origin ? '*' : window.location.origin;
+            
+            // NOTE: isMuted logic applied here to URL (0 = unmuted)
             container.innerHTML = `
                 <iframe 
                     src="https://www.youtube.com/embed/${v.videoId}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0&loop=1&playlist=${v.videoId}&enablejsapi=1&origin=${origin}&iv_load_policy=3&fs=0&playsinline=1" 
@@ -268,6 +265,18 @@
                     id="yt-player-single"
                 ></iframe>
             `;
+            
+            showVolumeIcon();
+        }
+
+        function showVolumeIcon() {
+            const ind = document.getElementById('vol-indicator');
+            const icon = document.getElementById('vol-icon');
+            icon.setAttribute('data-lucide', isMuted ? 'volume-x' : 'volume-2');
+            lucide.createIcons();
+            
+            ind.style.opacity = '1';
+            setTimeout(() => { ind.style.opacity = '0'; }, 1500);
         }
 
         // --- NAVIGATION ---
@@ -302,18 +311,14 @@
             
             if (playerOpen) {
                 if (e.key === 'ArrowDown') {
-                    // Try to go next
                     if (currentIndex < videos.length - 1) { 
                         currentIndex++; 
                         loadSingleVideo(); 
-                        
-                        // Prefetch next if we are at the edge
                         if (currentIndex >= videos.length - 1) {
-                            lastShortsApiId = videos[currentIndex].videoId; // update seed
+                            lastShortsApiId = videos[currentIndex].videoId; 
                             fetchNextBatch();
                         }
                     } else {
-                        // If user hits down and we are waiting for API
                          lastShortsApiId = videos[currentIndex].videoId; 
                          fetchNextBatch().then(() => {
                              if(currentIndex < videos.length -1) {
@@ -327,7 +332,9 @@
                     if (currentIndex > 0) { currentIndex--; loadSingleVideo(); }
                 }
                 else if (e.key === 'Enter') {
+                    // Toggle Mute State
                     isMuted = !isMuted;
+                    showVolumeIcon();
                     const frame = document.getElementById('yt-player-single');
                     if(frame) frame.contentWindow.postMessage(JSON.stringify({ event: 'command', func: isMuted?'mute':'unMute', args: [] }), '*');
                 }
