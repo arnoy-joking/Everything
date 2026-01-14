@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shorts TV Lite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.css" rel="stylesheet">
+    <style>
+        /* Performance: Disable standard scrollbars */
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Performance: Force Hardware Acceleration on moving parts */
+        .gpu-accelerate {
+            transform: translateZ(0);
+            will-change: transform;
+        }
+
+        /* TV FOCUS - High Contrast, Low Cost (Border only, no shadow/glow) */
+        .tv-focus {
+            outline: 4px solid #dc2626; /* Red Outline */
+            z-index: 50;
+            background-color: #1a1a1a;
+        }
+        
+        .sidebar-btn.tv-focus {
+            background-color: #ffffff;
+            color: black;
+        }
+        
+        /* Iframe reset */
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body class="bg-black text-white font-sans overflow-hidden selection:bg-red-500 selection:text-white">
+
+    <div id="app" class="flex min-h-screen">
+        <!-- Sidebar: Static Background (No Blur) -->
+        <nav class="w-24 bg-[#111] h-screen flex flex-col items-center py-6 border-r border-white/10 z-40 fixed left-0 top-0 hidden md:flex">
+            <div class="mb-8">
+                <div class="w-12 h-10 bg-red-600 rounded flex items-center justify-center cursor-pointer focusable-sidebar" onclick="location.reload()">
+                    <i data-lucide="play" class="fill-white text-white"></i>
+                </div>
+            </div>
+            <div class="flex-1 w-full space-y-4">
+                <button class="sidebar-btn flex flex-col items-center justify-center p-4 w-full text-zinc-400 rounded focusable-sidebar" id="btn-home">
+                    <i data-lucide="home" class="mb-1"></i>
+                    <span class="text-[10px] font-bold">HOME</span>
+                </button>
+                
+                <a href="https://www.youtube.com/account" target="_blank" class="sidebar-btn flex flex-col items-center justify-center p-4 w-full text-zinc-400 rounded focusable-sidebar" id="btn-login">
+                    <i data-lucide="user-circle" class="mb-1"></i>
+                    <span class="text-[10px] font-bold">LOGIN</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-1 h-screen overflow-y-auto p-4 md:p-8 md:ml-24 scrollbar-hide" id="main-scroll">
+            <header class="flex items-center justify-between mb-6 mt-2 md:mt-0">
+                <h1 class="text-2xl font-bold tracking-tight text-white/90">Shorts TV <span class="text-xs text-zinc-500 font-normal border border-zinc-700 px-1 rounded ml-2">LITE</span></h1>
+                <div id="status-indicator" class="text-xs font-mono text-zinc-500">Initializing...</div>
+            </header>
+
+            <div id="video-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <!-- Grid items injected by JS -->
+            </div>
+            
+            <div id="load-more-trigger" class="h-24 w-full flex items-center justify-center text-zinc-700 text-sm">
+                Loading...
+            </div>
+        </main>
+
+        <!-- Player Overlay: Opaque Black (No Transparency) -->
+        <div id="player-overlay" class="fixed inset-0 z-[60] bg-black hidden flex flex-col items-center justify-center">
+            
+            <div class="relative w-full h-full md:max-h-[95vh] md:aspect-[9/16] bg-black border border-zinc-800">
+                <!-- Back Button -->
+                <button id="close-player" class="absolute top-4 left-4 z-50 bg-black/50 p-2 rounded-full border border-white/20 text-white focusable-player">
+                    <i data-lucide="arrow-left"></i>
+                </button>
+
+                <!-- Single Active Iframe Container -->
+                <div id="active-video-container" class="w-full h-full bg-black flex items-center justify-center">
+                    <!-- Iframe injected here -->
+                </div>
+
+                <!-- Simple Stats overlay (Bottom) -->
+                <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent pointer-events-none">
+                     <h2 id="player-title" class="text-sm font-bold line-clamp-2 mb-2"></h2>
+                     <div class="flex gap-2">
+                        <img id="badge-views" class="h-5 opacity-90">
+                        <img id="badge-likes" class="h-5 opacity-90">
+                     </div>
+                </div>
+            </div>
+
+            <!-- Controls Help -->
+            <div class="absolute bottom-4 right-4 text-zinc-500 text-xs hidden md:block">
+                UP/DOWN: Change Video • ENTER: Mute • BACK: Close
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        // --- CONFIGURATION ---
+        const API_HOMEPAGE = "https://hmpgshorts.vercel.app/api/"; 
+        const API_NEXT = "https://shortss-beryl.vercel.app/api"; 
+        const DEFAULT_SEED_ID = "sP2N53Se2qY"; 
+        const GIST_COOKIE_URL = "https://gist.githubusercontent.com/arnoy-joking/d8ab574454c00269fa2449cfd116b6cd/raw";
+        
+        // --- STATE ---
+        let COOKIES = "";
+        let videos = [];
+        let currentIndex = 0;
+        let isMuted = true;
+        let isFetching = false;
+        let playerOpen = false;
+        let lastShortsApiId = DEFAULT_SEED_ID; 
+
+        // TV Nav State
+        let focusContext = 'sidebar'; 
+        let focusIndex = 0; 
+
+        // --- LOAD COOKIES ---
+        async function loadCookies() {
+            const statusEl = document.getElementById('status-indicator');
+            try {
+                const response = await fetch(GIST_COOKIE_URL);
+                if (!response.ok) throw new Error("Gist error");
+                COOKIES = await response.text();
+                statusEl.textContent = "Ready";
+                statusEl.style.color = "#4ade80"; // Green
+                fetchHomePage();
+            } catch (error) {
+                statusEl.textContent = "Cookie Error";
+                statusEl.style.color = "#ef4444"; // Red
+            }
+        }
+
+        function parseNetscapeCookies(netscapeString) {
+            return netscapeString.split('\n')
+                .filter(line => line && !line.startsWith('#') && line.trim() !== '')
+                .map(line => {
+                    const p = line.split(/\t+/);
+                    return (p.length >= 7) ? `${p[5]}=${p[6]}` : null;
+                })
+                .filter(Boolean)
+                .join('; ');
+        }
+
+        // --- APIs ---
+        async function fetchHomePage() {
+            if (isFetching || !COOKIES) return; 
+            isFetching = true;
+            try {
+                const res = await fetch(API_HOMEPAGE, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ cookiesContent: COOKIES })
+                });
+                const json = await res.json();
+                const newVids = (json.data || []).map(v => ({
+                    videoId: v.id ? v.id.replace('shorts-shelf-item-', '') : null,
+                    title: v.title,
+                    thumbnail: v.thumbnail,
+                    views: v.views
+                })).filter(v => v.videoId);
+                
+                appendVideos(newVids);
+            } catch (e) { console.log(e); } 
+            finally { isFetching = false; }
+        }
+
+        async function fetchNextBatch() {
+            if (isFetching || !COOKIES) return;
+            isFetching = true;
+            try {
+                const header = parseNetscapeCookies(COOKIES);
+                const url = `${API_NEXT}?url=${encodeURIComponent(`https://www.youtube.com/shorts/${lastShortsApiId}`)}&cookies=${encodeURIComponent(header)}`;
+                const res = await fetch(url);
+                const json = await res.json();
+                
+                const raw = json.nextVideos || [];
+                if (raw.length > 0) lastShortsApiId = raw[raw.length-1].videoId;
+
+                const newVids = raw
+                    .filter(nv => !videos.some(ev => ev.videoId === nv.videoId))
+                    .map(v => ({
+                        videoId: v.videoId,
+                        title: v.title || "Shorts",
+                        thumbnail: v.thumbnail,
+                        views: null
+                    }));
+                
+                if (newVids.length > 0) appendVideos(newVids);
+            } catch (e) { console.log(e); } 
+            finally { isFetching = false; }
+        }
+
+        function appendVideos(newVids) {
+            videos = [...videos, ...newVids];
+            const grid = document.getElementById('video-grid');
+            
+            // Render simpler cards
+            newVids.forEach((v) => {
+                const idx = videos.indexOf(v); // robust index finding
+                const el = document.createElement('div');
+                el.id = `card-${idx}`;
+                // Simplified classes: No hover scaling, simple borders
+                el.className = "relative aspect-[9/16] bg-zinc-900 border border-zinc-800 rounded overflow-hidden focusable-card";
+                
+                // Fallback thumb
+                const t = v.thumbnail || `https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg`;
+                
+                el.innerHTML = `
+                    <img src="${t}" class="w-full h-full object-cover opacity-80" loading="lazy">
+                    <div class="absolute bottom-0 w-full p-2 bg-gradient-to-t from-black to-transparent">
+                        <div class="text-[10px] text-zinc-300 font-bold mb-0.5">${v.views || ''}</div>
+                        <div class="text-xs text-white font-bold leading-tight line-clamp-2">${v.title || ''}</div>
+                    </div>
+                `;
+                el.onclick = () => openPlayer(idx);
+                grid.appendChild(el);
+            });
+
+            if (focusContext === 'grid' && videos.length === newVids.length) {
+                focusIndex = 0;
+                updateFocus();
+            }
+        }
+
+        // --- LITE PLAYER LOGIC ---
+        function openPlayer(index) {
+            currentIndex = index;
+            playerOpen = true;
+            focusContext = 'player';
+            document.getElementById('player-overlay').classList.remove('hidden');
+            loadSingleVideo();
+        }
+
+        function closePlayer() {
+            playerOpen = false;
+            focusContext = 'grid';
+            focusIndex = currentIndex;
+            document.getElementById('player-overlay').classList.add('hidden');
+            // DESTROY IFRAME IMMEDIATELY to free memory
+            document.getElementById('active-video-container').innerHTML = '';
+            updateFocus();
+        }
+
+        function loadSingleVideo() {
+            const v = videos[currentIndex];
+            const container = document.getElementById('active-video-container');
+            
+            // 1. Update Metadata (Cheap DOM ops)
+            document.getElementById('player-title').innerText = v.title || '';
+            document.getElementById('badge-views').src = `https://img.shields.io/youtube/views/${v.videoId}?style=flat-square&logo=youtube&color=black&labelColor=222`;
+            document.getElementById('badge-likes').src = `https://img.shields.io/youtube/likes/${v.videoId}?style=flat-square&logo=youtube&color=red&labelColor=222`;
+
+            // 2. Load Iframe (Only one exists at a time)
+            const origin = window.location.origin === 'file://' || !window.location.origin ? '*' : window.location.origin;
+            container.innerHTML = `
+                <iframe 
+                    src="https://www.youtube.com/embed/${v.videoId}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0&loop=1&playlist=${v.videoId}&enablejsapi=1&origin=${origin}&iv_load_policy=3&fs=0&playsinline=1" 
+                    allow="autoplay; encrypted-media" 
+                    id="yt-player-single"
+                ></iframe>
+            `;
+
+            // 3. Pre-fetch next batch if needed
+            if (currentIndex >= videos.length - 3) fetchNextBatch();
+        }
+
+        // --- NAVIGATION ---
+        function getCols() {
+            const w = window.innerWidth;
+            if (w >= 1024) return 4; // lg
+            if (w >= 768) return 3;  // md
+            return 2;                // sm
+        }
+
+        function updateFocus() {
+            // Remove old focus
+            document.querySelectorAll('.tv-focus').forEach(e => e.classList.remove('tv-focus'));
+            
+            if (focusContext === 'sidebar') {
+                const items = document.querySelectorAll('.focusable-sidebar');
+                if (items[focusIndex]) items[focusIndex].classList.add('tv-focus');
+            } 
+            else if (focusContext === 'grid') {
+                const el = document.getElementById(`card-${focusIndex}`);
+                if (el) {
+                    el.classList.add('tv-focus');
+                    el.scrollIntoView({ behavior: 'auto', block: 'center' }); // 'auto' is faster than 'smooth'
+                }
+            }
+            else if (focusContext === 'player') {
+                // Focus the back button visually if needed, otherwise focus is conceptual (on the video)
+                const backBtn = document.getElementById('close-player');
+                backBtn.classList.add('tv-focus');
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            const cols = getCols();
+            
+            if (playerOpen) {
+                // Simplified Player Controls
+                if (e.key === 'ArrowDown') {
+                    if (currentIndex < videos.length - 1) { currentIndex++; loadSingleVideo(); }
+                } 
+                else if (e.key === 'ArrowUp') {
+                    if (currentIndex > 0) { currentIndex--; loadSingleVideo(); }
+                }
+                else if (e.key === 'Enter') {
+                    // Toggle Mute
+                    isMuted = !isMuted;
+                    const frame = document.getElementById('yt-player-single');
+                    if(frame) frame.contentWindow.postMessage(JSON.stringify({ event: 'command', func: isMuted?'mute':'unMute', args: [] }), '*');
+                }
+                else if (e.key === 'Escape' || e.key === 'Backspace') {
+                    closePlayer();
+                }
+                return;
+            }
+
+            // Grid/Sidebar Navigation
+            const sidebarLen = document.querySelectorAll('.focusable-sidebar').length;
+            
+            if (focusContext === 'sidebar') {
+                if (e.key === 'ArrowDown') focusIndex = (focusIndex + 1) % sidebarLen;
+                else if (e.key === 'ArrowUp') focusIndex = (focusIndex - 1 + sidebarLen) % sidebarLen;
+                else if (e.key === 'ArrowRight') { focusContext = 'grid'; focusIndex = 0; }
+                else if (e.key === 'Enter') document.querySelectorAll('.focusable-sidebar')[focusIndex].click();
+            }
+            else if (focusContext === 'grid') {
+                if (e.key === 'ArrowRight') {
+                    if (focusIndex < videos.length - 1) focusIndex++;
+                }
+                else if (e.key === 'ArrowLeft') {
+                    if (focusIndex % cols === 0) { focusContext = 'sidebar'; focusIndex = 0; }
+                    else if (focusIndex > 0) focusIndex--;
+                }
+                else if (e.key === 'ArrowDown') {
+                    if (focusIndex + cols < videos.length) focusIndex += cols;
+                    else fetchNextBatch(); // Trigger load
+                }
+                else if (e.key === 'ArrowUp') {
+                    if (focusIndex - cols >= 0) focusIndex -= cols;
+                }
+                else if (e.key === 'Enter') {
+                    openPlayer(focusIndex);
+                }
+            }
+            updateFocus();
+        });
+
+        document.getElementById('close-player').onclick = closePlayer;
+
+        // Init
+        window.onload = () => {
+            lucide.createIcons();
+            loadCookies();
+            updateFocus();
+        };
+    </script>
+</body>
+</html>
