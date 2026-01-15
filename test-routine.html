@@ -30,24 +30,37 @@
             --cal-exam-border: #475569;
         }
 
-        [data-theme="dark"] {
-            --primary: #94a3b8;   
-            --secondary: #64748b;
-            --accent: #cbd5e1;
+       [data-theme="dark"] {
+            /* Deeper, more vibrant dark palette */
+            --primary: #38bdf8;   /* Bright Sky Blue */
+            --secondary: #94a3b8;
+            --accent: #1e293b;
 
-            --bg: #0f172a;        /* Deep blue-black */
-            --card-bg: #1e293b;   /* Slate 800 */
-            --text: #f8fafc;      /* White-ish */
+            --bg: #020617;        /* Deep midnight background */
+            --card-bg: #1e293b;   /* Slightly lighter slate for cards */
+            --text: #ffffff;      /* Pure white for maximum contrast */
             --text-muted: #94a3b8;
             
             --border: #334155;
             --gap-highlight: #0f172a;
             --gap-danger-bg: #450a0a;
-            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.5);
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(56, 189, 248, 0.1);
 
-            --cal-exam-border: #64748b;
+            --cal-exam-border: #38bdf8;
         }
 
+        /* Improved Highlight for Active Buttons */
+        .view-btn.active {
+            background: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+        }
+        
+        /* Specific contrast fixes */
+        [data-theme="dark"] .view-btn.active { color: #020617; }
+        [data-theme="dark"] .subject-code { background: #0f172a; color: var(--primary); }
+        [data-theme="dark"] .gap-badge { background: #0f172a; }
+        [data-theme="dark"] .exam-card.today { border-color: var(--primary); box-shadow: 0 0 15px rgba(56, 189, 248, 0.15); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Hind Siliguri', sans-serif; transition: background 0.3s, color 0.3s, border-color 0.3s; }
         
         body { background-color: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 50px; }
@@ -307,15 +320,16 @@
             { date: "2026-01-12", subject: "বাংলা ১ম পত্র", code: "১০১" },
             { date: "2026-01-13", subject: "বাংলা ২য় পত্র", code: "১০২" },
             { date: "2026-01-15", subject: "ইংরেজি ১ম পত্র", code: "১০৭" },
-            { date: "2026-02-15", subject: "ইংরেজি ২য় পত্র", code: "১০৮" },
             { date: "2026-01-20", subject: "পদার্থবিজ্ঞান ১ম পত্র", code: "১৭৪" },
             { date: "2026-01-22", subject: "পদার্থবিজ্ঞান ২য় পত্র", code: "১৭৫" },
-            { date: "2026-02-17", subject: "রসায়ন ১ম পত্র", code: "১৭৬" },
             { date: "2026-01-26", subject: "রসায়ন ২য় পত্র", code: "১৭৭" },
             { date: "2026-01-28", subject: "উচ্চতর গণিত ১ম পত্র", code: "২৬৫" },
-            { date: "2026-02-22", subject: "উচ্চতর গণিত ২য় পত্র", code: "২৬৬" },
             { date: "2026-02-03", subject: "জীববিজ্ঞান ১ম পত্র (উদ্ভিদবিজ্ঞান)", code: "১৭৮" },
-            { date: "2026-02-05", subject: "জীববিজ্ঞান ২য় পত্র (প্রাণিবিজ্ঞান)", code: "১৭৯" }
+            { date: "2026-02-05", subject: "জীববিজ্ঞান ২য় পত্র (প্রাণিবিজ্ঞান)", code: "১৭৯" },
+            { date: "2026-02-15", subject: "ইংরেজি ২য় পত্র", code: "১০৮" },
+            { date: "2026-02-17", subject: "রসায়ন ১ম পত্র", code: "১৭৬" },
+            { date: "2026-02-22", subject: "উচ্চতর গণিত ২য় পত্র", code: "২৬৬" }
+            
         ];
 
         const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
