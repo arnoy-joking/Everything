@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Physics // Cursed</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --bg:#05060a;
+  --card:#0e1220;
+  --accent:#7f8cff;
+  --danger:#ff4d6d;
+  --text:#e8e9f0;
+  --noise:rgba(255,255,255,0.03);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  min-height:100vh;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      var(--noise) 0px,
+      var(--noise) 1px,
+      transparent 2px,
+      transparent 4px
+    ),
+    radial-gradient(circle at top, #101530, var(--bg));
+  color:var(--text);
+  font-family:system-ui, sans-serif;
+  padding:32px;
+  overflow-x:hidden;
+}
+
+h1{
+  text-align:center;
+  font-size:2.4rem;
+  margin-bottom:30px;
+  position:relative;
+  animation:glitch 2.5s infinite;
+}
+
+h1::before,
+h1::after{
+  content:attr(data-text);
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  opacity:0.8;
+}
+
+h1::before{
+  color:var(--accent);
+  animation:glitchTop 2.5s infinite;
+}
+
+h1::after{
+  color:var(--danger);
+  animation:glitchBottom 2.5s infinite;
+}
+
+@keyframes glitch{
+  0%,100%{transform:none}
+  20%{transform:skewX(1deg)}
+  40%{transform:skewX(-1deg)}
+}
+
+@keyframes glitchTop{
+  0%,100%{clip-path:inset(0 0 60% 0)}
+  50%{clip-path:inset(0 0 30% 0)}
+}
+
+@keyframes glitchBottom{
+  0%,100%{clip-path:inset(60% 0 0 0)}
+  50%{clip-path:inset(30% 0 0 0)}
+}
+
+.links{
+  max-width:760px;
+  margin:auto;
+  display:grid;
+  gap:16px;
+}
+
+a{
+  position:relative;
+  padding:16px 20px;
+  background:linear-gradient(145deg,#141a35,var(--card));
+  border-radius:12px;
+  text-decoration:none;
+  color:var(--text);
+  border:1px solid #1e2544;
+  letter-spacing:.4px;
+  transition:.25s ease;
+  animation:float 6s ease-in-out infinite;
+}
+
+a:nth-child(even){
+  animation-delay:-3s;
+}
+
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-6px)}
+}
+
+a::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:12px;
+  box-shadow:0 0 0 rgba(127,140,255,0);
+  transition:.25s;
+}
+
+a:hover{
+  color:#fff;
+  border-color:var(--accent);
+}
+
+a:hover::after{
+  box-shadow:0 0 25px rgba(127,140,255,.4);
+}
+
+footer{
+  margin-top:40px;
+  text-align:center;
+  font-size:.85rem;
+  color:#9aa0aa;
+  opacity:.7;
+}
+</style>
+</head>
+
+<body>
+<h1 data-text="PHYSICS VAULT">PHYSICS VAULT</h1>
+
+<div class="links">
+  <a href="https://drive.google.com/file/d/12Un-uw1rJdUfQ5Q0LzojpjzW3OQMvxE2/view" target="_blank">Vector</a>
+  <a href="https://drive.google.com/file/d/1ahM56Lgf7smZ1Y_TO0Y8YyvIw6g2XcBt/view" target="_blank">Newtonian Mechanics</a>
+  <a href="https://drive.google.com/file/d/1PcRnP-WI3JKJxu4gMTp6bWooOoDaMAkK/view" target="_blank">কাজ, ক্ষমতা ও শক্তি</a>
+  <a href="https://drive.google.com/file/d/1ETBw6cB5RtmAVToobwrsBMVrYBR7rQ5G/view" target="_blank">Periodic Motion</a>
+  <a href="https://drive.google.com/file/d/1Rre1bsF0Hmx7he8wRGIoW7cVQLpCkwQl/view" target="_blank">মহাকর্ষ ও অভিকর্ষ</a>
+  <a href="https://drive.google.com/drive/folders/1jZZ6hFhm1qSn4FPFwMOZrIadZy46-wAE" target="_blank">আদর্শ গ্যাস</a>
+  <a href="https://drive.google.com/drive/folders/1ULu7KM8JRs7YQ3nrw9UmuAHubr42WKLJ" target="_blank">পদার্থের গাঠনিক ধর্ম</a>
+  <a href="https://drive.google.com/file/d/1-5YIKFJF79sBIpCaC7-noPrptDdTbFIl/view" target="_blank">গতিবিদ্যা</a>
+  <a href="https://drive.google.com/file/d/19ElHVtBBfJyacdkYH5FG8_yLuquQ4Z_w/view" target="_blank">তরঙ্গ</a>
+</div>
+
+<footer>
+  reality bends here · proceed anyway
+</footer>
+</body>
+</html>
