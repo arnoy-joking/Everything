@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Search</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .video-card:hover img {
+            transform: scale(1.05);
+        }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+
+    <!-- Header / Search Bar -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50 p-4">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-4">
+            <div class="flex items-center gap-2 text-red-600 font-bold text-xl shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                <span>Search</span>
+            </div>
+            <div class="relative w-full">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Search for videos..." 
+                    class="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                >
+                <button 
+                    id="searchBtn"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 bg-gray-100 hover:bg-gray-200 p-1.5 px-4 rounded-full text-sm font-medium transition-colors"
+                >
+                    Search
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto p-4 md:p-6">
+        <div id="statusMessage" class="text-center py-12 text-gray-500 hidden">
+            Searching for videos...
+        </div>
+
+        <div id="resultsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Videos will be injected here -->
+        </div>
+    </main>
+
+    <script>
+        const API_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const resultsGrid = document.getElementById('resultsGrid');
+        const statusMessage = document.getElementById('statusMessage');
+
+        async function searchYouTube(query) {
+            if (!query.trim()) return;
+
+            // UI State
+            statusMessage.classList.remove('hidden');
+            statusMessage.textContent = "Searching...";
+            resultsGrid.innerHTML = '';
+
+            try {
+                const response = await fetch(`https://ytst.arnoy799.workers.dev/?url=https://www.youtube.com/youtubei/v1/search?key=${API_KEY}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        context: {
+                            client: {
+                                clientName: "WEB",
+                                clientVersion: "2.20250101.01.00"
+                            }
+                        },
+                        query: query
+                    })
+                });
+
+                if (!response.ok) throw new Error('Failed to fetch data');
+
+                const json = await response.json();
+                
+                // Navigate through the complex YouTubei JSON structure
+                const sections = json.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer?.contents;
+                const videoItems = sections?.[0]?.itemSectionRenderer?.contents || [];
+
+                renderVideos(videoItems);
+            } catch (error) {
+                console.error(error);
+                statusMessage.textContent = "Error loading videos. Please try again.";
+            } finally {
+                if (resultsGrid.children.length > 0) {
+                    statusMessage.classList.add('hidden');
+                }
+            }
+        }
+
+        function renderVideos(items) {
+            resultsGrid.innerHTML = '';
+            
+            items.forEach(item => {
+                // Focus only on videoRenderers
+                const video = item.videoRenderer;
+                if (!video) return;
+
+                const videoId = video.videoId;
+                const title = video.title.runs[0].text;
+                const thumbnail = video.thumbnail.thumbnails[0].url;
+                const channelName = video.ownerText.runs[0].text;
+                const views = video.shortViewCountText?.simpleText || "No views";
+                const publishedTime = video.publishedTimeText?.simpleText || "";
+
+                const card = document.createElement('div');
+                card.className = "video-card bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer";
+                card.onclick = () => window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
+
+                card.innerHTML = `
+                    <div class="relative aspect-video overflow-hidden bg-gray-200">
+                        <img src="${thumbnail}" alt="${title}" class="w-full h-full object-cover transition-transform duration-300">
+                        <div class="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded">
+                            ${video.lengthText?.simpleText || ''}
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <h3 class="font-semibold text-sm line-clamp-2 mb-1 text-gray-900" title="${title}">
+                            ${title}
+                        </h3>
+                        <p class="text-xs text-gray-600 mb-1 hover:text-gray-900">${channelName}</p>
+                        <div class="flex items-center gap-1 text-[11px] text-gray-500">
+                            <span>${views}</span>
+                            <span>•</span>
+                            <span>${publishedTime}</span>
+                        </div>
+                    </div>
+                `;
+                resultsGrid.appendChild(card);
+            });
+
+            if (resultsGrid.children.length === 0) {
+                statusMessage.textContent = "No videos found for this search.";
+            }
+        }
+
+        // Event Listeners
+        searchBtn.addEventListener('click', () => searchYouTube(searchInput.value));
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') searchYouTube(searchInput.value);
+        });
+
+        // Initial search
+        searchYouTube('Modern Web Design');
+    </script>
+</body>
+</html>
