@@ -587,7 +587,7 @@
         // PARSE YOUTUBE CAPTIONS
         async function fetchYoutubeCaptions(url) {
             try {
-                const res = await fetch(PROXY + encodeURIComponent(url));
+                const res = await fetch(PROXY + url);;
                 const text = await res.text();
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(text, "text/xml");
