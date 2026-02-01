@@ -438,7 +438,7 @@
         const ApiManager = {
             async search(query) {
                 try {
-                    const url = `${PROXY}${encodeURIComponent(`https://www.youtube.com/youtubei/v1/search?key=${API_KEY}`)}`;
+                    const url = `${PROXY}https://www.youtube.com/youtubei/v1/search?key=${API_KEY}`;
                     const res = await fetch(url, {
                         method: "POST",
                         body: JSON.stringify({ context: { client: { clientName: "WEB", clientVersion: CLIENT_WEB } }, query: query })
@@ -462,7 +462,7 @@
             },
             async getNext(videoId) {
                 try {
-                    const url = `${PROXY}${encodeURIComponent(`https://www.youtube.com/youtubei/v1/next?key=${API_KEY}`)}`;
+                    const url = `${PROXY}$https://www.youtube.com/youtubei/v1/next?key=${API_KEY}`;
                     const res = await fetch(url, {
                         method: 'POST',
                         body: JSON.stringify({
@@ -493,7 +493,7 @@
             },
             async getStreamData(videoId) {
                 try {
-                    const url = `${PROXY}${encodeURIComponent(`https://www.youtube.com/youtubei/v1/player?key=${API_KEY}`)}`;
+                    const url = `${PROXY}$https://www.youtube.com/youtubei/v1/player?key=${API_KEY}`;
                     const res = await fetch(url, {
                         method: "POST",
                         headers: { "User-Agent": `com.google.android.youtube/${CLIENT_ANDROID} (Linux; U; Android 15)` },
