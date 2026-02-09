@@ -387,6 +387,7 @@
     <script>
         // DATA
         const exams = [
+             { date: "2026-01-12", subject: "তথ্য ও যোগাযোগ প্রযুক্তি", code: "২৭৫" },
             { date: "2026-01-12", subject: "বাংলা ১ম পত্র", code: "১০১" },
             { date: "2026-01-13", subject: "বাংলা ২য় পত্র", code: "১০২" },
             { date: "2026-01-15", subject: "ইংরেজি ১ম পত্র", code: "১০৭" },
@@ -398,7 +399,7 @@
             { date: "2026-02-05", subject: "উচ্চতর গণিত ১ম পত্র", code: "২৬৫" },
             { date: "2026-02-08", subject: "উচ্চতর গণিত ২য় পত্র", code: "২৬৬ " },
             { date: "2026-02-09", subject: "জীববিজ্ঞান ১ম পত্র (উদ্ভিদবিজ্ঞান)", code: "১৭৮" },
-            { date: "2026-02-15", subject: "জীববিজ্ঞান ২য় পত্র (প্রাণিবিজ্ঞান)", code: "১৭৯" }
+            { date: "2026-02-16", subject: "জীববিজ্ঞান ২য় পত্র (প্রাণিবিজ্ঞান)", code: "১৭৯" }
         ];
 
         const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -499,7 +500,7 @@
             const container = document.getElementById(containerId);
             container.innerHTML = '';
             
-            const dayHeaders = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+            const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             dayHeaders.forEach(d => {
                 container.innerHTML += `<div class="cal-day-name">${d}</div>`;
             });
