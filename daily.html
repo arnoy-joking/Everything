@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>রুটিনX • Life OS</title>
+    <!-- Favicon Emoji -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+Bengali:wght@400;700&display=swap');
+
+        :root {
+            --accent: #10b981;
+            --bg-solid: #09090b;
+            --card-solid: #18181b;
+        }
+
+        body {
+            font-family: 'Noto Sans Bengali', 'Inter', sans-serif;
+            background-color: var(--bg-solid);
+            color: #f4f4f5;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Optimization: No Backdrop Filter */
+        .card-solid {
+            background-color: var(--card-solid);
+            border: 1px solid #27272a;
+        }
+
+        .time-display {
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.05em;
+        }
+
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #10b981, #3b82f6, #8b5cf6);
+            opacity: 0.3;
+        }
+
+        /* Prevent Lag on Mobile */
+        * {
+            box-sizing: border-box;
+            transform-origin: center;
+        }
+
+        .active-slot {
+            border-left: 4px solid var(--accent) !important;
+            background: linear-gradient(90deg, #064e3b 0%, #18181b 100%);
+        }
+
+        @media (max-width: 640px) {
+            .time-display { font-size: 4rem; }
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-10">
+
+    <!-- MAIN CONTAINER (Single Column) -->
+    <main class="max-w-2xl mx-auto px-4 pt-8 space-y-8">
+        
+        <!-- HEADER / CLOCK SECTION -->
+        <header class="text-center space-y-2">
+            <div class="flex items-center justify-center gap-3 mb-4">
+                <span class="text-4xl">🚀</span>
+                <h1 class="text-2xl font-black tracking-tighter uppercase">RoutineX</h1>
+            </div>
+            
+            <div id="live-clock" class="time-display text-6xl sm:text-7xl font-extrabold text-white leading-none">
+                12:00:00
+            </div>
+            <div id="live-date" class="text-emerald-400 font-bold uppercase tracking-widest text-sm">
+                LOADING...
+            </div>
+        </header>
+
+        <!-- DASHBOARD STATS -->
+        <section class="grid grid-cols-2 gap-4">
+            <div class="card-solid p-5 rounded-3xl text-center">
+                <div class="text-zinc-500 text-xs mb-1">এনার্জি লেভেল</div>
+                <div id="energy-text" class="text-2xl font-bold text-emerald-400">94%</div>
+                <div class="w-full bg-zinc-800 h-1.5 mt-2 rounded-full overflow-hidden">
+                    <div id="energy-bar" class="bg-emerald-500 h-full transition-all duration-1000" style="width: 94%"></div>
+                </div>
+            </div>
+            <div class="card-solid p-5 rounded-3xl text-center">
+                <div class="text-zinc-500 text-xs mb-1">আজকের XP</div>
+                <div id="xp-today" class="text-2xl font-bold text-violet-400">1,840</div>
+                <div class="text-[10px] text-zinc-500 mt-1">লেভেল ৪২ লিজেন্ড</div>
+            </div>
+        </section>
+
+        <!-- PROGRESS SECTION -->
+        <section class="card-solid p-6 rounded-3xl">
+            <div class="flex justify-between items-end mb-4">
+                <div>
+                    <h2 class="text-zinc-400 text-sm">দিনের অগ্রগতি</h2>
+                    <div id="progress-text" class="text-4xl font-black text-white">37%</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-zinc-500 text-xs">পরবর্তী বিরতি</div>
+                    <div id="time-left" class="font-mono font-bold text-emerald-400">02h 14m</div>
+                </div>
+            </div>
+            <div class="h-3 bg-zinc-800 rounded-full overflow-hidden">
+                <div id="day-progress-bar" class="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 transition-all duration-1000" style="width: 37%"></div>
+            </div>
+        </section>
+
+        <!-- CURRENT STATUS -->
+        <section id="current-focus-card" class="card-solid p-6 rounded-3xl border-emerald-500/50 bg-emerald-500/5">
+            <div class="flex items-center gap-2 text-emerald-400 text-xs font-bold mb-2">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                এখন চলছে
+            </div>
+            <h3 id="current-slot-name" class="text-xl font-bold">স্লট ১ • কঠিন বিষয়</h3>
+            <p id="current-slot-desc" class="text-zinc-400 text-sm">উচ্চতর গণিত / পদার্থবিজ্ঞান</p>
+            <div class="mt-4 flex gap-3">
+                <button onclick="toggleFocusMode()" class="flex-1 py-3 bg-white text-black rounded-2xl font-bold text-sm">ফোকাস মোড</button>
+                <button onclick="speakCurrentSlot()" class="px-4 py-3 bg-zinc-800 rounded-2xl"><i class="fa-solid fa-volume-high"></i></button>
+            </div>
+        </section>
+
+        <!-- TIMELINE -->
+        <section class="relative space-y-6 timeline-line" id="timeline-container">
+            <!-- Populated by JS -->
+        </section>
+
+        <!-- AI COACH & UTILITIES -->
+        <section class="space-y-4">
+            <div class="card-solid p-6 rounded-3xl">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="text-2xl">🧠</span>
+                    <h4 class="font-bold">AETHER AI কোচ</h4>
+                </div>
+                <p id="ai-coach-text" class="text-zinc-400 text-sm italic">“স্লট ১ এর শেষ ২০ মিনিটে একটা ১০০-পয়েন্ট প্রবলেম সলভ করো।”</p>
+            </div>
+
+            <!-- AMBIENT -->
+            <div class="card-solid p-6 rounded-3xl">
+                <h4 class="text-xs font-bold text-zinc-500 mb-4 uppercase tracking-widest">Ambient Sound</h4>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="playAmbient(0)" class="ambient-btn p-3 rounded-xl bg-zinc-800 text-xs hover:bg-zinc-700">🌧️ বৃষ্টি</button>
+                    <button onclick="playAmbient(1)" class="ambient-btn p-3 rounded-xl bg-zinc-800 text-xs hover:bg-zinc-700">🌌 লোফাই</button>
+                </div>
+            </div>
+
+            <!-- CHART -->
+            <div class="card-solid p-6 rounded-3xl">
+                <canvas id="allocationChart"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <!-- POMODORO MODAL (Fixed Overlay) -->
+    <div id="pomodoro-modal" class="hidden fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-6">
+        <div class="w-full max-w-sm text-center">
+            <div id="modal-slot-name" class="text-zinc-400 mb-4">Focus Session</div>
+            <div id="timer-display" class="time-display text-8xl font-black text-emerald-400 mb-10">50:00</div>
+            <div class="flex gap-4">
+                <button id="timer-btn" onclick="toggleTimer()" class="flex-1 py-5 bg-emerald-500 text-black rounded-3xl font-black text-xl">শুরু</button>
+                <button onclick="closePomodoro()" class="px-8 py-5 bg-zinc-800 rounded-3xl font-bold">বন্ধ</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data & State
+        const slots = [
+            { id: 1, start: "07:30 AM", end: "08:00 AM", title: "ঘুম থেকে ওঠা", desc: "সতেজ হয়ে দিন শুরু", category: "wake" },
+            { id: 2, start: "08:00 AM", end: "11:30 AM", title: "স্লট ১ • কঠিন বিষয়", desc: "উচ্চতর গণিত / পদার্থবিজ্ঞান", category: "study" },
+            { id: 3, start: "11:30 AM", end: "01:00 PM", title: "হালকা নাস্তা", desc: "শরীর রিচার্জ করো", category: "break" },
+            { id: 4, start: "01:00 PM", end: "03:00 PM", title: "দুপুরের খাবার", desc: "বিশ্রাম ও আহার", category: "rest" },
+            { id: 5, start: "03:00 PM", end: "04:00 PM", title: "পাওয়ার ন্যাপ", desc: "গভীর বিশ্রাম", category: "nap" },
+            { id: 6, start: "04:00 PM", end: "07:00 PM", title: "স্লট ২ • রসায়ন", desc: "জীববিজ্ঞান বা রসায়ন", category: "study" },
+            { id: 7, start: "07:00 PM", end: "07:30 PM", title: "হালকা বিরতি", desc: "হাঁটাহাঁটি", category: "break" },
+            { id: 8, start: "07:30 PM", end: "10:30 PM", title: "স্লট ৩ • MCQ", desc: "দিনের পড়া রিভিশন", category: "study" },
+            { id: 9, start: "10:30 PM", end: "11:00 PM", title: "পরবর্তী দিনের প্ল্যান", desc: "ব্যাগ গোছানো", category: "prep" },
+            { id: 10, start: "11:00 PM", end: "11:30 PM", title: "রাতের খাবার", desc: "হালকা খাবার", category: "meal" },
+            { id: 11, start: "11:30 PM", end: "12:00 AM", title: "ঘুমের প্রস্তুতি", desc: "স্ক্রিন টাইম অফ", category: "winddown" },
+            { id: 12, start: "12:00 AM", end: "07:30 AM", title: "গভীর ঘুম", desc: "রিকভারি টাইম", category: "sleep" }
+        ];
+
+        let completedSlots = JSON.parse(localStorage.getItem('completedSlots') || '{}');
+        let currentSlotIndex = 0;
+        let timerInterval = null;
+        let secondsLeft = 3000;
+        let isRunning = false;
+
+        // Reset Logic (Midnight Reset)
+        function checkMidnightReset() {
+            const today = new Date().toDateString();
+            const lastVisit = localStorage.getItem('last_visit_date');
+            
+            if (lastVisit !== today) {
+                completedSlots = {};
+                localStorage.setItem('completedSlots', JSON.stringify({}));
+                localStorage.setItem('last_visit_date', today);
+                console.log("Data reset for the new day.");
+            }
+        }
+
+        function updateLiveClock() {
+            const now = new Date();
+            // 12-Hour Format logic
+            const timeStr = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit', 
+                hour12: true 
+            });
+            document.getElementById('live-clock').textContent = timeStr;
+            
+            const options = { weekday: 'long', month: 'long', day: 'numeric' };
+            document.getElementById('live-date').textContent = now.toLocaleDateString('bn-BD', options);
+            
+            checkCurrentSlot(now);
+            updateDayProgress(now);
+        }
+
+        function checkCurrentSlot(now) {
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            
+            slots.forEach((slot, index) => {
+                const startParts = slot.start.match(/(\d+):(\d+) (\w+)/);
+                let startMins = parseInt(startParts[1]) * 60 + parseInt(startParts[2]);
+                if (startParts[3] === "PM" && startParts[1] !== "12") startMins += 720;
+                if (startParts[3] === "AM" && startParts[1] === "12") startMins -= 720;
+
+                const endParts = slot.end.match(/(\d+):(\d+) (\w+)/);
+                let endMins = parseInt(endParts[1]) * 60 + parseInt(endParts[2]);
+                if (endParts[3] === "PM" && endParts[1] !== "12") endMins += 720;
+                if (endParts[3] === "AM" && endParts[1] === "12") {
+                    if (index === 11) endMins = 1440; // End of day
+                    else endMins -= 720;
+                }
+
+                if (currentMinutes >= startMins && currentMinutes < endMins) {
+                    currentSlotIndex = index;
+                }
+            });
+
+            const active = slots[currentSlotIndex];
+            document.getElementById('current-slot-name').textContent = active.title;
+            document.getElementById('current-slot-desc').textContent = active.desc;
+        }
+
+        function renderTimeline() {
+            const container = document.getElementById('timeline-container');
+            container.innerHTML = slots.map((slot, i) => {
+                const isCompleted = completedSlots[slot.id];
+                const isActive = i === currentSlotIndex;
+                
+                return `
+                    <div class="relative pl-12 pr-4 py-2 ${isActive ? 'active-slot rounded-r-3xl' : ''}">
+                        <div onclick="toggleComplete(${slot.id})" class="absolute left-0 w-10 h-10 rounded-full border-2 border-zinc-700 flex items-center justify-center bg-zinc-900 z-10 cursor-pointer ${isCompleted ? 'bg-emerald-500 border-emerald-500' : ''}">
+                            ${isCompleted ? '<i class="fa-solid fa-check text-white text-xs"></i>' : ''}
+                        </div>
+                        <div class="flex justify-between items-start">
+                            <div onclick="openPomodoro(${i})">
+                                <div class="text-[10px] font-bold text-zinc-500 uppercase">${slot.start}</div>
+                                <div class="text-lg font-bold ${isActive ? 'text-white' : 'text-zinc-300'}">${slot.title}</div>
+                                <div class="text-xs text-zinc-500">${slot.desc}</div>
+                            </div>
+                            ${slot.category === 'study' ? '<span class="text-xl">🔥</span>' : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleComplete(id) {
+            completedSlots[id] = !completedSlots[id];
+            localStorage.setItem('completedSlots', JSON.stringify(completedSlots));
+            renderTimeline();
+        }
+
+        function updateDayProgress(now) {
+            const startOfDay = 7.5 * 60; // 07:30 AM
+            const totalMins = 16.5 * 60; // To Midnight
+            const currentMins = now.getHours() * 60 + now.getMinutes() - startOfDay;
+            const progress = Math.max(0, Math.min(100, (currentMins / totalMins) * 100));
+            
+            document.getElementById('day-progress-bar').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = Math.round(progress) + '%';
+        }
+
+        // Pomodoro Logic
+        function openPomodoro(index) {
+            document.getElementById('modal-slot-name').textContent = slots[index].title;
+            document.getElementById('pomodoro-modal').classList.remove('hidden');
+            secondsLeft = 50 * 60;
+            updateTimerDisplay();
+        }
+
+        function closePomodoro() {
+            document.getElementById('pomodoro-modal').classList.add('hidden');
+            clearInterval(timerInterval);
+            isRunning = false;
+        }
+
+        function toggleTimer() {
+            const btn = document.getElementById('timer-btn');
+            if (!isRunning) {
+                isRunning = true;
+                btn.textContent = "থামুন";
+                timerInterval = setInterval(() => {
+                    secondsLeft--;
+                    updateTimerDisplay();
+                    if (secondsLeft <= 0) {
+                        clearInterval(timerInterval);
+                        alert("Session Complete!");
+                    }
+                }, 1000);
+            } else {
+                isRunning = false;
+                btn.textContent = "চালু";
+                clearInterval(timerInterval);
+            }
+        }
+
+        function updateTimerDisplay() {
+            const m = Math.floor(secondsLeft / 60);
+            const s = secondsLeft % 60;
+            document.getElementById('timer-display').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function playAmbient(type) {
+            alert(type === 0 ? "Rain Sound Playing..." : "Lofi Playing...");
+        }
+
+        function speakCurrentSlot() {
+            const slot = slots[currentSlotIndex];
+            const msg = new SpeechSynthesisUtterance(`${slot.title}. ${slot.desc}`);
+            msg.lang = 'bn-BD';
+            window.speechSynthesis.speak(msg);
+        }
+
+        function toggleFocusMode() {
+            document.body.requestFullscreen();
+        }
+
+        // Initialize Chart
+        function initChart() {
+            const ctx = document.getElementById('allocationChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Study', 'Rest', 'Sleep'],
+                    datasets: [{
+                        data: [10, 6.5, 7.5],
+                        backgroundColor: ['#10b981', '#3b82f6', '#27272a'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    cutout: '80%'
+                }
+            });
+        }
+
+        // On Load
+        window.onload = () => {
+            checkMidnightReset();
+            updateLiveClock();
+            setInterval(updateLiveClock, 1000);
+            renderTimeline();
+            initChart();
+        };
+    </script>
+</body>
+</html>
