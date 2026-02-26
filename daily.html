@@ -253,11 +253,15 @@
         ];
         const TOTAL_DAILY_XP = slots.reduce((s, sl) => s + sl.xp, 0);
 
-        // Level thresholds (cumulative)
-        const LEVELS = [0,200,500,900,1400,2000,2700,3500,4400,5500,7000];
+        // Level thresholds (cumulative total XP across all days)
+        const LEVELS = [0, 500, 1500, 3000, 5000, 8000, 12000, 17000, 23000, 30000, 40000];
+        function getTotalXP() {
+            const history = getXPHistory();
+            return Object.values(history).reduce((s, v) => s + v, 0);
+        }
         function getLevel(totalXP) {
             for (let i = LEVELS.length - 1; i >= 0; i--) {
-                if (totalXP >= LEVELS[i]) return { level: i + 1, next: LEVELS[i+1] ?? null, prev: LEVELS[i] };
+                if (totalXP >= LEVELS[i]) return { level: i + 1, next: LEVELS[i + 1] ?? null, prev: LEVELS[i] };
             }
             return { level: 1, next: LEVELS[1], prev: 0 };
         }
@@ -278,7 +282,11 @@
             return JSON.parse(localStorage.getItem('xpHistory') || '{}');
         }
         function getTodayKey() {
-            return new Date().toISOString().slice(0, 10);
+            const d = new Date();
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
         }
         function getTodayXP() {
             return getXPHistory()[getTodayKey()] || 0;
@@ -296,7 +304,7 @@
 
         // ── MIDNIGHT RESET ─────────────────────────────────────────────────────
         function checkMidnightReset() {
-            const today = new Date().toDateString();
+            const today = getTodayKey();
             const lastVisit = localStorage.getItem('last_visit_date');
             if (lastVisit !== today) {
                 completedSlots = {};
@@ -316,20 +324,31 @@
 
         function checkCurrentSlot(now) {
             const cur = now.getHours() * 60 + now.getMinutes();
+            let found = -1;
             slots.forEach((slot, i) => {
                 const [sh, sm, sp] = parseTime(slot.start);
                 const [eh, em, ep] = parseTime(slot.end);
-                let start = sh * 60 + sm;
-                let end   = eh * 60 + em;
-                if (sp === 'PM' && sh !== 12) start += 720;
-                if (sp === 'AM' && sh === 12) start = 0;
-                if (ep === 'PM' && eh !== 12) end += 720;
-                if (ep === 'AM' && eh === 12) { end = (i === slots.length - 1) ? 1440 : 0; }
-                if (cur >= start && cur < end) currentSlotIndex = i;
+                let start = toMins(sh, sm, sp);
+                let end   = toMins(eh, em, ep);
+                // Midnight-crossing slot: e.g. 12:00 AM → 07:30 AM (sleep)
+                if (end <= start) {
+                    // cur is in [start, 1440) or [0, end)
+                    if (cur >= start || cur < end) found = i;
+                } else {
+                    if (cur >= start && cur < end) found = i;
+                }
             });
+            if (found !== -1) currentSlotIndex = found;
             const a = slots[currentSlotIndex];
             document.getElementById('current-slot-name').textContent = a.title;
             document.getElementById('current-slot-desc').textContent = a.desc;
+        }
+
+        function toMins(h, m, period) {
+            let mins = h * 60 + m;
+            if (period === 'PM' && h !== 12) mins += 720;
+            if (period === 'AM' && h === 12) mins = m; // 12:xx AM = 0:xx
+            return mins;
         }
 
         function parseTime(str) {
@@ -349,13 +368,14 @@
         // ── XP UI ─────────────────────────────────────────────────────────────
         function updateXPDisplay() {
             const todayXP = getTodayXP();
+            const totalXP = getTotalXP();
             document.getElementById('xp-today').textContent = todayXP.toLocaleString();
 
-            const { level, next, prev } = getLevel(todayXP);
+            const { level, next, prev } = getLevel(totalXP);
             const labels = ['', 'নতুন', 'শিক্ষার্থী', 'অনুসন্ধানকারী', 'চ্যালেঞ্জার', 'প্রো', 'এলিট', 'মাস্টার', 'গ্র্যান্ড', 'লেজেন্ড', 'মিথ', 'দেবতা'];
             document.getElementById('level-badge').textContent = `লেভেল ${level} • ${labels[level] || 'মহান'}`;
 
-            const pct = next ? Math.round(((todayXP - prev) / (next - prev)) * 100) : 100;
+            const pct = next ? Math.round(((totalXP - prev) / (next - prev)) * 100) : 100;
             document.getElementById('xp-level-bar').style.width = pct + '%';
 
             const done = slots.filter(s => completedSlots[s.id]).length;
@@ -383,7 +403,7 @@
                 const cc = catColors[slot.category] || 'bg-zinc-500/20 text-zinc-300';
                 return `
                     <div class="relative pl-12 pr-4 py-2 ${active ? 'active-slot rounded-r-3xl' : ''}">
-                        <div onclick="toggleComplete(${slot.id}, this)" data-slot-id="${slot.id}" class="absolute left-0 w-10 h-10 rounded-full border-2 border-zinc-700 flex items-center justify-center bg-zinc-900 z-10 cursor-pointer transition-all ${done ? 'bg-emerald-500 border-emerald-500' : 'hover:border-emerald-500/50'}">
+                        <div onclick="toggleComplete(${slot.id})" data-slot-id="${slot.id}" class="absolute left-0 w-10 h-10 rounded-full border-2 border-zinc-700 flex items-center justify-center bg-zinc-900 z-10 cursor-pointer transition-all ${done ? 'bg-emerald-500 border-emerald-500' : 'hover:border-emerald-500/50'}">
                             ${done ? '<i class="fa-solid fa-check text-white text-xs"></i>' : ''}
                         </div>
                         <div class="flex justify-between items-start">
@@ -402,12 +422,12 @@
             }).join('');
         }
 
-        window.toggleComplete = function(id, el) {
-            const slotEl = el?.closest ? el.closest('[data-slot-id]') ?? el : null;
+        window.toggleComplete = function(id) {
+            const slotEl = document.querySelector(`[data-slot-id="${id}"]`);
             const wasCompleted = completedSlots[id];
             completedSlots[id] = !wasCompleted;
             localStorage.setItem('completedSlots', JSON.stringify(completedSlots));
-            const xp = recalcTodayXP();
+            recalcTodayXP();
             if (!wasCompleted) {
                 const slot = slots.find(s => s.id === id);
                 showXPGain(slot.xp, slotEl);
@@ -526,7 +546,10 @@
             for (let i = n - 1; i >= 0; i--) {
                 const d = new Date();
                 d.setDate(d.getDate() - i);
-                result.push(d.toISOString().slice(0, 10));
+                const y = d.getFullYear();
+                const m = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                result.push(`${y}-${m}-${day}`);
             }
             return result;
         }
@@ -567,12 +590,6 @@
         function initMonthlyChart() {
             const days = getLastNDays(30);
             const history = getXPHistory();
-            // Group by week
-            const weeks = [];
-            for (let i = 0; i < 4; i++) {
-                const slice = days.slice(i * 7, i * 7 + 7);
-                weeks.push({ label: `সপ্তাহ ${i + 1}`, xp: slice.reduce((s, d) => s + (history[d] || 0), 0) });
-            }
 
             const ctx = document.getElementById('monthlyChart').getContext('2d');
             monthlyChart = new Chart(ctx, {
@@ -628,7 +645,7 @@
             const slot = slots[currentSlotIndex];
             const done = slots.filter(s => completedSlots[s.id]).length;
             const todayXP = getTodayXP();
-            const { level } = getLevel(todayXP);
+            const { level } = getLevel(getTotalXP());
             const hour = new Date().getHours();
 
             const prompt = `You are AETHER, a smart, motivating Bangla study coach for a student following a strict daily routine. 
