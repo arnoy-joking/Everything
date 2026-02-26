@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>YouTube InnerTube CORS Test</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      padding: 20px;
+      background: #0f0f0f;
+      color: #e5e5e5;
+    }
+    pre {
+      background: #1a1a1a;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      margin: 12px 0;
+      cursor: pointer;
+    }
+    #status {
+      padding: 16px;
+      border-radius: 6px;
+      min-height: 80px;
+      margin-top: 16px;
+    }
+    .ok    { background: #1e4a2e; border: 1px solid #2f7d32; }
+    .fail  { background: #4a1e1e; border: 1px solid #7d2f2f; }
+    .info  { background: #2a3b4c; border: 1px solid #3b82f6; }
+  </style>
+</head>
+<body>
+
+<h1>YouTube InnerTube /player CORS Test</h1>
+
+<p>This page tries to send <strong>exactly</strong> the same request you're using.</p>
+
+<button onclick="testFetch()">Run the fetch()</button>
+
+<div id="status" class="info">Waiting for you to click the button…</div>
+
+<pre id="result"></pre>
+
+<script>
+async function testFetch() {
+  const status = document.getElementById('status');
+  const resultPre = document.getElementById('result');
+
+  status.textContent = "Sending request…";
+  status.className = "info";
+  resultPre.textContent = "";
+
+  try {
+    const response = await fetch("https://www.youtube.com/youtubei/v1/player?prettyPrint=false", {
+      "headers": {
+        "accept": "*/*",
+        "accept-language": "en-US,en;q=0.6",
+        "content-type": "application/json",
+        "priority": "u=1, i",
+        "sec-ch-ua": "\"Not:A-Brand\";v=\"99\", \"Brave\";v=\"145\", \"Chromium\";v=\"145\"",
+        "sec-ch-ua-mobile": "?1",
+        "sec-ch-ua-platform": "\"Android\"",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin",           // ← this is the problematic one
+        "sec-fetch-storage-access": "none",
+        "sec-gpc": "1",
+        "x-goog-visitor-id": "Cgt6QlZEcXBXdGFrcyiehoHNBjIKCgJCRBIEGgAgZw%3D%3D",
+        "x-youtube-bootstrap-logged-in": "false",
+        "x-youtube-client-name": "56",
+        "x-youtube-client-version": "1.20260225.01.00"
+      },
+      "referrer": "https://www.youtube.com/embed/?playsinline=1&controls=0&disablekb=1&fs=0&iv_load_policy=3&modestbranding=1&autoplay=1&origin=http%3A%2F%2Fdomainofarnoy.vercel.app%2Ftestfile.html&enablejsapi=1&widgetid=1&forigin=https%3A%2F%2Flyra-music.vercel.app%2F&aoriginsup=1&vf=6",
+      "body": '{"videoId":"YaEG2aWJnZ8","context":{"client":{"hl":"en","gl":"BD","remoteHost":"103.130.119.26","deviceMake":"","deviceModel":"","visitorData":"Cgt6QlZEcXBXdGFrcyiehoHNBjIKCgJCRBIEGgAgZw%3D%3D","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36,gzip(gfe)","clientName":"WEB_EMBEDDED_PLAYER","clientVersion":"1.20260225.01.00","osName":"Windows","osVersion":"10.0","originalUrl":"https://www.youtube.com/embed?playsinline=1&controls=0&disablekb=1&fs=0&iv_load_policy=3&modestbranding=1&autoplay=1&origin=https%3A%2F%2Flyra-music.vercel.app&enablejsapi=1&widgetid=1&forigin=https%3A%2F%2Flyra-music.vercel.app%2F&aoriginsup=1&vf=6","platform":"DESKTOP","clientFormFactor":"UNKNOWN_FORM_FACTOR","configInfo":{"appInstallData":"CJ6Ggc0GEMbGzxwQ6ubQHBC9irAFENLu0BwQyPfPHBC72c4cELHJgBMQ3rzOHBDxtNAcEIzpzxwQrtbPHBC36v4SEIv3zxwQibDOHBC1tYATEKqdzxwQvZmwBRCUttAcEPPq0BwQ-s7QHBDT7tAcEKa20BwQlIPQHBDBj9AcENjX0BwQmY2xBRD2q7AFENDCgBMQ_LLOHBCHrM4cENr3zhwQ0-GvBRCU_rAFELyk0BwQ9tbQHBDZhdAcELjkzhwQvbauBRCIh7AFEMCq0BwQyfevBRDZxNAcEJ7QsAUQmN3QHBCvhs8cEJX3zxwQxe_QHBCBzc4cEMzfrgUQ1c6AExDH59AcKkBDQU1TTEJVdi1acS1ETWVVRXBVQ25BNzZ6ZkFMTXFDc0JBUE5fd1hMdHdiN0pyYmtCc2lWQkkzbEJ1dnZCQjBIMAA%3D"},"browserName":"Chrome","browserVersion":"145.0.0.0","acceptHeader":"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8","deviceExperimentId":"ChxOell4TVRFMU56RTJOekl6TkRRek56QXpPQT09EJ6Ggc0GGJ6Ggc0G","rolloutToken":"CJu76YrIycypvwEQvIe6wJr3kgMY1PGFwZr3kgM%3D","screenWidthPoints":292,"screenHeightPoints":163,"screenPixelDensity":1,"screenDensityFloat":1,"utcOffsetMinutes":360,"userInterfaceTheme":"USER_INTERFACE_THEME_DARK","timeZone":"Asia/Dhaka","playerType":"UNIPLAYER","tvAppInfo":{"livingRoomAppMode":"LIVING_ROOM_APP_MODE_UNSPECIFIED"},"clientScreen":"EMBED"},"user":{"lockedSafetyMode":false},"request":{"useSsl":true,"internalExperimentFlags":[],"consistencyTokenJars":[]},"thirdParty":{"embeddedPlayerContext":{"embeddedPlayerEncryptedContext":"AD5ZzFSBY4SNyiNNKAqEIor0S7FMzyH3LWxAVq2_nAoZmYD9evTGab_VzHcNpG2zWFnLTo9JkmJJHUKg5JP32-mDvNfxPkr7f8OHdf3EFUKHiFj4RrpL2Cw7BAqojg1WH_luVSmY_YBsjqlF3ZMe","ancestorOriginsSupported":true,"visibilityFraction":0,"visibilityFractionSource":"EMBEDDED_PLAYER_VISIBILITY_FRACTION_SOURCE_INTERSECTION_OBSERVER","ancestorOrigins":["https://lyra-music.vercel.app"],"autoplayBrowserPolicy":"AUTOPLAY_BROWSER_POLICY_UNSPECIFIED","autoplayIntended":false,"autoplayStatus":"AUTOPLAY_STATUS_NOT_ATTEMPTED"},"embedUrl":"https://lyra-music.vercel.app/"},"clientScreenNonce":"w-Kc82lfBPOWYeFV","adSignalsInfo":{"params":[{"key":"dt","value":"1772110622881"},{"key":"flash","value":"0"},{"key":"frm","value":"2"},{"key":"u_tz","value":"360"},{"key":"u_his","value":"2"},{"key":"u_h","value":"1050"},{"key":"u_w","value":"1680"},{"key":"u_ah","value":"1050"},{"key":"u_aw","value":"1680"},{"key":"u_cd","value":"32"},{"key":"bc","value":"31"},{"key":"bih","value":"-12245933"},{"key":"biw","value":"-12245933"},{"key":"brdim","value":"4,2,4,2,1680,0,1280,920,292,163"},{"key":"vis","value":"1"},{"key":"wgl","value":"true"},{"key":"ca_type","value":"image"}]},"clickTracking":{"clickTrackingParams":"CAAQru4BIhMIouyGwZr3kgMViuZzAR0y3QQB"}},"playbackContext":{"contentPlaybackContext":{"html5Preference":"HTML5_PREF_WANTS","lactMilliseconds":"10167","referer":"https://www.youtube.com/embed/?playsinline=1&controls=0&disablekb=1&fs=0&iv_load_policy=3&modestbranding=1&autoplay=1&origin=https%3A%2F%2Flyra-music.vercel.app&enablejsapi=1&widgetid=1&forigin=https%3A%2F%2Flyra-music.vercel.app%2F&aoriginsup=1&vf=6","signatureTimestamp":20504,"autoCaptionsDefaultOn":false,"mdxContext":{},"playerWidthPixels":292,"playerHeightPixels":163,"ancestorOrigins":["https://lyra-music.vercel.app"],"encryptedHostFlags":"AD5ZzFTqtIpRUSHCAbl-gBmrdbPbkKRWGHcEUVLP4Q3T1to-xR9Wv7pWBa1eA4iyoj0ZIzmujG5HFJR8Oh5Wci83K_LlQiLADtXUdqlEMEQP6ohXaAcJL9Aublb59df3vzQzRw"},"devicePlaybackCapabilities":{"supportsVp9Encoding":true,"supportXhr":true}},"cpn":"rkIe-6NNj3gCP-RR","serializedThirdPartyEmbedConfig":"{}","captionParams":{},"serviceIntegrityDimensions":{"poToken":"Igg_bz9uVs98cA=="}}',
+      "method": "POST",
+      "mode": "cors",
+      "credentials": "include"
+    });
+
+    status.textContent = `Status: ${response.status} ${response.statusText}`;
+    status.className = response.ok ? "ok" : "fail";
+
+    let text = "";
+    try {
+      text = await response.text();
+    } catch (e) {
+      text = "(could not read body)";
+    }
+
+    resultPre.textContent =
+      `→ ${response.url}\n` +
+      `Status: ${response.status}\n` +
+      `OK: ${response.ok}\n` +
+      `Type: ${response.type}\n\n` +
+      (text.length > 4000 ? text.slice(0,4000) + "\n… (truncated)" : text);
+
+  } catch (err) {
+    status.textContent = "Fetch failed (most likely CORS preflight)";
+    status.className = "fail";
+    resultPre.textContent = err.name + "\n" + err.message + "\n\n" + err.stack;
+  }
+}
+</script>
+
+</body>
+</html>
