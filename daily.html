@@ -5,707 +5,733 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>রুটিনX • Life OS</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+Bengali:wght@400;700&display=swap');
+        :root { --accent: #10b981; --bg-solid: #09090b; --card-solid: #18181b; }
+        body { font-family: 'Noto Sans Bengali','Inter',sans-serif; background-color: var(--bg-solid); color: #f4f4f5; -webkit-tap-highlight-color: transparent; }
+        .card-solid { background-color: var(--card-solid); border: 1px solid #27272a; }
+        .time-display { font-family: 'Inter',sans-serif; letter-spacing: -0.05em; }
+        .timeline-line::before { content:''; position:absolute; left:20px; top:0; bottom:0; width:2px; background:linear-gradient(to bottom,#10b981,#3b82f6,#8b5cf6); opacity:.3; }
+        * { box-sizing:border-box; transform-origin:center; }
+        .active-slot { border-left:4px solid var(--accent)!important; background:linear-gradient(90deg,#064e3b 0%,#18181b 100%); }
+        @media(max-width:640px){ .time-display{font-size:4rem;} }
+        .xp-gain-anim { position:fixed; pointer-events:none; font-family:'Inter',sans-serif; font-weight:900; font-size:1.4rem; color:#a78bfa; text-shadow:0 0 12px #7c3aed; z-index:9999; animation:floatUp 1.4s ease-out forwards; }
+        @keyframes floatUp { 0%{opacity:1;transform:translateY(0) scale(1);} 100%{opacity:0;transform:translateY(-90px) scale(1.3);} }
+        .level-badge { background:linear-gradient(135deg,#7c3aed,#db2777); border-radius:999px; padding:2px 10px; font-size:.65rem; font-weight:800; letter-spacing:.05em; }
+        .ai-typing::after { content:'▋'; animation:blink .7s infinite; }
+        @keyframes blink { 50%{opacity:0;} }
+        .tab-btn.active { background:#10b981; color:#000; font-weight:800; }
+        .tab-btn { transition:all .2s; }
+        .xp-slot-tag { font-size:.6rem; font-weight:800; letter-spacing:.04em; padding:1px 6px; border-radius:999px; }
 
-        :root {
-            --accent: #10b981;
-            --bg-solid: #09090b;
-            --card-solid: #18181b;
-        }
+        /* LOGIN */
+        #login-screen { position:fixed; inset:0; z-index:200; background:#09090b; display:flex; align-items:center; justify-content:center; padding:1.5rem; }
+        .input-field { width:100%; background:#27272a; border:1px solid #3f3f46; border-radius:1rem; padding:.75rem 1rem; color:#f4f4f5; font-size:.95rem; outline:none; transition:border-color .2s; }
+        .input-field:focus { border-color:#10b981; }
+        .btn-primary { width:100%; padding:.85rem; background:#10b981; color:#000; border-radius:1rem; font-weight:800; font-size:1rem; cursor:pointer; transition:opacity .2s; border:none; }
+        .btn-primary:disabled { opacity:.5; cursor:not-allowed; }
+        .btn-link { background:none; border:none; color:#10b981; font-size:.8rem; cursor:pointer; text-decoration:underline; }
 
-        body {
-            font-family: 'Noto Sans Bengali', 'Inter', sans-serif;
-            background-color: var(--bg-solid);
-            color: #f4f4f5;
-            -webkit-tap-highlight-color: transparent;
-        }
+        /* SYNC */
+        .sync-indicator { position:fixed; top:1rem; right:1rem; z-index:100; font-size:.7rem; font-weight:700; padding:4px 12px; border-radius:999px; transition:all .3s; }
+        .sync-ok   { background:#064e3b; color:#10b981; border:1px solid #10b981; }
+        .sync-busy { background:#1c1917; color:#fbbf24; border:1px solid #fbbf24; }
+        .sync-err  { background:#450a0a; color:#f87171; border:1px solid #f87171; }
 
-        .card-solid {
-            background-color: var(--card-solid);
-            border: 1px solid #27272a;
-        }
-
-        .time-display {
-            font-family: 'Inter', sans-serif;
-            letter-spacing: -0.05em;
-        }
-
-        .timeline-line::before {
-            content: '';
-            position: absolute;
-            left: 20px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: linear-gradient(to bottom, #10b981, #3b82f6, #8b5cf6);
-            opacity: 0.3;
-        }
-
-        * { box-sizing: border-box; transform-origin: center; }
-
-        .active-slot {
-            border-left: 4px solid var(--accent) !important;
-            background: linear-gradient(90deg, #064e3b 0%, #18181b 100%);
-        }
-
-        @media (max-width: 640px) {
-            .time-display { font-size: 4rem; }
-        }
-
-        .xp-gain-anim {
-            position: fixed;
-            pointer-events: none;
-            font-family: 'Inter', sans-serif;
-            font-weight: 900;
-            font-size: 1.4rem;
-            color: #a78bfa;
-            text-shadow: 0 0 12px #7c3aed;
-            z-index: 9999;
-            animation: floatUp 1.4s ease-out forwards;
-        }
-        @keyframes floatUp {
-            0%   { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-90px) scale(1.3); }
-        }
-
-        .level-badge {
-            background: linear-gradient(135deg, #7c3aed, #db2777);
-            border-radius: 999px;
-            padding: 2px 10px;
-            font-size: 0.65rem;
-            font-weight: 800;
-            letter-spacing: 0.05em;
-        }
-
-        .ai-typing::after {
-            content: '▋';
-            animation: blink 0.7s infinite;
-        }
-        @keyframes blink { 50% { opacity: 0; } }
-
-        .tab-btn.active { background: #10b981; color: #000; font-weight: 800; }
-        .tab-btn { transition: all 0.2s; }
-
-        .xp-slot-tag {
-            font-size: 0.6rem;
-            font-weight: 800;
-            letter-spacing: 0.04em;
-            padding: 1px 6px;
-            border-radius: 999px;
-        }
+        /* USER PILL */
+        .user-pill { display:inline-flex; align-items:center; gap:6px; background:#27272a; border-radius:999px; padding:4px 12px 4px 6px; font-size:.75rem; font-weight:700; cursor:pointer; border:1px solid #3f3f46; }
+        .user-pill:hover { border-color:#10b981; }
     </style>
 </head>
 <body class="min-h-screen pb-16">
 
-    <main class="max-w-2xl mx-auto px-4 pt-8 space-y-6">
-        
-        <!-- HEADER -->
-        <header class="text-center space-y-2">
-            <div class="flex items-center justify-center gap-3 mb-4">
-                <span class="text-4xl">🚀</span>
-                <h1 class="text-2xl font-black tracking-tighter uppercase">RoutineX</h1>
-            </div>
-            <div id="live-clock" class="time-display text-6xl sm:text-7xl font-extrabold text-white leading-none">12:00:00</div>
-            <div id="live-date" class="text-emerald-400 font-bold uppercase tracking-widest text-sm">LOADING...</div>
-        </header>
+<!-- ══════════ LOGIN SCREEN ══════════ -->
+<div id="login-screen">
+    <div class="w-full max-w-sm space-y-6">
+        <div class="text-center">
+            <div class="text-5xl mb-3">🚀</div>
+            <h1 class="text-2xl font-black tracking-tighter uppercase">RoutineX</h1>
+            <p class="text-zinc-500 text-sm mt-1">Life OS • লগইন করো</p>
+        </div>
 
-        <!-- STATS ROW -->
-        <section class="grid grid-cols-2 gap-4">
-            <div class="card-solid p-5 rounded-3xl text-center">
-                <div class="text-zinc-500 text-xs mb-1">এনার্জি লেভেল</div>
-                <div id="energy-text" class="text-2xl font-bold text-emerald-400">94%</div>
-                <div class="w-full bg-zinc-800 h-1.5 mt-2 rounded-full overflow-hidden">
-                    <div id="energy-bar" class="bg-emerald-500 h-full transition-all duration-1000" style="width: 94%"></div>
-                </div>
+        <!-- LOGIN FORM -->
+        <div id="login-form" class="space-y-3">
+            <input id="login-user" class="input-field" type="text" placeholder="ইউজারনেম" autocomplete="username" />
+            <input id="login-pass" class="input-field" type="password" placeholder="পাসওয়ার্ড" autocomplete="current-password" />
+            <p id="login-error" class="text-red-400 text-xs text-center hidden"></p>
+            <button id="login-btn" class="btn-primary" onclick="handleLogin()">লগইন করো <i class="fa-solid fa-arrow-right ml-1"></i></button>
+            <div class="text-center pt-1">
+                <button class="btn-link" onclick="showRegister()">নতুন অ্যাকাউন্ট তৈরি করো →</button>
             </div>
-            <div class="card-solid p-5 rounded-3xl text-center relative overflow-hidden">
-                <div class="text-zinc-500 text-xs mb-1">আজকের XP</div>
-                <div id="xp-today" class="text-2xl font-bold text-violet-400">0</div>
-                <div class="flex items-center justify-center gap-1 mt-1">
-                    <span id="level-badge" class="level-badge text-white">লেভেল ১</span>
-                </div>
-                <!-- XP bar to next level -->
-                <div class="w-full bg-zinc-800 h-1 mt-2 rounded-full overflow-hidden">
-                    <div id="xp-level-bar" class="bg-violet-500 h-full transition-all duration-700" style="width: 0%"></div>
-                </div>
-            </div>
-        </section>
+        </div>
 
-        <!-- DAY PROGRESS -->
-        <section class="card-solid p-6 rounded-3xl">
-            <div class="flex justify-between items-end mb-4">
-                <div>
-                    <h2 class="text-zinc-400 text-sm">দিনের অগ্রগতি</h2>
-                    <div id="progress-text" class="text-4xl font-black text-white">0%</div>
-                </div>
-                <div class="text-right">
-                    <div class="text-zinc-500 text-xs">স্লট সম্পন্ন</div>
-                    <div id="slots-done" class="font-mono font-bold text-emerald-400">0 / 12</div>
-                </div>
-            </div>
-            <div class="h-3 bg-zinc-800 rounded-full overflow-hidden">
-                <div id="day-progress-bar" class="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 transition-all duration-1000" style="width: 0%"></div>
-            </div>
-        </section>
-
-        <!-- CURRENT SLOT -->
-        <section id="current-focus-card" class="card-solid p-6 rounded-3xl border-emerald-500/50 bg-emerald-500/5">
-            <div class="flex items-center gap-2 text-emerald-400 text-xs font-bold mb-2">
-                <span class="relative flex h-2 w-2">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                </span>
-                এখন চলছে
-            </div>
-            <h3 id="current-slot-name" class="text-xl font-bold">—</h3>
-            <p id="current-slot-desc" class="text-zinc-400 text-sm">—</p>
-            <div class="mt-4 flex gap-3">
-                <button onclick="toggleFocusMode()" class="flex-1 py-3 bg-white text-black rounded-2xl font-bold text-sm">ফোকাস মোড</button>
-                <button onclick="speakCurrentSlot()" class="px-4 py-3 bg-zinc-800 rounded-2xl"><i class="fa-solid fa-volume-high"></i></button>
-            </div>
-        </section>
-
-        <!-- TIMELINE -->
-        <section class="relative space-y-6 timeline-line" id="timeline-container"></section>
-
-        <!-- AI COACH -->
-        <section class="card-solid p-6 rounded-3xl">
-            <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center gap-3">
-                    <span class="text-2xl">🧠</span>
-                    <h4 class="font-bold">AETHER AI কোচ</h4>
-                </div>
-                <button id="ai-refresh-btn" onclick="fetchAICoach()" class="text-xs text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-xl hover:bg-emerald-500/10 transition-all flex items-center gap-1">
-                    <i class="fa-solid fa-rotate-right text-[10px]"></i> নতুন পরামর্শ
-                </button>
-            </div>
-            <p id="ai-coach-text" class="text-zinc-400 text-sm italic leading-relaxed">AI কোচ লোড হচ্ছে...</p>
-        </section>
-
-        <!-- AMBIENT -->
-        <section class="card-solid p-6 rounded-3xl">
-            <h4 class="text-xs font-bold text-zinc-500 mb-4 uppercase tracking-widest">Ambient Sound</h4>
-            <div class="grid grid-cols-2 gap-2">
-                <button onclick="playAmbient(0)" class="ambient-btn p-3 rounded-xl bg-zinc-800 text-xs hover:bg-zinc-700">🌧️ বৃষ্টি</button>
-                <button onclick="playAmbient(1)" class="ambient-btn p-3 rounded-xl bg-zinc-800 text-xs hover:bg-zinc-700">🌌 লোফাই</button>
-            </div>
-        </section>
-
-        <!-- CHARTS SECTION -->
-        <section class="card-solid p-6 rounded-3xl space-y-5">
-            <div class="flex items-center justify-between">
-                <h4 class="font-bold text-sm">📊 XP ট্র্যাকার</h4>
-                <div class="flex gap-1">
-                    <button onclick="switchChart('allocation')" id="tab-allocation" class="tab-btn active text-xs px-3 py-1 rounded-xl bg-zinc-800">বিতরণ</button>
-                    <button onclick="switchChart('weekly')" id="tab-weekly" class="tab-btn text-xs px-3 py-1 rounded-xl bg-zinc-800">সাপ্তাহিক</button>
-                    <button onclick="switchChart('monthly')" id="tab-monthly" class="tab-btn text-xs px-3 py-1 rounded-xl bg-zinc-800">মাসিক</button>
-                </div>
-            </div>
-            <div id="chart-allocation" class="chart-panel"><canvas id="allocationChart"></canvas></div>
-            <div id="chart-weekly" class="chart-panel hidden"><canvas id="weeklyChart"></canvas></div>
-            <div id="chart-monthly" class="chart-panel hidden"><canvas id="monthlyChart"></canvas></div>
-        </section>
-
-        <!-- XP LEADERBOARD / HISTORY -->
-        <section class="card-solid p-6 rounded-3xl">
-            <h4 class="font-bold text-sm mb-4">🏆 XP ইতিহাস</h4>
-            <div id="xp-history-list" class="space-y-2 text-sm text-zinc-400">লোড হচ্ছে...</div>
-        </section>
-
-    </main>
-
-    <!-- POMODORO MODAL -->
-    <div id="pomodoro-modal" class="hidden fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-6">
-        <div class="w-full max-w-sm text-center">
-            <div id="modal-slot-name" class="text-zinc-400 mb-4">Focus Session</div>
-            <div id="timer-display" class="time-display text-8xl font-black text-emerald-400 mb-6">50:00</div>
-            <div id="pomodoro-xp-badge" class="text-violet-400 text-sm mb-6 font-bold"></div>
-            <div class="flex gap-4">
-                <button id="timer-btn" onclick="toggleTimer()" class="flex-1 py-5 bg-emerald-500 text-black rounded-3xl font-black text-xl">শুরু</button>
-                <button onclick="closePomodoro()" class="px-8 py-5 bg-zinc-800 rounded-3xl font-bold">বন্ধ</button>
+        <!-- REGISTER FORM -->
+        <div id="register-form" class="space-y-3 hidden">
+            <input id="reg-user"  class="input-field" type="text"     placeholder="ইউজারনেম (৩+ অক্ষর)" />
+            <input id="reg-pass"  class="input-field" type="password"  placeholder="পাসওয়ার্ড (৪+ অক্ষর)" />
+            <input id="reg-pass2" class="input-field" type="password"  placeholder="পাসওয়ার্ড নিশ্চিত করো" />
+            <p id="reg-error" class="text-red-400 text-xs text-center hidden"></p>
+            <button id="reg-btn" class="btn-primary" onclick="handleRegister()">অ্যাকাউন্ট তৈরি করো</button>
+            <div class="text-center pt-1">
+                <button class="btn-link" onclick="showLogin()">← লগইনে ফিরে যাও</button>
             </div>
         </div>
     </div>
+</div>
 
-    <script type="module">
-        import Client from 'https://g4f.dev/dist/js/client.js';
+<!-- SYNC BADGE -->
+<div id="sync-indicator" class="sync-indicator sync-ok hidden">✓ সিঙ্ক</div>
 
-        // ── DATA ──────────────────────────────────────────────────────────────
-        const slots = [
-            { id: 1,  start: "07:30 AM", end: "08:00 AM", title: "ঘুম থেকে ওঠা",       desc: "সতেজ হয়ে দিন শুরু",        category: "wake",     xp: 30  },
-            { id: 2,  start: "08:00 AM", end: "11:30 AM", title: "স্লট ১ • কঠিন বিষয়", desc: "উচ্চতর গণিত / পদার্থবিজ্ঞান", category: "study",   xp: 350 },
-            { id: 3,  start: "11:30 AM", end: "01:00 PM", title: "হালকা নাস্তা",         desc: "শরীর রিচার্জ করো",           category: "break",    xp: 20  },
-            { id: 4,  start: "01:00 PM", end: "03:00 PM", title: "দুপুরের খাবার",       desc: "বিশ্রাম ও আহার",             category: "rest",     xp: 20  },
-            { id: 5,  start: "03:00 PM", end: "04:00 PM", title: "পাওয়ার ন্যাপ",        desc: "গভীর বিশ্রাম",               category: "nap",      xp: 50  },
-            { id: 6,  start: "04:00 PM", end: "07:00 PM", title: "স্লট ২ • রসায়ন",      desc: "জীববিজ্ঞান বা রসায়ন",       category: "study",    xp: 300 },
-            { id: 7,  start: "07:00 PM", end: "07:30 PM", title: "হালকা বিরতি",          desc: "হাঁটাহাঁটি",                category: "break",    xp: 30  },
-            { id: 8,  start: "07:30 PM", end: "10:30 PM", title: "স্লট ৩ • MCQ",         desc: "দিনের পড়া রিভিশন",          category: "study",    xp: 300 },
-            { id: 9,  start: "10:30 PM", end: "11:00 PM", title: "পরবর্তী দিনের প্ল্যান", desc: "ব্যাগ গোছানো",             category: "prep",     xp: 40  },
-            { id: 10, start: "11:00 PM", end: "11:30 PM", title: "রাতের খাবার",          desc: "হালকা খাবার",               category: "meal",     xp: 20  },
-            { id: 11, start: "11:30 PM", end: "12:00 AM", title: "ঘুমের প্রস্তুতি",     desc: "স্ক্রিন টাইম অফ",           category: "winddown", xp: 30  },
-            { id: 12, start: "12:00 AM", end: "07:30 AM", title: "গভীর ঘুম",             desc: "রিকভারি টাইম",              category: "sleep",    xp: 80  },
-        ];
-        const TOTAL_DAILY_XP = slots.reduce((s, sl) => s + sl.xp, 0);
+<!-- ══════════ MAIN APP ══════════ -->
+<main id="app" class="max-w-2xl mx-auto px-4 pt-8 space-y-6 hidden">
 
-        // Level thresholds (cumulative total XP across all days)
-        const LEVELS = [0, 500, 1500, 3000, 5000, 8000, 12000, 17000, 23000, 30000, 40000];
-        function getTotalXP() {
-            const history = getXPHistory();
-            return Object.values(history).reduce((s, v) => s + v, 0);
-        }
-        function getLevel(totalXP) {
-            for (let i = LEVELS.length - 1; i >= 0; i--) {
-                if (totalXP >= LEVELS[i]) return { level: i + 1, next: LEVELS[i + 1] ?? null, prev: LEVELS[i] };
-            }
-            return { level: 1, next: LEVELS[1], prev: 0 };
-        }
+    <!-- HEADER -->
+    <header class="text-center space-y-2">
+        <div class="flex items-center justify-center gap-3 mb-2">
+            <span class="text-4xl">🚀</span>
+            <h1 class="text-2xl font-black tracking-tighter uppercase">RoutineX</h1>
+        </div>
+        <div class="flex justify-center">
+            <div class="user-pill" onclick="handleLogout()" title="লগআউট">
+                <span class="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-black text-xs font-black" id="user-avatar">?</span>
+                <span id="user-name-display">—</span>
+                <i class="fa-solid fa-right-from-bracket text-zinc-500 text-xs ml-1"></i>
+            </div>
+        </div>
+        <div id="live-clock" class="time-display text-6xl sm:text-7xl font-extrabold text-white leading-none">12:00:00</div>
+        <div id="live-date" class="text-emerald-400 font-bold uppercase tracking-widest text-sm">LOADING...</div>
+    </header>
 
-        // ── STATE ─────────────────────────────────────────────────────────────
-        let completedSlots = JSON.parse(localStorage.getItem('completedSlots') || '{}');
-        let currentSlotIndex = 0;
-        let timerInterval = null;
-        let secondsLeft = 3000;
-        let isRunning = false;
-        let pomodoroSlotIndex = 0;
-        let weeklyChart = null;
-        let monthlyChart = null;
-        let allocationChart = null;
+    <!-- STATS -->
+    <section class="grid grid-cols-2 gap-4">
+        <div class="card-solid p-5 rounded-3xl text-center">
+            <div class="text-zinc-500 text-xs mb-1">এনার্জি লেভেল</div>
+            <div id="energy-text" class="text-2xl font-bold text-emerald-400">94%</div>
+            <div class="w-full bg-zinc-800 h-1.5 mt-2 rounded-full overflow-hidden">
+                <div id="energy-bar" class="bg-emerald-500 h-full" style="width:94%"></div>
+            </div>
+        </div>
+        <div class="card-solid p-5 rounded-3xl text-center">
+            <div class="text-zinc-500 text-xs mb-1">আজকের XP</div>
+            <div id="xp-today" class="text-2xl font-bold text-violet-400">0</div>
+            <div class="flex items-center justify-center mt-1">
+                <span id="level-badge" class="level-badge text-white">লেভেল ১</span>
+            </div>
+            <div class="w-full bg-zinc-800 h-1 mt-2 rounded-full overflow-hidden">
+                <div id="xp-level-bar" class="bg-violet-500 h-full transition-all duration-700" style="width:0%"></div>
+            </div>
+        </div>
+    </section>
 
-        // XP history: { "YYYY-MM-DD": number }
-        function getXPHistory() {
-            return JSON.parse(localStorage.getItem('xpHistory') || '{}');
-        }
-        function getTodayKey() {
-            const d = new Date();
-            const y = d.getFullYear();
-            const m = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            return `${y}-${m}-${day}`;
-        }
-        function getTodayXP() {
-            return getXPHistory()[getTodayKey()] || 0;
-        }
-        function saveTodayXP(xp) {
-            const h = getXPHistory();
-            h[getTodayKey()] = xp;
-            localStorage.setItem('xpHistory', JSON.stringify(h));
-        }
-        function recalcTodayXP() {
-            const xp = slots.reduce((s, sl) => s + (completedSlots[sl.id] ? sl.xp : 0), 0);
-            saveTodayXP(xp);
-            return xp;
-        }
+    <!-- DAY PROGRESS -->
+    <section class="card-solid p-6 rounded-3xl">
+        <div class="flex justify-between items-end mb-4">
+            <div>
+                <h2 class="text-zinc-400 text-sm">দিনের অগ্রগতি</h2>
+                <div id="progress-text" class="text-4xl font-black text-white">0%</div>
+            </div>
+            <div class="text-right">
+                <div class="text-zinc-500 text-xs">স্লট সম্পন্ন</div>
+                <div id="slots-done" class="font-mono font-bold text-emerald-400">0 / 12</div>
+            </div>
+        </div>
+        <div class="h-3 bg-zinc-800 rounded-full overflow-hidden">
+            <div id="day-progress-bar" class="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 transition-all duration-1000" style="width:0%"></div>
+        </div>
+    </section>
 
-        // ── MIDNIGHT RESET ─────────────────────────────────────────────────────
-        function checkMidnightReset() {
-            const today = getTodayKey();
-            const lastVisit = localStorage.getItem('last_visit_date');
-            if (lastVisit !== today) {
-                completedSlots = {};
-                localStorage.setItem('completedSlots', JSON.stringify({}));
-                localStorage.setItem('last_visit_date', today);
-            }
-        }
+    <!-- CURRENT SLOT -->
+    <section class="card-solid p-6 rounded-3xl border-emerald-500/50 bg-emerald-500/5">
+        <div class="flex items-center gap-2 text-emerald-400 text-xs font-bold mb-2">
+            <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            এখন চলছে
+        </div>
+        <h3 id="current-slot-name" class="text-xl font-bold">—</h3>
+        <p id="current-slot-desc" class="text-zinc-400 text-sm">—</p>
+        <div class="mt-4 flex gap-3">
+            <button onclick="toggleFocusMode()" class="flex-1 py-3 bg-white text-black rounded-2xl font-bold text-sm">ফোকাস মোড</button>
+            <button onclick="speakCurrentSlot()" class="px-4 py-3 bg-zinc-800 rounded-2xl"><i class="fa-solid fa-volume-high"></i></button>
+        </div>
+    </section>
 
-        // ── CLOCK ─────────────────────────────────────────────────────────────
-        function updateLiveClock() {
-            const now = new Date();
-            document.getElementById('live-clock').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-            document.getElementById('live-date').textContent = now.toLocaleDateString('bn-BD', { weekday: 'long', month: 'long', day: 'numeric' });
-            checkCurrentSlot(now);
-            updateDayProgress(now);
-        }
+    <!-- TIMELINE -->
+    <section class="relative space-y-6 timeline-line" id="timeline-container"></section>
 
-        function checkCurrentSlot(now) {
-            const cur = now.getHours() * 60 + now.getMinutes();
-            let found = -1;
-            slots.forEach((slot, i) => {
-                const [sh, sm, sp] = parseTime(slot.start);
-                const [eh, em, ep] = parseTime(slot.end);
-                let start = toMins(sh, sm, sp);
-                let end   = toMins(eh, em, ep);
-                // Midnight-crossing slot: e.g. 12:00 AM → 07:30 AM (sleep)
-                if (end <= start) {
-                    // cur is in [start, 1440) or [0, end)
-                    if (cur >= start || cur < end) found = i;
-                } else {
-                    if (cur >= start && cur < end) found = i;
+    <!-- AI COACH -->
+    <section class="card-solid p-6 rounded-3xl">
+        <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">🧠</span>
+                <h4 class="font-bold">AETHER AI কোচ</h4>
+            </div>
+            <button id="ai-refresh-btn" onclick="fetchAICoach()" class="text-xs text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-xl hover:bg-emerald-500/10 transition-all flex items-center gap-1">
+                <i class="fa-solid fa-rotate-right text-[10px]"></i> নতুন পরামর্শ
+            </button>
+        </div>
+        <p id="ai-coach-text" class="text-zinc-400 text-sm italic leading-relaxed">AI কোচ লোড হচ্ছে...</p>
+    </section>
+
+    <!-- AMBIENT -->
+    <section class="card-solid p-6 rounded-3xl">
+        <h4 class="text-xs font-bold text-zinc-500 mb-4 uppercase tracking-widest">Ambient Sound</h4>
+        <div class="grid grid-cols-2 gap-2">
+            <button onclick="playAmbient(0)" class="p-3 rounded-xl bg-zinc-800 text-xs hover:bg-zinc-700">🌧️ বৃষ্টি</button>
+            <button onclick="playAmbient(1)" class="p-3 rounded-xl bg-zinc-800 text-xs hover:bg-zinc-700">🌌 লোফাই</button>
+        </div>
+    </section>
+
+    <!-- CHARTS -->
+    <section class="card-solid p-6 rounded-3xl space-y-5">
+        <div class="flex items-center justify-between">
+            <h4 class="font-bold text-sm">📊 XP ট্র্যাকার</h4>
+            <div class="flex gap-1">
+                <button onclick="switchChart('allocation')" id="tab-allocation" class="tab-btn active text-xs px-3 py-1 rounded-xl bg-zinc-800">বিতরণ</button>
+                <button onclick="switchChart('weekly')"     id="tab-weekly"     class="tab-btn text-xs px-3 py-1 rounded-xl bg-zinc-800">সাপ্তাহিক</button>
+                <button onclick="switchChart('monthly')"    id="tab-monthly"    class="tab-btn text-xs px-3 py-1 rounded-xl bg-zinc-800">মাসিক</button>
+            </div>
+        </div>
+        <div id="chart-allocation"><canvas id="allocationChart"></canvas></div>
+        <div id="chart-weekly"  class="hidden"><canvas id="weeklyChart"></canvas></div>
+        <div id="chart-monthly" class="hidden"><canvas id="monthlyChart"></canvas></div>
+    </section>
+
+    <!-- XP HISTORY -->
+    <section class="card-solid p-6 rounded-3xl">
+        <h4 class="font-bold text-sm mb-4">🏆 XP ইতিহাস</h4>
+        <div id="xp-history-list" class="space-y-2 text-sm text-zinc-400">লোড হচ্ছে...</div>
+    </section>
+
+</main>
+
+<!-- POMODORO MODAL -->
+<div id="pomodoro-modal" class="hidden fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-6">
+    <div class="w-full max-w-sm text-center">
+        <div id="modal-slot-name" class="text-zinc-400 mb-4">Focus Session</div>
+        <div id="timer-display" class="time-display text-8xl font-black text-emerald-400 mb-6">50:00</div>
+        <div id="pomodoro-xp-badge" class="text-violet-400 text-sm mb-6 font-bold"></div>
+        <div class="flex gap-4">
+            <button id="timer-btn" onclick="toggleTimer()" class="flex-1 py-5 bg-emerald-500 text-black rounded-3xl font-black text-xl">শুরু</button>
+            <button onclick="closePomodoro()" class="px-8 py-5 bg-zinc-800 rounded-3xl font-bold">বন্ধ</button>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+import Client from 'https://g4f.dev/dist/js/client.js';
+
+// ════════════════════════════════════════════════════
+// SHEETY CONFIG
+// ════════════════════════════════════════════════════
+const SHEETY = 'https://api.sheety.co/ff6a72c1dd3a5acce379fb29b92c55a8/untitledSpreadsheet/sheet1';
+
+async function sheetyGetAll() {
+    const r = await fetch(SHEETY);
+    const j = await r.json();
+    return j.sheet1 || [];
+}
+async function sheetyPost(data) {
+    const r = await fetch(SHEETY, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({sheet1:data}) });
+    return (await r.json()).sheet1;
+}
+async function sheetyPut(id, data) {
+    const r = await fetch(`${SHEETY}/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({sheet1:data}) });
+    return (await r.json()).sheet1;
+}
+
+// ════════════════════════════════════════════════════
+// SLOT DATA
+// ════════════════════════════════════════════════════
+const slots = [
+    { id:1,  start:"07:30 AM", end:"08:00 AM", title:"ঘুম থেকে ওঠা",        desc:"সতেজ হয়ে দিন শুরু",           category:"wake",     xp:30  },
+    { id:2,  start:"08:00 AM", end:"11:30 AM", title:"স্লট ১ • কঠিন বিষয়",  desc:"উচ্চতর গণিত / পদার্থবিজ্ঞান", category:"study",    xp:350 },
+    { id:3,  start:"11:30 AM", end:"01:00 PM", title:"হালকা নাস্তা",          desc:"শরীর রিচার্জ করো",             category:"break",    xp:20  },
+    { id:4,  start:"01:00 PM", end:"03:00 PM", title:"দুপুরের খাবার",        desc:"বিশ্রাম ও আহার",               category:"rest",     xp:20  },
+    { id:5,  start:"03:00 PM", end:"04:00 PM", title:"পাওয়ার ন্যাপ",         desc:"গভীর বিশ্রাম",                 category:"nap",      xp:50  },
+    { id:6,  start:"04:00 PM", end:"07:00 PM", title:"স্লট ২ • রসায়ন",       desc:"জীববিজ্ঞান বা রসায়ন",         category:"study",    xp:300 },
+    { id:7,  start:"07:00 PM", end:"07:30 PM", title:"হালকা বিরতি",           desc:"হাঁটাহাঁটি",                   category:"break",    xp:30  },
+    { id:8,  start:"07:30 PM", end:"10:30 PM", title:"স্লট ৩ • MCQ",          desc:"দিনের পড়া রিভিশন",            category:"study",    xp:300 },
+    { id:9,  start:"10:30 PM", end:"11:00 PM", title:"পরবর্তী দিনের প্ল্যান", desc:"ব্যাগ গোছানো",                 category:"prep",     xp:40  },
+    { id:10, start:"11:00 PM", end:"11:30 PM", title:"রাতের খাবার",           desc:"হালকা খাবার",                  category:"meal",     xp:20  },
+    { id:11, start:"11:30 PM", end:"12:00 AM", title:"ঘুমের প্রস্তুতি",      desc:"স্ক্রিন টাইম অফ",             category:"winddown", xp:30  },
+    { id:12, start:"12:00 AM", end:"07:30 AM", title:"গভীর ঘুম",              desc:"রিকভারি টাইম",                 category:"sleep",    xp:80  },
+];
+const TOTAL_DAILY_XP = slots.reduce((s,sl) => s + sl.xp, 0);
+
+// ════════════════════════════════════════════════════
+// LEVELS (cumulative XP)
+// ════════════════════════════════════════════════════
+const LEVELS      = [0,500,1500,3000,5000,8000,12000,17000,23000,30000,40000];
+const LEVEL_NAMES = ['','নতুন','শিক্ষার্থী','অনুসন্ধানকারী','চ্যালেঞ্জার','প্রো','এলিট','মাস্টার','গ্র্যান্ড','লেজেন্ড','মিথ','দেবতা'];
+function getLevel(xp) {
+    for (let i=LEVELS.length-1; i>=0; i--) if (xp>=LEVELS[i]) return {level:i+1, next:LEVELS[i+1]??null, prev:LEVELS[i]};
+    return {level:1, next:LEVELS[1], prev:0};
+}
+
+// ════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════
+let currentUser      = null;   // { username, profileRowId }
+let completedSlots   = {};
+let xpHistory        = {};
+let sheetyRows       = [];     // full cache from Sheety
+let currentSlotIndex = 0;
+let timerInterval    = null;
+let secondsLeft      = 3000;
+let isRunning        = false;
+let pomodoroSlotIdx  = 0;
+let weeklyChart=null, monthlyChart=null, allocationChart=null;
+let syncTimeout      = null;
+
+// ════════════════════════════════════════════════════
+// DATE HELPERS
+// ════════════════════════════════════════════════════
+function getTodayKey() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function getLastNDays(n) {
+    return Array.from({length:n}, (_,i) => {
+        const d = new Date(); d.setDate(d.getDate()-(n-1-i));
+        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    });
+}
+
+// ════════════════════════════════════════════════════
+// XP HELPERS
+// ════════════════════════════════════════════════════
+function getTodayXP()  { return xpHistory[getTodayKey()] || 0; }
+function getTotalXP()  { return Object.values(xpHistory).reduce((s,v)=>s+v,0); }
+function recalcTodayXP() {
+    const xp = slots.reduce((s,sl)=>s+(completedSlots[sl.id]?sl.xp:0),0);
+    xpHistory[getTodayKey()] = xp;
+    return xp;
+}
+
+// ════════════════════════════════════════════════════
+// SYNC INDICATOR
+// ════════════════════════════════════════════════════
+let syncHideTimer = null;
+function showSync(state, text) {
+    const el = document.getElementById('sync-indicator');
+    el.className = `sync-indicator sync-${state}`;
+    el.textContent = text;
+    el.classList.remove('hidden');
+    clearTimeout(syncHideTimer);
+    if (state==='ok') syncHideTimer = setTimeout(()=>el.classList.add('hidden'), 3000);
+}
+
+// ════════════════════════════════════════════════════
+// SAVE (debounced 1.5 s)
+// ════════════════════════════════════════════════════
+function scheduleSave() {
+    clearTimeout(syncTimeout);
+    showSync('busy','⏳ সিঙ্ক হচ্ছে...');
+    syncTimeout = setTimeout(saveToSheety, 1500);
+}
+
+async function saveToSheety() {
+    if (!currentUser) return;
+    const today    = getTodayKey();
+    const username = currentUser.username;
+    const payload  = {
+        username,
+        date: today,
+        completedslots: JSON.stringify(completedSlots),
+        xphistory:      JSON.stringify(xpHistory)
+    };
+    try {
+        const existing = sheetyRows.find(r =>
+            r.username?.toLowerCase()===username && r.date===today
+        );
+        if (existing) {
+            await sheetyPut(existing.id, payload);
+            Object.assign(existing, payload);
+        } else {
+            const newRow = await sheetyPost(payload);
+            sheetyRows.push({...payload, id:newRow.id});
+        }
+        showSync('ok','✓ সিঙ্ক');
+    } catch(e) {
+        showSync('err','✗ সিঙ্ক ব্যর্থ');
+    }
+}
+
+// ════════════════════════════════════════════════════
+// AUTH — LOGIN / REGISTER / LOGOUT
+// ════════════════════════════════════════════════════
+window.showRegister = ()=>{ document.getElementById('login-form').classList.add('hidden');    document.getElementById('register-form').classList.remove('hidden'); };
+window.showLogin    = ()=>{ document.getElementById('register-form').classList.add('hidden'); document.getElementById('login-form').classList.remove('hidden');    };
+
+window.handleLogin = async function() {
+    const btn  = document.getElementById('login-btn');
+    const user = document.getElementById('login-user').value.trim().toLowerCase();
+    const pass = document.getElementById('login-pass').value;
+    setLoginErr('');
+    if (!user||!pass) { setLoginErr('ইউজারনেম ও পাসওয়ার্ড দাও'); return; }
+    btn.disabled=true; btn.innerHTML='লোড হচ্ছে... <i class="fa-solid fa-spinner fa-spin ml-1"></i>';
+    try {
+        sheetyRows = await sheetyGetAll();
+        // Profile rows have date='profile'
+        const found = sheetyRows.find(r =>
+            r.username?.toLowerCase()===user && r.password===pass && r.date==='profile'
+        );
+        if (!found) { setLoginErr('ইউজারনেম বা পাসওয়ার্ড ভুল'); resetLoginBtn(); return; }
+        currentUser = { username: found.username, profileRowId: found.id };
+        localStorage.setItem('rx_session', JSON.stringify({ username: found.username, profileRowId: found.id }));
+        loadUserDataFromRows();
+        bootApp();
+    } catch(e) {
+        setLoginErr('সংযোগ ব্যর্থ। ইন্টারনেট চেক করো।'); resetLoginBtn();
+    }
+};
+
+window.handleRegister = async function() {
+    const btn  = document.getElementById('reg-btn');
+    const user = document.getElementById('reg-user').value.trim().toLowerCase();
+    const pass = document.getElementById('reg-pass').value;
+    const pass2= document.getElementById('reg-pass2').value;
+    setRegErr('');
+    if (!user||!pass)   { setRegErr('সব ঘর পূরণ করো'); return; }
+    if (user.length<3)  { setRegErr('ইউজারনেম কমপক্ষে ৩ অক্ষর'); return; }
+    if (pass.length<4)  { setRegErr('পাসওয়ার্ড কমপক্ষে ৪ অক্ষর'); return; }
+    if (pass!==pass2)   { setRegErr('পাসওয়ার্ড মিলছে না'); return; }
+    btn.disabled=true; btn.innerHTML='তৈরি হচ্ছে... <i class="fa-solid fa-spinner fa-spin ml-1"></i>';
+    try {
+        sheetyRows = await sheetyGetAll();
+        if (sheetyRows.find(r=>r.username?.toLowerCase()===user && r.date==='profile')) {
+            setRegErr('এই ইউজারনেম আগেই নেওয়া হয়েছে'); resetRegBtn(); return;
+        }
+        // POST profile row
+        const newRow = await sheetyPost({ username:user, password:pass, date:'profile', completedslots:'{}', xphistory:'{}' });
+        sheetyRows.push({username:user, password:pass, date:'profile', completedslots:'{}', xphistory:'{}', id:newRow.id});
+        currentUser = { username:user, profileRowId:newRow.id };
+        localStorage.setItem('rx_session', JSON.stringify({ username: user, profileRowId: newRow.id }));
+        completedSlots={}; xpHistory={};
+        bootApp();
+    } catch(e) {
+        setRegErr('সংযোগ ব্যর্থ। আবার চেষ্টা করো।'); resetRegBtn();
+    }
+};
+
+window.handleLogout = function() {
+    if (!confirm('লগআউট করতে চাও?')) return;
+    currentUser=null; completedSlots={}; xpHistory={}; sheetyRows=[]; localStorage.removeItem('rx_session');
+    clearTimeout(syncTimeout); clearInterval(timerInterval);
+    document.getElementById('app').classList.add('hidden');
+    document.getElementById('login-screen').style.display='flex';
+    document.getElementById('login-user').value='';
+    document.getElementById('login-pass').value='';
+    showLogin(); resetLoginBtn();
+};
+
+function setLoginErr(msg) { const e=document.getElementById('login-error'); e.textContent=msg; msg?e.classList.remove('hidden'):e.classList.add('hidden'); }
+function setRegErr(msg)   { const e=document.getElementById('reg-error');   e.textContent=msg; msg?e.classList.remove('hidden'):e.classList.add('hidden'); }
+function resetLoginBtn()  { const b=document.getElementById('login-btn'); b.disabled=false; b.innerHTML='লগইন করো <i class="fa-solid fa-arrow-right ml-1"></i>'; }
+function resetRegBtn()    { const b=document.getElementById('reg-btn');   b.disabled=false; b.textContent='অ্যাকাউন্ট তৈরি করো'; }
+
+// ════════════════════════════════════════════════════
+// LOAD DATA FROM CACHED SHEETY ROWS
+// ════════════════════════════════════════════════════
+function loadUserDataFromRows() {
+    const username = currentUser.username.toLowerCase();
+    const today    = getTodayKey();
+
+    // All data rows (not profile) for this user
+    const dataRows = sheetyRows.filter(r =>
+        r.username?.toLowerCase()===username && r.date && r.date!=='profile'
+    );
+
+    // Rebuild xpHistory from every row's xphistory field
+    xpHistory = {};
+    dataRows.forEach(r => {
+        try { Object.assign(xpHistory, JSON.parse(r.xphistory||'{}')); } catch(e){}
+    });
+
+    // Today's completedSlots
+    const todayRow = dataRows.find(r=>r.date===today);
+    try { completedSlots = JSON.parse(todayRow?.completedslots||'{}'); } catch(e){ completedSlots={}; }
+}
+
+// ════════════════════════════════════════════════════
+// BOOT (after login)
+// ════════════════════════════════════════════════════
+function bootApp() {
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').classList.remove('hidden');
+    document.getElementById('user-avatar').textContent = currentUser.username.charAt(0).toUpperCase();
+    document.getElementById('user-name-display').textContent = currentUser.username;
+
+    // Midnight reset: if last saved date != today, wipe completedSlots
+    const lk = `last_${currentUser.username}`;
+    if (localStorage.getItem(lk) && localStorage.getItem(lk)!==getTodayKey()) completedSlots={};
+    localStorage.setItem(lk, getTodayKey());
+
+    recalcTodayXP();
+    updateLiveClock();
+    setInterval(updateLiveClock, 1000);
+    renderTimeline();
+    updateXPDisplay();
+    renderXPHistoryList();
+    initAllocationChart();
+    fetchAICoach();
+    setInterval(fetchAICoach, 10*60*1000);
+}
+
+// ════════════════════════════════════════════════════
+// CLOCK & SLOT
+// ════════════════════════════════════════════════════
+function updateLiveClock() {
+    const now = new Date();
+    document.getElementById('live-clock').textContent = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
+    document.getElementById('live-date').textContent  = now.toLocaleDateString('bn-BD',{weekday:'long',month:'long',day:'numeric'});
+    checkCurrentSlot(now);
+    updateDayProgress(now);
+}
+
+function parseTime(s) { const m=s.match(/(\d+):(\d+) (\w+)/); return [+m[1],+m[2],m[3]]; }
+function toMins(h,m,p) { let v=h*60+m; if(p==='PM'&&h!==12)v+=720; if(p==='AM'&&h===12)v=m; return v; }
+
+function checkCurrentSlot(now) {
+    const cur = now.getHours()*60+now.getMinutes();
+    let found = -1;
+    slots.forEach((slot,i)=>{
+        const [sh,sm,sp]=parseTime(slot.start), [eh,em,ep]=parseTime(slot.end);
+        const start=toMins(sh,sm,sp), end=toMins(eh,em,ep);
+        if (end<=start){ if(cur>=start||cur<end) found=i; }
+        else           { if(cur>=start&&cur<end) found=i; }
+    });
+    if (found!==-1) currentSlotIndex=found;
+    document.getElementById('current-slot-name').textContent = slots[currentSlotIndex].title;
+    document.getElementById('current-slot-desc').textContent = slots[currentSlotIndex].desc;
+}
+
+function updateDayProgress(now) {
+    const start=7.5*60, total=16.5*60;
+    const pct=Math.max(0,Math.min(100,((now.getHours()*60+now.getMinutes()-start)/total)*100));
+    document.getElementById('day-progress-bar').style.width = pct+'%';
+    document.getElementById('progress-text').textContent    = Math.round(pct)+'%';
+}
+
+// ════════════════════════════════════════════════════
+// XP DISPLAY
+// ════════════════════════════════════════════════════
+function updateXPDisplay() {
+    document.getElementById('xp-today').textContent = getTodayXP().toLocaleString();
+    const {level,next,prev} = getLevel(getTotalXP());
+    document.getElementById('level-badge').textContent = `লেভেল ${level} • ${LEVEL_NAMES[level]||'মহান'}`;
+    document.getElementById('xp-level-bar').style.width = (next?Math.round(((getTotalXP()-prev)/(next-prev))*100):100)+'%';
+    document.getElementById('slots-done').textContent = `${slots.filter(s=>completedSlots[s.id]).length} / ${slots.length}`;
+}
+
+function showXPGain(xp, el) {
+    const div=document.createElement('div'); div.className='xp-gain-anim'; div.textContent=`+${xp} XP ⚡`;
+    const r=el?el.getBoundingClientRect():{left:window.innerWidth/2-40,top:window.innerHeight/2};
+    div.style.left=(r.left+20)+'px'; div.style.top=(r.top-10+window.scrollY)+'px';
+    document.body.appendChild(div); setTimeout(()=>div.remove(),1500);
+}
+
+// ════════════════════════════════════════════════════
+// TIMELINE
+// ════════════════════════════════════════════════════
+function renderTimeline() {
+    const cc={study:'bg-violet-500/20 text-violet-300',break:'bg-blue-500/20 text-blue-300',rest:'bg-blue-500/20 text-blue-300',nap:'bg-indigo-500/20 text-indigo-300',wake:'bg-emerald-500/20 text-emerald-300',sleep:'bg-zinc-500/20 text-zinc-300',meal:'bg-orange-500/20 text-orange-300',prep:'bg-yellow-500/20 text-yellow-300',winddown:'bg-pink-500/20 text-pink-300'};
+    document.getElementById('timeline-container').innerHTML = slots.map((slot,i)=>{
+        const done=completedSlots[slot.id], active=i===currentSlotIndex, c=cc[slot.category]||'bg-zinc-500/20 text-zinc-300';
+        return `<div class="relative pl-12 pr-4 py-2 ${active?'active-slot rounded-r-3xl':''}">
+            <div onclick="toggleComplete(${slot.id})" data-slot-id="${slot.id}" class="absolute left-0 w-10 h-10 rounded-full border-2 border-zinc-700 flex items-center justify-center bg-zinc-900 z-10 cursor-pointer transition-all ${done?'bg-emerald-500 border-emerald-500':'hover:border-emerald-500/50'}">
+                ${done?'<i class="fa-solid fa-check text-white text-xs"></i>':''}
+            </div>
+            <div class="flex justify-between items-start">
+                <div onclick="openPomodoro(${i})" class="cursor-pointer flex-1">
+                    <div class="text-[10px] font-bold text-zinc-500 uppercase">${slot.start}</div>
+                    <div class="text-lg font-bold ${active?'text-white':'text-zinc-300'}">${slot.title}</div>
+                    <div class="text-xs text-zinc-500">${slot.desc}</div>
+                </div>
+                <div class="flex flex-col items-end gap-1 ml-2">
+                    <span class="xp-slot-tag ${c}">${slot.xp} XP</span>
+                    ${slot.category==='study'?'<span class="text-xl">🔥</span>':''}
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+window.toggleComplete = function(id) {
+    const el = document.querySelector(`[data-slot-id="${id}"]`);
+    const was = completedSlots[id];
+    completedSlots[id] = !was;
+    recalcTodayXP();
+    if (!was) showXPGain(slots.find(s=>s.id===id).xp, el);
+    updateXPDisplay(); renderXPHistoryList(); refreshCharts(); renderTimeline();
+    scheduleSave();
+};
+
+// ════════════════════════════════════════════════════
+// POMODORO
+// ════════════════════════════════════════════════════
+window.openPomodoro = function(i) {
+    pomodoroSlotIdx=i;
+    document.getElementById('modal-slot-name').textContent    = slots[i].title;
+    document.getElementById('pomodoro-xp-badge').textContent  = `✨ সম্পন্ন করলে +${slots[i].xp} XP পাবে`;
+    document.getElementById('pomodoro-modal').classList.remove('hidden');
+    secondsLeft=50*60; updateTimerDisplay();
+};
+window.closePomodoro = function() {
+    document.getElementById('pomodoro-modal').classList.add('hidden');
+    clearInterval(timerInterval); isRunning=false;
+    document.getElementById('timer-btn').textContent='শুরু';
+};
+window.toggleTimer = function() {
+    const btn=document.getElementById('timer-btn');
+    if (!isRunning) {
+        isRunning=true; btn.textContent='থামুন';
+        timerInterval=setInterval(()=>{
+            secondsLeft--; updateTimerDisplay();
+            if (secondsLeft<=0) {
+                clearInterval(timerInterval); isRunning=false; btn.textContent='শুরু';
+                const slot=slots[pomodoroSlotIdx];
+                if (!completedSlots[slot.id]) {
+                    completedSlots[slot.id]=true; recalcTodayXP();
+                    showXPGain(slot.xp,null); updateXPDisplay(); renderXPHistoryList(); refreshCharts(); renderTimeline();
+                    scheduleSave();
                 }
-            });
-            if (found !== -1) currentSlotIndex = found;
-            const a = slots[currentSlotIndex];
-            document.getElementById('current-slot-name').textContent = a.title;
-            document.getElementById('current-slot-desc').textContent = a.desc;
-        }
-
-        function toMins(h, m, period) {
-            let mins = h * 60 + m;
-            if (period === 'PM' && h !== 12) mins += 720;
-            if (period === 'AM' && h === 12) mins = m; // 12:xx AM = 0:xx
-            return mins;
-        }
-
-        function parseTime(str) {
-            const m = str.match(/(\d+):(\d+) (\w+)/);
-            return [parseInt(m[1]), parseInt(m[2]), m[3]];
-        }
-
-        function updateDayProgress(now) {
-            const start = 7.5 * 60;
-            const total = 16.5 * 60;
-            const cur   = now.getHours() * 60 + now.getMinutes() - start;
-            const pct   = Math.max(0, Math.min(100, (cur / total) * 100));
-            document.getElementById('day-progress-bar').style.width = pct + '%';
-            document.getElementById('progress-text').textContent = Math.round(pct) + '%';
-        }
-
-        // ── XP UI ─────────────────────────────────────────────────────────────
-        function updateXPDisplay() {
-            const todayXP = getTodayXP();
-            const totalXP = getTotalXP();
-            document.getElementById('xp-today').textContent = todayXP.toLocaleString();
-
-            const { level, next, prev } = getLevel(totalXP);
-            const labels = ['', 'নতুন', 'শিক্ষার্থী', 'অনুসন্ধানকারী', 'চ্যালেঞ্জার', 'প্রো', 'এলিট', 'মাস্টার', 'গ্র্যান্ড', 'লেজেন্ড', 'মিথ', 'দেবতা'];
-            document.getElementById('level-badge').textContent = `লেভেল ${level} • ${labels[level] || 'মহান'}`;
-
-            const pct = next ? Math.round(((totalXP - prev) / (next - prev)) * 100) : 100;
-            document.getElementById('xp-level-bar').style.width = pct + '%';
-
-            const done = slots.filter(s => completedSlots[s.id]).length;
-            document.getElementById('slots-done').textContent = `${done} / ${slots.length}`;
-        }
-
-        function showXPGain(xp, slotEl) {
-            const el = document.createElement('div');
-            el.className = 'xp-gain-anim';
-            el.textContent = `+${xp} XP ⚡`;
-            const rect = slotEl ? slotEl.getBoundingClientRect() : { left: window.innerWidth/2, top: window.innerHeight/2 };
-            el.style.left = (rect.left + 20) + 'px';
-            el.style.top  = (rect.top - 10 + window.scrollY) + 'px';
-            document.body.appendChild(el);
-            setTimeout(() => el.remove(), 1500);
-        }
-
-        // ── TIMELINE ──────────────────────────────────────────────────────────
-        function renderTimeline() {
-            const container = document.getElementById('timeline-container');
-            const catColors = { study: 'bg-violet-500/20 text-violet-300', break: 'bg-blue-500/20 text-blue-300', rest: 'bg-blue-500/20 text-blue-300', nap: 'bg-indigo-500/20 text-indigo-300', wake: 'bg-emerald-500/20 text-emerald-300', sleep: 'bg-zinc-500/20 text-zinc-300', meal: 'bg-orange-500/20 text-orange-300', prep: 'bg-yellow-500/20 text-yellow-300', winddown: 'bg-pink-500/20 text-pink-300' };
-            container.innerHTML = slots.map((slot, i) => {
-                const done = completedSlots[slot.id];
-                const active = i === currentSlotIndex;
-                const cc = catColors[slot.category] || 'bg-zinc-500/20 text-zinc-300';
-                return `
-                    <div class="relative pl-12 pr-4 py-2 ${active ? 'active-slot rounded-r-3xl' : ''}">
-                        <div onclick="toggleComplete(${slot.id})" data-slot-id="${slot.id}" class="absolute left-0 w-10 h-10 rounded-full border-2 border-zinc-700 flex items-center justify-center bg-zinc-900 z-10 cursor-pointer transition-all ${done ? 'bg-emerald-500 border-emerald-500' : 'hover:border-emerald-500/50'}">
-                            ${done ? '<i class="fa-solid fa-check text-white text-xs"></i>' : ''}
-                        </div>
-                        <div class="flex justify-between items-start">
-                            <div onclick="openPomodoro(${i})" class="cursor-pointer flex-1">
-                                <div class="text-[10px] font-bold text-zinc-500 uppercase">${slot.start}</div>
-                                <div class="text-lg font-bold ${active ? 'text-white' : 'text-zinc-300'}">${slot.title}</div>
-                                <div class="text-xs text-zinc-500">${slot.desc}</div>
-                            </div>
-                            <div class="flex flex-col items-end gap-1 ml-2">
-                                <span class="xp-slot-tag ${cc}">${slot.xp} XP</span>
-                                ${slot.category === 'study' ? '<span class="text-xl">🔥</span>' : ''}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        window.toggleComplete = function(id) {
-            const slotEl = document.querySelector(`[data-slot-id="${id}"]`);
-            const wasCompleted = completedSlots[id];
-            completedSlots[id] = !wasCompleted;
-            localStorage.setItem('completedSlots', JSON.stringify(completedSlots));
-            recalcTodayXP();
-            if (!wasCompleted) {
-                const slot = slots.find(s => s.id === id);
-                showXPGain(slot.xp, slotEl);
+                alert(`🎉 সেশন সম্পন্ন! +${slot.xp} XP অর্জিত!`);
             }
-            updateXPDisplay();
-            updateXPHistory();
-            renderTimeline();
-        };
+        },1000);
+    } else { isRunning=false; btn.textContent='চালু'; clearInterval(timerInterval); }
+};
+function updateTimerDisplay() {
+    const m=Math.floor(secondsLeft/60),s=secondsLeft%60;
+    document.getElementById('timer-display').textContent=`${m}:${s.toString().padStart(2,'0')}`;
+}
 
-        // ── POMODORO ──────────────────────────────────────────────────────────
-        window.openPomodoro = function(index) {
-            pomodoroSlotIndex = index;
-            document.getElementById('modal-slot-name').textContent = slots[index].title;
-            document.getElementById('pomodoro-xp-badge').textContent = `✨ সম্পন্ন করলে +${slots[index].xp} XP পাবে`;
-            document.getElementById('pomodoro-modal').classList.remove('hidden');
-            secondsLeft = 50 * 60;
-            updateTimerDisplay();
-        };
+// ════════════════════════════════════════════════════
+// XP HISTORY LIST
+// ════════════════════════════════════════════════════
+function renderXPHistoryList() {
+    const entries=Object.entries(xpHistory).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,7);
+    const el=document.getElementById('xp-history-list');
+    if (!entries.length){ el.textContent='কোনো ইতিহাস নেই।'; return; }
+    el.innerHTML=entries.map(([date,xp])=>{
+        const d=new Date(date+'T00:00:00');
+        const label=d.toLocaleDateString('bn-BD',{weekday:'short',month:'short',day:'numeric'});
+        const pct=Math.min(100,Math.round((xp/TOTAL_DAILY_XP)*100));
+        return `<div class="flex items-center gap-3">
+            <span class="text-xs text-zinc-500 w-24 shrink-0">${label}</span>
+            <div class="flex-1 h-2 bg-zinc-800 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-violet-500 to-pink-500" style="width:${pct}%"></div>
+            </div>
+            <span class="text-xs font-bold text-violet-400 w-16 text-right">${xp} XP</span>
+        </div>`;
+    }).join('');
+}
 
-        window.closePomodoro = function() {
-            document.getElementById('pomodoro-modal').classList.add('hidden');
-            clearInterval(timerInterval);
-            isRunning = false;
-            document.getElementById('timer-btn').textContent = 'শুরু';
-        };
+// ════════════════════════════════════════════════════
+// CHARTS
+// ════════════════════════════════════════════════════
+const CD = {
+    color:'#a1a1aa',
+    plugins:{legend:{labels:{color:'#a1a1aa',boxWidth:12}}},
+    scales:{x:{ticks:{color:'#71717a'},grid:{color:'#27272a'}},y:{ticks:{color:'#71717a'},grid:{color:'#27272a'},beginAtZero:true}}
+};
 
-        window.toggleTimer = function() {
-            const btn = document.getElementById('timer-btn');
-            if (!isRunning) {
-                isRunning = true;
-                btn.textContent = 'থামুন';
-                timerInterval = setInterval(() => {
-                    secondsLeft--;
-                    updateTimerDisplay();
-                    if (secondsLeft <= 0) {
-                        clearInterval(timerInterval);
-                        isRunning = false;
-                        btn.textContent = 'শুরু';
-                        // auto-complete the slot
-                        const slot = slots[pomodoroSlotIndex];
-                        if (!completedSlots[slot.id]) {
-                            completedSlots[slot.id] = true;
-                            localStorage.setItem('completedSlots', JSON.stringify(completedSlots));
-                            recalcTodayXP();
-                            showXPGain(slot.xp, null);
-                            updateXPDisplay();
-                            updateXPHistory();
-                            renderTimeline();
-                        }
-                        alert(`🎉 সেশন সম্পন্ন! +${slot.xp} XP অর্জিত!`);
-                    }
-                }, 1000);
-            } else {
-                isRunning = false;
-                btn.textContent = 'চালু';
-                clearInterval(timerInterval);
-            }
-        };
+function initAllocationChart() {
+    allocationChart=new Chart(document.getElementById('allocationChart').getContext('2d'),{
+        type:'doughnut',
+        data:{labels:['Study','Rest/Break','Sleep/Wind'],datasets:[{data:[10,6.5,7.5],backgroundColor:['#10b981','#3b82f6','#27272a'],borderWidth:0}]},
+        options:{plugins:{legend:{display:true,labels:{color:'#a1a1aa'}}},cutout:'75%'}
+    });
+}
+function initWeeklyChart() {
+    const days=getLastNDays(7);
+    weeklyChart=new Chart(document.getElementById('weeklyChart').getContext('2d'),{
+        type:'bar',
+        data:{labels:days.map(d=>new Date(d+'T00:00:00').toLocaleDateString('en-US',{weekday:'short',day:'numeric'})),datasets:[{label:'XP',data:days.map(d=>xpHistory[d]||0),backgroundColor:days.map((_,i)=>i===6?'#a78bfa':'#6d28d9'),borderRadius:8}]},
+        options:{...CD,plugins:{...CD.plugins,title:{display:true,text:'সাপ্তাহিক XP',color:'#f4f4f5',font:{size:13}}}}
+    });
+}
+function initMonthlyChart() {
+    const days=getLastNDays(30);
+    monthlyChart=new Chart(document.getElementById('monthlyChart').getContext('2d'),{
+        type:'line',
+        data:{labels:days.map((d,i)=>i%5===0?new Date(d+'T00:00:00').getDate()+'':''),datasets:[{label:'দৈনিক XP',data:days.map(d=>xpHistory[d]||0),borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.08)',fill:true,tension:0.4,pointRadius:2}]},
+        options:{...CD,plugins:{...CD.plugins,title:{display:true,text:'মাসিক XP (৩০ দিন)',color:'#f4f4f5',font:{size:13}}}}
+    });
+}
+function refreshCharts() {
+    if(weeklyChart){  const d=getLastNDays(7);  weeklyChart.data.datasets[0].data=d.map(x=>xpHistory[x]||0);  weeklyChart.update(); }
+    if(monthlyChart){ const d=getLastNDays(30); monthlyChart.data.datasets[0].data=d.map(x=>xpHistory[x]||0); monthlyChart.update(); }
+}
+window.switchChart=function(tab){
+    ['allocation','weekly','monthly'].forEach(t=>{
+        document.getElementById('chart-'+t).classList.toggle('hidden',t!==tab);
+        document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+        document.getElementById('tab-'+t).classList.toggle('bg-zinc-800',t!==tab);
+    });
+    if(tab==='weekly'&&!weeklyChart)   initWeeklyChart();
+    if(tab==='monthly'&&!monthlyChart) initMonthlyChart();
+};
 
-        function updateTimerDisplay() {
-            const m = Math.floor(secondsLeft / 60);
-            const s = secondsLeft % 60;
-            document.getElementById('timer-display').textContent = `${m}:${s.toString().padStart(2, '0')}`;
-        }
+// ════════════════════════════════════════════════════
+// AI COACH
+// ════════════════════════════════════════════════════
+const aiClient=new Client({baseUrl:'https://g4f.space/api/groq/models'});
 
-        // ── XP HISTORY FOR CHARTS ─────────────────────────────────────────────
-        function updateXPHistory() {
-            renderXPHistoryList();
-            if (weeklyChart) updateWeeklyChart();
-            if (monthlyChart) updateMonthlyChart();
-        }
+window.fetchAICoach=async function(){
+    const btn=document.getElementById('ai-refresh-btn'), textEl=document.getElementById('ai-coach-text');
+    btn.disabled=true; textEl.textContent=''; textEl.classList.add('ai-typing');
+    const slot=slots[currentSlotIndex], done=slots.filter(s=>completedSlots[s.id]).length;
+    const prompt=`You are AETHER, a Bangla study coach.
+User: "${currentUser?.username}", slot: "${slot.title}" (${slot.desc}), ${slot.xp} XP. Completed ${done}/${slots.length}, earned ${getTodayXP()} XP today, Level ${getLevel(getTotalXP()).level}. Time: ${new Date().getHours()}:00.
+Give ONE short (2-3 sentences), actionable, motivating tip in Bangla script. Use emojis. Be specific.`;
+    try {
+        const r=await aiClient.chat.completions.create({
+            model:'moonshotai/kimi-k2-instruct',
+            messages:[{role:'system',content:'Reply only in Bangla script. Be short, punchy.'},{role:'user',content:prompt}],
+            temperature:0.85, max_tokens:200
+        });
+        textEl.classList.remove('ai-typing');
+        textEl.textContent=r.choices?.[0]?.message?.content||'(কোনো সাড়া নেই)';
+    } catch(e){ textEl.classList.remove('ai-typing'); textEl.textContent='⚠️ AI সংযোগ ব্যর্থ।'; }
+    finally { btn.disabled=false; }
+};
 
-        function renderXPHistoryList() {
-            const history = getXPHistory();
-            const entries = Object.entries(history).sort((a, b) => b[0].localeCompare(a[0])).slice(0, 7);
-            const el = document.getElementById('xp-history-list');
-            if (!entries.length) { el.textContent = 'কোনো ইতিহাস নেই।'; return; }
-            el.innerHTML = entries.map(([date, xp]) => {
-                const d = new Date(date);
-                const label = d.toLocaleDateString('bn-BD', { weekday: 'short', month: 'short', day: 'numeric' });
-                const pct = Math.round((xp / TOTAL_DAILY_XP) * 100);
-                return `<div class="flex items-center gap-3">
-                    <span class="text-xs text-zinc-500 w-24 shrink-0">${label}</span>
-                    <div class="flex-1 h-2 bg-zinc-800 rounded-full overflow-hidden">
-                        <div class="h-full bg-gradient-to-r from-violet-500 to-pink-500" style="width:${pct}%"></div>
-                    </div>
-                    <span class="text-xs font-bold text-violet-400 w-16 text-right">${xp} XP</span>
-                </div>`;
-            }).join('');
-        }
+// ════════════════════════════════════════════════════
+// MISC
+// ════════════════════════════════════════════════════
+window.playAmbient      = t=>alert(t===0?"Rain Sound Playing...":"Lofi Playing...");
+window.speakCurrentSlot = ()=>{ const s=slots[currentSlotIndex],m=new SpeechSynthesisUtterance(`${s.title}. ${s.desc}`); m.lang='bn-BD'; window.speechSynthesis.speak(m); };
+window.toggleFocusMode  = ()=>document.body.requestFullscreen?.();
 
-        // ── CHARTS ────────────────────────────────────────────────────────────
-        const chartDefaults = {
-            color: '#a1a1aa',
-            plugins: { legend: { labels: { color: '#a1a1aa', boxWidth: 12 } } },
-            scales: {
-                x: { ticks: { color: '#71717a' }, grid: { color: '#27272a' } },
-                y: { ticks: { color: '#71717a' }, grid: { color: '#27272a' }, beginAtZero: true }
-            }
-        };
+// ════════════════════════════════════════════════════
+// AUTO-RESTORE SESSION ON PAGE LOAD
+// ════════════════════════════════════════════════════
+(async function restoreSession() {
+    const saved = localStorage.getItem('rx_session');
+    if (!saved) return;
+    try {
+        const session = JSON.parse(saved);
+        if (!session?.username) return;
+        showSync('busy', '⏳ সেশন পুনরুদ্ধার...');
+        sheetyRows = await sheetyGetAll();
+        const profile = sheetyRows.find(r =>
+            r.username?.toLowerCase() === session.username.toLowerCase() && r.date === 'profile'
+        );
+        if (!profile) { localStorage.removeItem('rx_session'); return; }
+        currentUser = { username: profile.username, profileRowId: profile.id };
+        loadUserDataFromRows();
+        bootApp();
+    } catch(e) {
+        showSync('err', '✗ অটো-লগইন ব্যর্থ');
+    }
+})();
 
-        function initAllocationChart() {
-            const ctx = document.getElementById('allocationChart').getContext('2d');
-            allocationChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Study', 'Rest/Break', 'Sleep/Wind'],
-                    datasets: [{ data: [10, 6.5, 7.5], backgroundColor: ['#10b981', '#3b82f6', '#27272a'], borderWidth: 0 }]
-                },
-                options: { plugins: { legend: { display: true, labels: { color: '#a1a1aa' } } }, cutout: '75%' }
-            });
-        }
-
-        function getLastNDays(n) {
-            const result = [];
-            for (let i = n - 1; i >= 0; i--) {
-                const d = new Date();
-                d.setDate(d.getDate() - i);
-                const y = d.getFullYear();
-                const m = String(d.getMonth() + 1).padStart(2, '0');
-                const day = String(d.getDate()).padStart(2, '0');
-                result.push(`${y}-${m}-${day}`);
-            }
-            return result;
-        }
-
-        function initWeeklyChart() {
-            const days = getLastNDays(7);
-            const history = getXPHistory();
-            const labels = days.map(d => { const dt = new Date(d); return dt.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric' }); });
-            const data = days.map(d => history[d] || 0);
-
-            const ctx = document.getElementById('weeklyChart').getContext('2d');
-            weeklyChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels,
-                    datasets: [{
-                        label: 'XP',
-                        data,
-                        backgroundColor: days.map((_, i) => i === 6 ? '#a78bfa' : '#6d28d9'),
-                        borderRadius: 8,
-                    }]
-                },
-                options: {
-                    ...chartDefaults,
-                    plugins: { ...chartDefaults.plugins, title: { display: true, text: 'সাপ্তাহিক XP', color: '#f4f4f5', font: { size: 13 } } }
-                }
-            });
-        }
-
-        function updateWeeklyChart() {
-            if (!weeklyChart) return;
-            const days = getLastNDays(7);
-            const history = getXPHistory();
-            weeklyChart.data.datasets[0].data = days.map(d => history[d] || 0);
-            weeklyChart.update();
-        }
-
-        function initMonthlyChart() {
-            const days = getLastNDays(30);
-            const history = getXPHistory();
-
-            const ctx = document.getElementById('monthlyChart').getContext('2d');
-            monthlyChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: days.map((d, i) => i % 5 === 0 ? new Date(d).getDate() + '' : ''),
-                    datasets: [{
-                        label: 'দৈনিক XP',
-                        data: days.map(d => history[d] || 0),
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16,185,129,0.08)',
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 2,
-                    }]
-                },
-                options: {
-                    ...chartDefaults,
-                    plugins: { ...chartDefaults.plugins, title: { display: true, text: 'মাসিক XP (৩০ দিন)', color: '#f4f4f5', font: { size: 13 } } }
-                }
-            });
-        }
-
-        function updateMonthlyChart() {
-            if (!monthlyChart) return;
-            const days = getLastNDays(30);
-            const history = getXPHistory();
-            monthlyChart.data.datasets[0].data = days.map(d => history[d] || 0);
-            monthlyChart.update();
-        }
-
-        window.switchChart = function(tab) {
-            ['allocation', 'weekly', 'monthly'].forEach(t => {
-                document.getElementById('chart-' + t).classList.toggle('hidden', t !== tab);
-                const btn = document.getElementById('tab-' + t);
-                btn.classList.toggle('active', t === tab);
-                btn.classList.toggle('bg-zinc-800', t !== tab);
-            });
-            if (tab === 'weekly' && !weeklyChart) initWeeklyChart();
-            if (tab === 'monthly' && !monthlyChart) initMonthlyChart();
-        };
-
-        // ── AI COACH ──────────────────────────────────────────────────────────
-        const aiClient = new Client({ baseUrl: 'https://g4f.space/api/groq/models' });
-
-        window.fetchAICoach = async function() {
-            const btn = document.getElementById('ai-refresh-btn');
-            const textEl = document.getElementById('ai-coach-text');
-            btn.disabled = true;
-            textEl.textContent = '';
-            textEl.classList.add('ai-typing');
-
-            const slot = slots[currentSlotIndex];
-            const done = slots.filter(s => completedSlots[s.id]).length;
-            const todayXP = getTodayXP();
-            const { level } = getLevel(getTotalXP());
-            const hour = new Date().getHours();
-
-            const prompt = `You are AETHER, a smart, motivating Bangla study coach for a student following a strict daily routine. 
-Context: Current slot: "${slot.title}" (${slot.desc}), Worth: ${slot.xp} XP. 
-Student has completed ${done}/${slots.length} tasks today, earned ${todayXP} XP, and is at Level ${level}.
-Current time: ${hour}:00.
-
-Give ONE short (2-3 sentences max), highly actionable, motivating coaching tip in Bangla script for THIS specific moment. 
-Be specific, creative, direct. Use emojis. Do NOT be generic.`;
-
-            try {
-                const result = await aiClient.chat.completions.create({
-                    model: 'moonshotai/kimi-k2-instruct',
-                    messages: [
-                        { role: 'system', content: 'You are AETHER, a Bangla study coach. Reply only in Bangla script. Be short, punchy, motivating.' },
-                        { role: 'user', content: prompt }
-                    ],
-                    temperature: 0.85,
-                    max_tokens: 200
-                });
-                textEl.classList.remove('ai-typing');
-                textEl.textContent = result.choices?.[0]?.message?.content || '(কোনো সাড়া নেই)';
-            } catch (err) {
-                textEl.classList.remove('ai-typing');
-                textEl.textContent = `⚠️ AI সংযোগ ব্যর্থ। পরে আবার চেষ্টা করো।`;
-            } finally {
-                btn.disabled = false;
-            }
-        };
-
-        // ── MISC ──────────────────────────────────────────────────────────────
-        window.playAmbient = function(type) {
-            alert(type === 0 ? "Rain Sound Playing..." : "Lofi Playing...");
-        };
-
-        window.speakCurrentSlot = function() {
-            const slot = slots[currentSlotIndex];
-            const msg = new SpeechSynthesisUtterance(`${slot.title}. ${slot.desc}`);
-            msg.lang = 'bn-BD';
-            window.speechSynthesis.speak(msg);
-        };
-
-        window.toggleFocusMode = function() {
-            document.body.requestFullscreen?.();
-        };
-
-        // ── INIT ──────────────────────────────────────────────────────────────
-        window.onload = () => {
-            checkMidnightReset();
-            updateLiveClock();
-            setInterval(updateLiveClock, 1000);
-            renderTimeline();
-            updateXPDisplay();
-            renderXPHistoryList();
-            initAllocationChart();
-            // Fetch AI coach on load
-            fetchAICoach();
-            // Refresh AI every 10 minutes
-            setInterval(fetchAICoach, 10 * 60 * 1000);
-        };
-    </script>
+</script>
 </body>
 </html>
