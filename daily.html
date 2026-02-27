@@ -705,7 +705,20 @@ Give ONE short (2-3 sentences), actionable, motivating tip in Bangla script. Use
 // ════════════════════════════════════════════════════
 // MISC
 // ════════════════════════════════════════════════════
-window.playAmbient      = t=>alert(t===0?"Rain Sound Playing...":"Lofi Playing...");
+const sounds = [
+    new Audio("https://rain.today/Data/hssp19Wa.ogg"),
+    new Audio("https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3")
+];
+
+window.playAmbient = t => {
+    // Stop any currently playing audio before starting new one
+    sounds.forEach(s => { s.pause(); s.currentTime = 0; });
+    
+    // Play the selected sound and show alert
+    sounds[t].play();
+    alert(t === 0 ? "Rain Sound Playing..." : "Lofi Playing...");
+};
+
 window.speakCurrentSlot = ()=>{ const s=slots[currentSlotIndex],m=new SpeechSynthesisUtterance(`${s.title}. ${s.desc}`); m.lang='bn-BD'; window.speechSynthesis.speak(m); };
 window.toggleFocusMode  = ()=>document.body.requestFullscreen?.();
 
