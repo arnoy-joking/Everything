@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RoutineX • Life OS</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -255,6 +255,27 @@ select.inp { cursor:pointer; }
 
 /* ── TOAST ── */
 #toast { position:fixed; bottom:72px; left:50%; transform:translateX(-50%); z-index:999; background:var(--card); border:1px solid var(--border2); border-radius:10px; padding:10px 20px; font-size:.85rem; font-weight:600; display:none; white-space:nowrap; box-shadow:0 8px 32px #00000060; }
+
+/* ── SHOP ── */
+.shop-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media(min-width:600px){ .shop-grid { grid-template-columns:repeat(3,1fr); } }
+.shop-item { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:8px; transition:border-color .2s; }
+.shop-item:hover { border-color:var(--border2); }
+.shop-item.owned { border-color:var(--accent); background:#00e5a008; }
+.shop-item.active-theme { border-color:var(--accent2); background:#7c6af710; }
+.shop-preview { height:40px; border-radius:8px; margin-bottom:4px; }
+.shop-price { display:inline-flex; align-items:center; gap:4px; font-size:.75rem; font-weight:800; color:var(--coin); }
+.shop-owned-badge { font-size:.65rem; font-weight:700; color:var(--accent); }
+
+/* ── COMPARE (history) ── */
+.compare-chip { display:inline-flex; align-items:center; gap:6px; padding:4px 10px 4px 8px; border-radius:99px; border:1px solid var(--border2); background:var(--card); font-size:.75rem; font-weight:700; cursor:pointer; transition:all .15s; }
+.compare-chip:hover { border-color:var(--border2); background:#ffffff0a; }
+.compare-chip.selected { border-color:var(--accent2); background:#7c6af718; color:var(--accent2); }
+.compare-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+
+/* ── LB TODAY BAR ── */
+.lb-today-bar { height:4px; border-radius:99px; background:#ffffff0a; overflow:hidden; margin-top:3px; }
+.lb-today-fill { height:100%; border-radius:99px; background:var(--accent); transition:width .6s; }
 </style>
 </head>
 <body>
@@ -364,6 +385,9 @@ select.inp { cursor:pointer; }
   </div>
   <div class="bnav-item" data-view="leaderboard" onclick="goTo('leaderboard')">
     <i class="fa-solid fa-trophy"></i><span>র‍্যাংক</span>
+  </div>
+  <div class="bnav-item" data-view="shop" onclick="goTo('shop')">
+    <i class="fa-solid fa-store"></i><span>শপ</span>
   </div>
   <div class="bnav-item" data-view="history" onclick="goTo('history')">
     <i class="fa-solid fa-chart-line"></i><span>ইতিহাস</span>
@@ -540,13 +564,19 @@ Expected JSON:
 
     <!-- Tabs -->
     <div style="display:flex;gap:6px;margin-bottom:20px">
-      <button class="btn btn-accent btn-sm" id="lb-tab-all"     onclick="switchLBTab('all')">সর্বকালীন</button>
-      <button class="btn btn-ghost btn-sm" id="lb-tab-weekly"  onclick="switchLBTab('weekly')">সাপ্তাহিক</button>
+      <button class="btn btn-accent btn-sm"  id="lb-tab-all"    onclick="switchLBTab('all')">সর্বকালীন</button>
+      <button class="btn btn-ghost btn-sm"   id="lb-tab-weekly" onclick="switchLBTab('weekly')">সাপ্তাহিক</button>
+      <button class="btn btn-ghost btn-sm"   id="lb-tab-today"  onclick="switchLBTab('today')">আজ</button>
     </div>
 
     <!-- Chart -->
     <div class="card" style="padding:16px;margin-bottom:20px">
       <canvas id="lb-chart" height="180"></canvas>
+    </div>
+
+    <!-- Today's live snapshot banner -->
+    <div id="lb-today-banner" style="display:none;margin-bottom:12px;padding:10px 14px;background:#00e5a010;border:1px solid #00e5a033;border-radius:12px;font-size:.78rem;color:var(--accent);font-weight:700">
+      ⚡ আজকের লাইভ XP — এখন পর্যন্ত সবার অর্জন
     </div>
 
     <!-- List -->
@@ -590,6 +620,27 @@ Expected JSON:
       </div>
     </div>
 
+    <!-- USER COMPARISON -->
+    <div class="card" style="padding:18px;margin-bottom:20px;border-color:var(--accent2)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+        <div style="font-size:.78rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.06em">⚔️ তুলনা করো</div>
+        <div style="font-size:.72rem;color:var(--muted)">সর্বোচ্চ ২ জন বেছে নাও</div>
+      </div>
+      <!-- user chips -->
+      <div id="compare-user-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
+        <div style="color:var(--muted);font-size:.8rem;padding:4px 0">লোড হচ্ছে...</div>
+      </div>
+      <!-- Comparison chart -->
+      <div id="compare-chart-wrap" style="display:none">
+        <canvas id="compare-chart" height="180"></canvas>
+        <!-- Weekly comparison table -->
+        <div id="compare-table" style="margin-top:14px;display:flex;flex-direction:column;gap:6px"></div>
+      </div>
+      <div id="compare-empty" style="text-align:center;padding:20px;color:var(--muted);font-size:.82rem">
+        উপরের তালিকা থেকে ব্যবহারকারী বেছে নাও
+      </div>
+    </div>
+
     <!-- Charts -->
     <div style="display:grid;grid-template-columns:1fr;gap:16px">
       <div class="card" style="padding:16px">
@@ -599,6 +650,23 @@ Expected JSON:
         <canvas id="hist-monthly-chart" height="160"></canvas>
       </div>
     </div>
+  </div>
+
+  <!-- ── SHOP ── -->
+  <div id="view-shop" class="view">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:8px">
+      <h2 class="section-title" style="margin:0">শপ 🛍️</h2>
+      <div id="shop-balance" class="coin-display" style="font-size:.85rem">🪙 0</div>
+    </div>
+    <p style="color:var(--muted);font-size:.82rem;margin-bottom:20px">Study slots সম্পন্ন করে coins অর্জন করো এবং কিনে নাও।</p>
+
+    <!-- Themes -->
+    <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">🎨 থিম</div>
+    <div class="shop-grid" id="shop-themes" style="margin-bottom:24px"></div>
+
+    <!-- Boosts -->
+    <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">⚡ বুস্ট</div>
+    <div class="shop-grid" id="shop-boosts"></div>
   </div>
 
 </div><!-- /main-content -->
@@ -911,6 +979,11 @@ async function bootApp(user) {
   if (localStorage.getItem(lk) && localStorage.getItem(lk) !== todayKey()) completedSlots = {};
   localStorage.setItem(lk, todayKey());
 
+  // Load purchases & restore theme
+  myPurchases = await dbGetPurchases(user.username);
+  const themeRow = myPurchases.find(p=>p.item_id==='active_theme');
+  if (themeRow?.expires_at) applyTheme(themeRow.expires_at); // expires_at stores theme id
+
   // Show app
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('main-content').style.display = 'block';
@@ -936,6 +1009,7 @@ window.goTo = function(view) {
   if (view==='leaderboard') loadLeaderboard();
   if (view==='history')     renderHistory();
   if (view==='routines')    renderRoutineList();
+  if (view==='shop')        renderShop();
 };
 
 window.closeOnboarding = function() {
@@ -1407,6 +1481,8 @@ window.switchLBTab = function(tab) {
   currentLBTab = tab;
   document.getElementById('lb-tab-all').className    = tab==='all'    ? 'btn btn-accent btn-sm' : 'btn btn-ghost btn-sm';
   document.getElementById('lb-tab-weekly').className = tab==='weekly' ? 'btn btn-accent btn-sm' : 'btn btn-ghost btn-sm';
+  document.getElementById('lb-tab-today').className  = tab==='today'  ? 'btn btn-accent btn-sm' : 'btn btn-ghost btn-sm';
+  document.getElementById('lb-today-banner').style.display = tab==='today' ? 'block' : 'none';
   renderLeaderboard();
 };
 
@@ -1419,19 +1495,26 @@ async function loadLeaderboard() {
 }
 
 function renderLeaderboard() {
-  const days7 = new Set(lastNDays(7));
+  const days7  = new Set(lastNDays(7));
+  const today  = todayKey();
   // Aggregate XP per user
   const agg = {};
   allLogs.forEach(l=>{
-    if (!agg[l.username]) agg[l.username]={username:l.username,total:0,weekly:0};
+    if (!agg[l.username]) agg[l.username]={username:l.username,total:0,weekly:0,today:0,todayMax:0};
     agg[l.username].total  += l.xp||0;
     if (days7.has(l.date)) agg[l.username].weekly += l.xp||0;
+    if (l.date===today)    agg[l.username].today   = l.xp||0;
   });
+
+  const todayMax = Math.max(1,...Object.values(agg).map(u=>u.today));
+
   let sorted = Object.values(agg).sort((a,b)=>
-    currentLBTab==='weekly' ? b.weekly-a.weekly : b.total-a.total
+    currentLBTab==='weekly' ? b.weekly-a.weekly :
+    currentLBTab==='today'  ? b.today-a.today   : b.total-a.total
   );
-  const scoreKey = currentLBTab==='weekly' ? 'weekly' : 'total';
+  const scoreKey = currentLBTab==='weekly' ? 'weekly' : currentLBTab==='today' ? 'today' : 'total';
   const top5 = sorted.slice(0,5);
+  const COLORS = ['#00e5a0','#7c6af7','#f7a06a','#3b82f6','#ec4899'];
 
   // Chart
   if (lbChart) lbChart.destroy();
@@ -1440,11 +1523,19 @@ function renderLeaderboard() {
     type:'bar',
     data:{
       labels: top5.map(u=>u.username),
-      datasets:[{label:'XP',data:top5.map(u=>u[scoreKey]),backgroundColor:top5.map((_,i)=>['#00e5a0','#7c6af7','#f7a06a','#3b82f6','#ec4899'][i]||'#6b6b7e'),borderRadius:8}]
+      datasets:[{
+        label:'XP',
+        data:top5.map(u=>u[scoreKey]),
+        backgroundColor:top5.map((_,i)=>COLORS[i]||'#6b6b7e'),
+        borderRadius:8
+      }]
     },
     options:{
       responsive:true,
-      plugins:{legend:{display:false},title:{display:true,text:currentLBTab==='weekly'?'সাপ্তাহিক টপ ৫':'সর্বকালীন টপ ৫',color:'#f0f0f5',font:{size:13}}},
+      plugins:{
+        legend:{display:false},
+        title:{display:true,text:currentLBTab==='weekly'?'সাপ্তাহিক টপ ৫':currentLBTab==='today'?'আজকের টপ ৫':'সর্বকালীন টপ ৫',color:'#f0f0f5',font:{size:13}}
+      },
       scales:{x:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'}},y:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'},beginAtZero:true}}
     }
   });
@@ -1455,13 +1546,20 @@ function renderLeaderboard() {
   list.innerHTML = sorted.slice(0,20).map((u,i)=>{
     const rankClass = i===0?'gold':i===1?'silver':i===2?'bronze':'';
     const isMe = u.username===currentUser?.username?.toLowerCase();
+    const todayPct = Math.round((u.today/todayMax)*100);
     return `<div class="lb-row ${isMe?'me':''}">
       <span class="lb-rank ${rankClass}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</span>
-      <div class="avatar" style="width:28px;height:28px;font-size:.78rem;background:${['#00e5a066','#7c6af766','#f7a06a66','#3b82f666'][i]||'var(--accent2)'}66">${u.username.charAt(0).toUpperCase()}</div>
-      <div style="flex:1">
-        <div style="font-weight:700;font-size:.88rem">${u.username}${isMe?' <span style="font-size:.7rem;color:var(--accent)">(তুমি)</span>':''}</div>
+      <div class="avatar" style="width:28px;height:28px;font-size:.78rem;background:${COLORS[i]||'#6b7b8a'}44">${u.username.charAt(0).toUpperCase()}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+          ${u.username}${isMe?' <span style="font-size:.65rem;color:var(--accent)">(তুমি)</span>':''}
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:2px">
+          <div class="lb-today-bar" style="flex:1;max-width:80px"><div class="lb-today-fill" style="width:${todayPct}%"></div></div>
+          <span style="font-size:.65rem;color:var(--accent);font-weight:700">${u.today>0?'+'+u.today+' আজ':''}</span>
+        </div>
       </div>
-      <div style="font-family:\'Syne\',sans-serif;font-weight:800;color:${i<3?['#fbbf24','#a0a0b0','#cd7f32'][i]:'var(--muted)'};font-size:.95rem">${u[scoreKey].toLocaleString()} XP</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:800;color:${i<3?['#fbbf24','#a0a0b0','#cd7f32'][i]:'var(--muted)'};font-size:.92rem;flex-shrink:0">${u[scoreKey].toLocaleString()}</div>
     </div>`;
   }).join('');
 }
@@ -1469,14 +1567,20 @@ function renderLeaderboard() {
 // ════════════════════════════════════════════════════════════════
 // HISTORY
 // ════════════════════════════════════════════════════════════════
-function renderHistory() {
+let compareSelected = [];   // max 2 usernames
+let compareChart    = null;
+let compareAllLogs  = null; // cache
+
+const COMPARE_COLORS = ['#7c6af7','#f7a06a','#ec4899','#3b82f6'];
+
+async function renderHistory() {
   const days90  = lastNDays(90);
   const days30  = lastNDays(30);
   const days7   = lastNDays(7);
 
   // Stats
   const streak  = calcStreak();
-  const best    = Math.max(0,...Object.values(xpHistory));
+  const best    = Object.values(xpHistory).length ? Math.max(0,...Object.values(xpHistory)) : 0;
   const weekXP  = days7.reduce((s,d)=>s+(xpHistory[d]||0),0);
   const total   = getTotalXP();
   document.getElementById('hist-streak').textContent = streak;
@@ -1494,7 +1598,7 @@ function renderHistory() {
     type:'bar',
     data:{
       labels:days7.map(d=>new Date(d+'T00:00:00').toLocaleDateString('en-US',{weekday:'short',day:'numeric'})),
-      datasets:[{label:'XP',data:days7.map(d=>xpHistory[d]||0),backgroundColor:days7.map((_,i)=>i===6?'var(--accent)':'#7c6af766'),borderRadius:8}]
+      datasets:[{label:'তোমার XP',data:days7.map(d=>xpHistory[d]||0),backgroundColor:days7.map((_,i)=>i===6?'var(--accent)':'#7c6af766'),borderRadius:8}]
     },
     options:{responsive:true,plugins:{legend:{display:false},title:{display:true,text:'সাপ্তাহিক XP',color:'#f0f0f5',font:{size:12}}},scales:{x:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'}},y:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'},beginAtZero:true}}}
   });
@@ -1510,6 +1614,133 @@ function renderHistory() {
     },
     options:{responsive:true,plugins:{legend:{display:false},title:{display:true,text:'মাসিক XP (৩০ দিন)',color:'#f0f0f5',font:{size:12}}},scales:{x:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'}},y:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'},beginAtZero:true}}}
   });
+
+  // Load comparison data
+  await loadCompareUsers();
+}
+
+async function loadCompareUsers() {
+  const listEl = document.getElementById('compare-user-list');
+  if (!compareAllLogs) {
+    listEl.innerHTML = '<div style="color:var(--muted);font-size:.8rem">লোড হচ্ছে...</div>';
+    try {
+      compareAllLogs = await dbGetAllLogs();
+    } catch(e) { listEl.innerHTML = '<div style="color:var(--danger);font-size:.8rem">লোড ব্যর্থ</div>'; return; }
+  }
+  // Build per-user map
+  const users = {};
+  compareAllLogs.forEach(l => {
+    if (l.username === currentUser.username.toLowerCase()) return; // skip self
+    if (!users[l.username]) users[l.username] = {};
+    users[l.username][l.date] = l.xp || 0;
+  });
+  const userList = Object.keys(users);
+  if (!userList.length) {
+    listEl.innerHTML = '<div style="color:var(--muted);font-size:.8rem">এখনো কোনো অন্য ব্যবহারকারী নেই</div>';
+    return;
+  }
+  listEl.innerHTML = userList.map((u,i) => {
+    const sel = compareSelected.includes(u);
+    return `<div class="compare-chip ${sel?'selected':''}" onclick="toggleCompareUser('${u}')" data-user="${u}">
+      <div class="compare-dot" style="background:${sel?COMPARE_COLORS[compareSelected.indexOf(u)]:'var(--muted)'}"></div>
+      ${u}
+    </div>`;
+  }).join('');
+  renderCompareChart(users);
+}
+
+window.toggleCompareUser = function(username) {
+  if (compareSelected.includes(username)) {
+    compareSelected = compareSelected.filter(u=>u!==username);
+  } else {
+    if (compareSelected.length >= 2) { showToast('সর্বোচ্চ ২ জন বেছে নেওয়া যাবে'); return; }
+    compareSelected.push(username);
+  }
+  // Re-build users map from cache
+  const users = {};
+  (compareAllLogs||[]).forEach(l => {
+    if (l.username === currentUser.username.toLowerCase()) return;
+    if (!users[l.username]) users[l.username] = {};
+    users[l.username][l.date] = l.xp || 0;
+  });
+  // Update chip styles
+  document.querySelectorAll('.compare-chip').forEach(chip => {
+    const u = chip.dataset.user;
+    const sel = compareSelected.includes(u);
+    chip.classList.toggle('selected', sel);
+    chip.querySelector('.compare-dot').style.background = sel ? COMPARE_COLORS[compareSelected.indexOf(u)] : 'var(--muted)';
+  });
+  renderCompareChart(users);
+};
+
+function renderCompareChart(users) {
+  const days30 = lastNDays(30);
+  const chartWrap = document.getElementById('compare-chart-wrap');
+  const emptyEl   = document.getElementById('compare-empty');
+  const tableEl   = document.getElementById('compare-table');
+
+  if (!compareSelected.length) {
+    chartWrap.style.display = 'none';
+    emptyEl.style.display   = 'block';
+    return;
+  }
+  chartWrap.style.display = 'block';
+  emptyEl.style.display   = 'none';
+
+  // Build datasets: me + selected users
+  const meData = days30.map(d=>xpHistory[d]||0);
+  const datasets = [
+    { label:'তুমি', data:meData, borderColor:'var(--accent)', backgroundColor:'#00e5a015', fill:true, tension:.4, pointRadius:2, borderWidth:2 },
+    ...compareSelected.map((u,i)=>({
+      label:u,
+      data:days30.map(d=>(users[u]||{})[d]||0),
+      borderColor:COMPARE_COLORS[i],
+      backgroundColor:COMPARE_COLORS[i]+'18',
+      fill:false, tension:.4, pointRadius:2, borderWidth:2
+    }))
+  ];
+
+  if (compareChart) compareChart.destroy();
+  const ctx = document.getElementById('compare-chart').getContext('2d');
+  compareChart = new Chart(ctx,{
+    type:'line',
+    data:{
+      labels:days30.map((d,i)=>i%5===0?new Date(d+'T00:00:00').getDate()+'':''),
+      datasets
+    },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{display:true,labels:{color:'#f0f0f5',font:{size:11},boxWidth:12}},
+        title:{display:true,text:'গত ৩০ দিনের তুলনা',color:'#f0f0f5',font:{size:12}}
+      },
+      scales:{x:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'}},y:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'},beginAtZero:true}}
+    }
+  });
+
+  // Summary table
+  const days7 = lastNDays(7);
+  const allUsers = ['তুমি',...compareSelected];
+  const allData  = [xpHistory,...compareSelected.map(u=>users[u]||{})];
+  const colors   = ['var(--accent)',...COMPARE_COLORS];
+  tableEl.innerHTML = allUsers.map((label,i)=>{
+    const hist = allData[i];
+    const wk = days7.reduce((s,d)=>s+(hist[d]||0),0);
+    const tot = Object.values(hist).reduce((s,v)=>s+v,0);
+    const best= Object.values(hist).length ? Math.max(0,...Object.values(hist)) : 0;
+    return `<div style="display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:8px;align-items:center;padding:8px 10px;background:var(--bg);border-radius:8px;border:1px solid var(--border)">
+      <div style="width:10px;height:10px;border-radius:50%;background:${colors[i]};flex-shrink:0"></div>
+      <div style="font-weight:700;font-size:.82rem">${label}</div>
+      <div style="text-align:center">
+        <div style="font-size:.62rem;color:var(--muted)">সপ্তাহ</div>
+        <div style="font-weight:800;font-size:.85rem;color:${colors[i]}">${wk}</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:.62rem;color:var(--muted)">মোট</div>
+        <div style="font-weight:800;font-size:.85rem;color:${colors[i]}">${tot}</div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function calcStreak() {
@@ -1525,7 +1756,6 @@ function calcStreak() {
 
 function renderHeatmap(days) {
   const maxXP = Math.max(1,...days.map(d=>xpHistory[d]||0));
-  // Group into weeks (columns of 7)
   const cont = document.getElementById('heatmap-container');
   const grid = document.createElement('div');
   grid.className='heatmap-grid';
@@ -1541,6 +1771,153 @@ function renderHeatmap(days) {
   });
   cont.innerHTML=''; cont.appendChild(grid);
 }
+
+// ════════════════════════════════════════════════════════════════
+// SHOP
+// ════════════════════════════════════════════════════════════════
+const SHOP_THEMES = [
+  { id:'theme_default',  name:'ডিফল্ট',      price:0,   preview:'linear-gradient(135deg,#070709,#0f0f12)',
+    vars:{ '--bg':'#070709','--surface':'#0f0f12','--card':'#16161c','--accent':'#00e5a0','--accent2':'#7c6af7','--accent3':'#f7a06a' } },
+  { id:'theme_ocean',    name:'মহাসাগর',      price:80,  preview:'linear-gradient(135deg,#020b18,#0a2a4a)',
+    vars:{ '--bg':'#020b18','--surface':'#071a30','--card':'#0c2540','--accent':'#00d4ff','--accent2':'#0080ff','--accent3':'#00ffcc' } },
+  { id:'theme_sunset',   name:'সূর্যাস্ত',    price:80,  preview:'linear-gradient(135deg,#1a0a00,#2d1500)',
+    vars:{ '--bg':'#1a0a00','--surface':'#2a1200','--card':'#3a1c00','--accent':'#ff7e00','--accent2':'#ff3d6b','--accent3':'#ffcc00' } },
+  { id:'theme_galaxy',   name:'গ্যালাক্সি',   price:120, preview:'linear-gradient(135deg,#07001a,#120038)',
+    vars:{ '--bg':'#07001a','--surface':'#0f0028','--card':'#180040','--accent':'#bf80ff','--accent2':'#ff6ef7','--accent3':'#80ffee' } },
+  { id:'theme_forest',   name:'বন',           price:80,  preview:'linear-gradient(135deg,#011a08,#052e12)',
+    vars:{ '--bg':'#011a08','--surface':'#052e12','--card':'#0a3d1c','--accent':'#00ff87','--accent2':'#5eff6e','--accent3':'#e8ff5c' } },
+  { id:'theme_cherry',   name:'চেরি',         price:120, preview:'linear-gradient(135deg,#1a0010,#2e0020)',
+    vars:{ '--bg':'#1a0010','--surface':'#2e0020','--card':'#400030','--accent':'#ff4da6','--accent2':'#ff80bf','--accent3':'#ffb3d9' } },
+];
+const SHOP_BOOSTS = [
+  { id:'boost_xp_1d',  name:'XP বুস্ট ×১.৫', price:100, desc:'২৪ ঘণ্টার জন্য XP ১.৫× হবে', icon:'⚡' },
+  { id:'boost_xp_3d',  name:'XP বুস্ট ×১.৫', price:250, desc:'৩ দিনের জন্য XP ১.৫× হবে',   icon:'⚡⚡' },
+  { id:'boost_coin_2d',name:'কয়েন বুস্ট ×২', price:150, desc:'২ দিনের জন্য কয়েন ২× হবে',   icon:'🪙🪙' },
+];
+
+let myPurchases    = [];   // array of {item_id, purchased_at, expires_at}
+let activeThemeId  = 'theme_default';
+
+// DB helpers for purchases
+async function dbGetPurchases(username) {
+  const {data} = await sb.from('purchases').select('*').eq('username', username.toLowerCase());
+  return data || [];
+}
+async function dbAddPurchase(username, itemId, expiresAt) {
+  const {data,error} = await sb.from('purchases').insert({username:username.toLowerCase(), item_id:itemId, purchased_at:new Date().toISOString(), expires_at:expiresAt}).select().single();
+  if(error) throw error;
+  return data;
+}
+async function dbSetActiveTheme(username, themeId) {
+  // Store active theme in user preferences via a special purchases row
+  await sb.from('purchases').delete().eq('username',username.toLowerCase()).eq('item_id','active_theme');
+  await sb.from('purchases').insert({username:username.toLowerCase(), item_id:'active_theme', purchased_at:new Date().toISOString(), expires_at:themeId});
+}
+
+function applyTheme(themeId) {
+  const theme = SHOP_THEMES.find(t=>t.id===themeId) || SHOP_THEMES[0];
+  Object.entries(theme.vars).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));
+  activeThemeId = themeId;
+}
+
+function isBoostActive(itemId) {
+  const now = Date.now();
+  return myPurchases.some(p=>p.item_id===itemId && p.expires_at && new Date(p.expires_at).getTime()>now);
+}
+function getBoostMultiplier() {
+  if (isBoostActive('boost_xp_1d')||isBoostActive('boost_xp_3d')) return 1.5;
+  return 1;
+}
+function getCoinMultiplier() {
+  return isBoostActive('boost_coin_2d') ? 2 : 1;
+}
+
+function renderShop() {
+  const coins = getTotalCoins();
+  document.getElementById('shop-balance').textContent = `🪙 ${coins}`;
+
+  // Themes
+  const ownedThemes = new Set(myPurchases.filter(p=>p.item_id.startsWith('theme_')).map(p=>p.item_id));
+  ownedThemes.add('theme_default'); // always owned
+  document.getElementById('shop-themes').innerHTML = SHOP_THEMES.map(t=>{
+    const owned  = ownedThemes.has(t.id);
+    const active = t.id === activeThemeId;
+    const canBuy = coins >= t.price && !owned;
+    return `<div class="shop-item ${owned?'owned':''} ${active?'active-theme':''}">
+      <div class="shop-preview" style="background:${t.preview}"></div>
+      <div style="font-weight:700;font-size:.85rem">${t.name}</div>
+      ${active ? '<div style="font-size:.68rem;color:var(--accent2);font-weight:700">✓ চালু আছে</div>' :
+        owned  ? `<button class="btn btn-ghost btn-xs btn-full" onclick="activateTheme('${t.id}')">চালু করো</button>` :
+                 `<button class="btn ${canBuy?'btn-accent':'btn-ghost'} btn-xs btn-full" ${canBuy?'':'disabled'} onclick="buyTheme('${t.id}',${t.price})">
+                    <span class="shop-price">🪙 ${t.price}</span>
+                  </button>`}
+    </div>`;
+  }).join('');
+
+  // Boosts
+  document.getElementById('shop-boosts').innerHTML = SHOP_BOOSTS.map(b=>{
+    const active  = isBoostActive(b.id);
+    const canBuy  = coins >= b.price;
+    return `<div class="shop-item">
+      <div style="font-size:2rem;margin-bottom:2px">${b.icon}</div>
+      <div style="font-weight:700;font-size:.82rem">${b.name}</div>
+      <div style="font-size:.72rem;color:var(--muted);line-height:1.4">${b.desc}</div>
+      ${active
+        ? '<div style="font-size:.68rem;color:var(--accent);font-weight:700">✓ সক্রিয়</div>'
+        : `<button class="btn ${canBuy?'btn-accent2':'btn-ghost'} btn-xs btn-full" ${canBuy?'':'disabled'} onclick="buyBoost('${b.id}',${b.price})">
+             <span class="shop-price">🪙 ${b.price}</span>
+           </button>`}
+    </div>`;
+  }).join('');
+}
+
+window.buyTheme = async function(themeId, price) {
+  if (getTotalCoins() < price) { showToast('পর্যাপ্ত কয়েন নেই'); return; }
+  try {
+    showSync('busy','⏳...');
+    await dbAddPurchase(currentUser.username, themeId, null);
+    await dbUpdateCoins(currentUser.id, getTotalCoins() - price);
+    // Deduct from history
+    const keys = Object.keys(coinsHistory).sort();
+    let remaining = price;
+    for (let i=keys.length-1; i>=0 && remaining>0; i--) {
+      const take = Math.min(coinsHistory[keys[i]], remaining);
+      coinsHistory[keys[i]] -= take; remaining -= take;
+    }
+    myPurchases = await dbGetPurchases(currentUser.username);
+    activateTheme(themeId);
+    renderShop(); updateSidebar();
+    showSync('ok','✓'); showToast(`${SHOP_THEMES.find(t=>t.id===themeId)?.name} কেনা হয়েছে! ✓`);
+  } catch(e) { showSync('err','✗'); showToast('কেনা ব্যর্থ'); }
+};
+
+window.activateTheme = async function(themeId) {
+  applyTheme(themeId);
+  try { await dbSetActiveTheme(currentUser.username, themeId); } catch(e){}
+  renderShop();
+  showToast('থিম পরিবর্তন হয়েছে ✓');
+};
+
+window.buyBoost = async function(boostId, price) {
+  if (getTotalCoins() < price) { showToast('পর্যাপ্ত কয়েন নেই'); return; }
+  const boost = SHOP_BOOSTS.find(b=>b.id===boostId);
+  const days  = boostId.includes('3d') ? 3 : boostId.includes('2d') ? 2 : 1;
+  const exp   = new Date(Date.now() + days*86400000).toISOString();
+  try {
+    showSync('busy','⏳...');
+    await dbAddPurchase(currentUser.username, boostId, exp);
+    await dbUpdateCoins(currentUser.id, getTotalCoins() - price);
+    const keys = Object.keys(coinsHistory).sort();
+    let remaining = price;
+    for (let i=keys.length-1; i>=0 && remaining>0; i--) {
+      const take = Math.min(coinsHistory[keys[i]], remaining);
+      coinsHistory[keys[i]] -= take; remaining -= take;
+    }
+    myPurchases = await dbGetPurchases(currentUser.username);
+    renderShop(); updateSidebar();
+    showSync('ok','✓'); showToast(`${boost?.name} সক্রিয় হয়েছে! ✓`);
+  } catch(e) { showSync('err','✗'); showToast('কেনা ব্যর্থ'); }
+};
 
 // ════════════════════════════════════════════════════════════════
 // MODAL HELPERS
