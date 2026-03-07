@@ -203,7 +203,7 @@
 
     <!-- XP HISTORY -->
     <section class="card-solid p-6 rounded-3xl">
-        <h4 class="font-bold text-sm mb-4">🏆 XP ইতিহাস</h4>
+        <h4 class="font-bold text-sm mb-4">🏆 XP ইতিহাস (গত ৭ দিন)</h4>
         <div id="xp-history-list" class="space-y-2 text-sm text-zinc-400">লোড হচ্ছে...</div>
     </section>
 
@@ -327,7 +327,7 @@ function showSync(state, text) {
 }
 
 // ════════════════════════════════════════════════════
-// SAVE (debounced 1.5 s)
+// SAVE (debounced 1.5 s) - Limited to last 30 days
 // ════════════════════════════════════════════════════
 function scheduleSave() {
     clearTimeout(syncTimeout);
@@ -339,11 +339,23 @@ async function saveToSheety() {
     if (!currentUser) return;
     const today    = getTodayKey();
     const username = currentUser.username;
+    
+    // Limit xpHistory to last 30 days
+    const last30Days = getLastNDays(30);
+    const limitedXPHistory = {};
+    last30Days.forEach(d => {
+        if (xpHistory[d] !== undefined) {
+            limitedXPHistory[d] = xpHistory[d];
+        }
+    });
+    // Always include today
+    limitedXPHistory[today] = xpHistory[today] || 0;
+    
     const payload  = {
         username,
         date: today,
         completedslots: JSON.stringify(completedSlots),
-        xphistory:      JSON.stringify(xpHistory)
+        xphistory:      JSON.stringify(limitedXPHistory)
     };
     try {
         const existing = sheetyRows.find(r =>
@@ -383,7 +395,7 @@ window.handleLogin = async function() {
         );
         if (!found) { setLoginErr('ইউজারনেম বা পাসওয়ার্ড ভুল'); resetLoginBtn(); return; }
         currentUser = { username: found.username, profileRowId: found.id };
-        localStorage.setItem('rx_session', JSON.stringify({ username: found.username, profileRowId: found.id }));
+        // localStorage removed - session only in memory
         loadUserDataFromRows();
         bootApp();
     } catch(e) {
@@ -411,7 +423,7 @@ window.handleRegister = async function() {
         const newRow = await sheetyPost({ username:user, password:pass, date:'profile', completedslots:'{}', xphistory:'{}' });
         sheetyRows.push({username:user, password:pass, date:'profile', completedslots:'{}', xphistory:'{}', id:newRow.id});
         currentUser = { username:user, profileRowId:newRow.id };
-        localStorage.setItem('rx_session', JSON.stringify({ username: user, profileRowId: newRow.id }));
+        // localStorage removed - session only in memory
         completedSlots={}; xpHistory={};
         bootApp();
     } catch(e) {
@@ -421,7 +433,8 @@ window.handleRegister = async function() {
 
 window.handleLogout = function() {
     if (!confirm('লগআউট করতে চাও?')) return;
-    currentUser=null; completedSlots={}; xpHistory={}; sheetyRows=[]; localStorage.removeItem('rx_session');
+    currentUser=null; completedSlots={}; xpHistory={}; sheetyRows=[];
+    // localStorage removed - no session to clear
     clearTimeout(syncTimeout); clearInterval(timerInterval);
     document.getElementById('app').classList.add('hidden');
     document.getElementById('login-screen').style.display='flex';
@@ -436,21 +449,32 @@ function resetLoginBtn()  { const b=document.getElementById('login-btn'); b.disa
 function resetRegBtn()    { const b=document.getElementById('reg-btn');   b.disabled=false; b.textContent='অ্যাকাউন্ট তৈরি করো'; }
 
 // ════════════════════════════════════════════════════
-// LOAD DATA FROM CACHED SHEETY ROWS
+// LOAD DATA FROM CACHED SHEETY ROWS - Limited to last 30 days
 // ════════════════════════════════════════════════════
 function loadUserDataFromRows() {
     const username = currentUser.username.toLowerCase();
     const today    = getTodayKey();
+    
+    // Get last 30 days for filtering
+    const last30Days = new Set(getLastNDays(30));
+    last30Days.add(today); // Always include today
 
     // All data rows (not profile) for this user
     const dataRows = sheetyRows.filter(r =>
         r.username?.toLowerCase()===username && r.date && r.date!=='profile'
     );
 
-    // Rebuild xpHistory from every row's xphistory field
+    // Rebuild xpHistory from every row's xphistory field - limited to last 30 days
     xpHistory = {};
     dataRows.forEach(r => {
-        try { Object.assign(xpHistory, JSON.parse(r.xphistory||'{}')); } catch(e){}
+        try {
+            const rowHistory = JSON.parse(r.xphistory||'{}');
+            Object.entries(rowHistory).forEach(([date, xp]) => {
+                if (last30Days.has(date)) {
+                    xpHistory[date] = xp;
+                }
+            });
+        } catch(e){}
     });
 
     // Today's completedSlots
@@ -467,10 +491,12 @@ function bootApp() {
     document.getElementById('user-avatar').textContent = currentUser.username.charAt(0).toUpperCase();
     document.getElementById('user-name-display').textContent = currentUser.username;
 
-    // Midnight reset: if last saved date != today, wipe completedSlots
-    const lk = `last_${currentUser.username}`;
-    if (localStorage.getItem(lk) && localStorage.getItem(lk)!==getTodayKey()) completedSlots={};
-    localStorage.setItem(lk, getTodayKey());
+    // Midnight reset logic removed (no localStorage)
+    // Check if today's date in xpHistory differs - reset completedSlots
+    const todayKey = getTodayKey();
+    if (!xpHistory[todayKey]) {
+        completedSlots = {};
+    }
 
     recalcTodayXP();
     updateLiveClock();
@@ -612,12 +638,17 @@ function updateTimerDisplay() {
 }
 
 // ════════════════════════════════════════════════════
-// XP HISTORY LIST
+// XP HISTORY LIST - Show only last 7 days
 // ════════════════════════════════════════════════════
 function renderXPHistoryList() {
-    const entries=Object.entries(xpHistory).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,7);
+    // Get exactly the last 7 days
+    const last7Days = getLastNDays(7);
+    
+    // Build entries for the last 7 days only
+    const entries = last7Days.reverse().map(date => [date, xpHistory[date] || 0]);
+    
     const el=document.getElementById('xp-history-list');
-    if (!entries.length){ el.textContent='কোনো ইতিহাস নেই।'; return; }
+    if (!entries.some(([_,xp]) => xp > 0)){ el.textContent='কোনো ইতিহাস নেই।'; return; }
     el.innerHTML=entries.map(([date,xp])=>{
         const d=new Date(date+'T00:00:00');
         const label=d.toLocaleDateString('bn-BD',{weekday:'short',month:'short',day:'numeric'});
@@ -723,27 +754,9 @@ window.speakCurrentSlot = ()=>{ const s=slots[currentSlotIndex],m=new SpeechSynt
 window.toggleFocusMode  = ()=>document.body.requestFullscreen?.();
 
 // ════════════════════════════════════════════════════
-// AUTO-RESTORE SESSION ON PAGE LOAD
+// NO AUTO-RESTORE SESSION (localStorage removed)
+// User must login each time
 // ════════════════════════════════════════════════════
-(async function restoreSession() {
-    const saved = localStorage.getItem('rx_session');
-    if (!saved) return;
-    try {
-        const session = JSON.parse(saved);
-        if (!session?.username) return;
-        showSync('busy', '⏳ সেশন পুনরুদ্ধার...');
-        sheetyRows = await sheetyGetAll();
-        const profile = sheetyRows.find(r =>
-            r.username?.toLowerCase() === session.username.toLowerCase() && r.date === 'profile'
-        );
-        if (!profile) { localStorage.removeItem('rx_session'); return; }
-        currentUser = { username: profile.username, profileRowId: profile.id };
-        loadUserDataFromRows();
-        bootApp();
-    } catch(e) {
-        showSync('err', '✗ অটো-লগইন ব্যর্থ');
-    }
-})();
 
 </script>
 </body>
