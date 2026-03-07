@@ -1,0 +1,1586 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RoutineX • Life OS</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #070709;
+  --surface:  #0f0f12;
+  --card:     #16161c;
+  --border:   #ffffff0f;
+  --border2:  #ffffff1a;
+  --text:     #f0f0f5;
+  --muted:    #6b6b7e;
+  --accent:   #00e5a0;
+  --accent2:  #7c6af7;
+  --accent3:  #f7a06a;
+  --danger:   #f76a6a;
+  --coin:     #fbbf24;
+}
+
+* { box-sizing:border-box; margin:0; padding:0; }
+html,body { height:100%; }
+
+body {
+  font-family:'Space Grotesk','Noto Sans Bengali',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width:4px; height:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border2); border-radius:99px; }
+
+/* ── TYPOGRAPHY ── */
+.font-display { font-family:'Syne',sans-serif; }
+
+/* ── CARDS ── */
+.card { background:var(--card); border:1px solid var(--border); border-radius:16px; }
+.card-hover { transition:border-color .2s, transform .15s; cursor:pointer; }
+.card-hover:hover { border-color:var(--border2); transform:translateY(-1px); }
+
+/* ── INPUTS ── */
+.inp {
+  width:100%; background:#1a1a22; border:1px solid var(--border2);
+  border-radius:10px; padding:.65rem 1rem; color:var(--text);
+  font-family:inherit; font-size:.9rem; outline:none; transition:border-color .2s;
+}
+.inp:focus { border-color:var(--accent); }
+.inp::placeholder { color:var(--muted); }
+select.inp { cursor:pointer; }
+
+/* ── BUTTONS ── */
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:.4rem;
+  padding:.6rem 1.2rem; border-radius:10px; font-family:inherit; font-size:.85rem;
+  font-weight:600; cursor:pointer; border:none; transition:all .15s; white-space:nowrap; }
+.btn:disabled { opacity:.4; cursor:not-allowed; }
+.btn-accent  { background:var(--accent);  color:#000; }
+.btn-accent:hover:not(:disabled)  { filter:brightness(1.1); }
+.btn-accent2 { background:var(--accent2); color:#fff; }
+.btn-accent2:hover:not(:disabled) { filter:brightness(1.15); }
+.btn-ghost   { background:transparent; color:var(--text); border:1px solid var(--border2); }
+.btn-ghost:hover:not(:disabled)   { border-color:var(--border2); background:#ffffff08; }
+.btn-danger  { background:#f76a6a22; color:var(--danger); border:1px solid #f76a6a33; }
+.btn-danger:hover:not(:disabled)  { background:#f76a6a33; }
+.btn-sm { padding:.4rem .85rem; font-size:.78rem; border-radius:8px; }
+.btn-xs { padding:.28rem .6rem;  font-size:.72rem; border-radius:6px; }
+.btn-full { width:100%; }
+
+/* ── BADGE ── */
+.badge { display:inline-flex; align-items:center; padding:2px 8px; border-radius:99px; font-size:.65rem; font-weight:700; letter-spacing:.04em; }
+.badge-accent  { background:#00e5a022; color:var(--accent);  border:1px solid #00e5a033; }
+.badge-accent2 { background:#7c6af722; color:var(--accent2); border:1px solid #7c6af733; }
+.badge-coin    { background:#fbbf2422; color:var(--coin);    border:1px solid #fbbf2433; }
+.badge-muted   { background:#ffffff0a; color:var(--muted);   border:1px solid var(--border); }
+
+/* ── PILL AVATAR ── */
+.avatar { width:32px; height:32px; border-radius:50%; background:var(--accent2);
+  display:flex; align-items:center; justify-content:center;
+  font-weight:800; font-size:.85rem; color:#fff; flex-shrink:0; }
+
+/* ── TOP HEADER BAR ── */
+#top-header {
+  position:fixed; top:0; left:0; right:0; height:56px;
+  background:var(--surface); border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 20px; z-index:50;
+}
+#top-header .brand { font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem; letter-spacing:-.02em; }
+
+/* ── BOTTOM NAV — always visible ── */
+#bottom-nav {
+  display:flex;
+  position:fixed; bottom:0; left:0; right:0;
+  background:var(--surface); border-top:1px solid var(--border);
+  z-index:50;
+  padding:6px 0 max(6px, env(safe-area-inset-bottom));
+}
+.bnav-item {
+  flex:1; display:flex; flex-direction:column; align-items:center;
+  gap:3px; padding:4px 0; cursor:pointer;
+  font-size:.6rem; font-weight:600; color:var(--muted); transition:color .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.bnav-item.active { color:var(--accent); }
+.bnav-item i { font-size:1.15rem; }
+
+/* ── MAIN CONTENT ── */
+#main-content {
+  margin-left:0;
+  min-height:100vh;
+  /* top header 56px + bottom nav ~64px */
+  padding: 72px 20px 80px;
+}
+
+/* ── DESKTOP tweaks — wider padding, constrain width ── */
+@media (min-width:768px) {
+  #main-content { padding: 76px 32px 88px; max-width:720px; margin:0 auto; }
+  #bottom-nav { justify-content:center; gap:0; }
+  .bnav-item { max-width:120px; }
+}
+
+/* ── VIEWS ── */
+.view { display:none; }
+.view.active { display:block; }
+
+/* ── LOGIN SCREEN ── */
+#auth-screen {
+  position:fixed; inset:0; z-index:200;
+  background:var(--bg); display:flex; align-items:center; justify-content:center;
+  padding:1.5rem;
+}
+.auth-card { width:100%; max-width:400px; }
+.auth-divider { display:flex; align-items:center; gap:.75rem; color:var(--muted); font-size:.8rem; }
+.auth-divider::before,.auth-divider::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* ── TIMELINE ── */
+.timeline-wrap { position:relative; }
+.timeline-wrap::before {
+  content:''; position:absolute; left:19px; top:8px; bottom:8px;
+  width:2px; background:linear-gradient(to bottom,var(--accent),var(--accent2),#8b5cf6);
+  opacity:.2; border-radius:99px;
+}
+.slot-row { position:relative; padding-left:52px; padding-bottom:20px; }
+.slot-check {
+  position:absolute; left:0; top:2px;
+  width:40px; height:40px; border-radius:50%;
+  border:2px solid var(--border2); background:var(--card);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; z-index:2; transition:all .2s; flex-shrink:0;
+}
+.slot-check:hover { border-color:var(--accent); }
+.slot-check.done  { background:var(--accent); border-color:var(--accent); color:#000; }
+.slot-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:12px; padding:12px 14px; cursor:pointer; transition:all .15s;
+}
+.slot-card:hover  { border-color:var(--border2); }
+.slot-card.active { border-color:var(--accent); background:#00e5a008; }
+
+/* ── STAT CARDS ── */
+.stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media(min-width:1024px) { .stat-grid { grid-template-columns:repeat(4,1fr); } }
+
+/* ── XP BAR ── */
+.xp-bar-bg { height:6px; background:#ffffff0a; border-radius:99px; overflow:hidden; }
+.xp-bar-fill { height:100%; border-radius:99px; transition:width .7s cubic-bezier(.4,0,.2,1); }
+
+/* ── ANIMATIONS ── */
+@keyframes floatUp { 0%{opacity:1;transform:translateY(0) scale(1)} 100%{opacity:0;transform:translateY(-80px) scale(1.2)} }
+.xp-pop { position:fixed; pointer-events:none; font-weight:800; font-size:1.3rem; z-index:9999; animation:floatUp 1.4s ease-out forwards; }
+@keyframes slideUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+.slide-up { animation:slideUp .3s ease-out; }
+@keyframes pulse-ring { 0%{transform:scale(1);opacity:.7} 100%{transform:scale(1.6);opacity:0} }
+.live-dot span:first-child { animation:pulse-ring 1.4s ease-out infinite; }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position:fixed; inset:0; background:#000000cc; backdrop-filter:blur(4px);
+  z-index:100; display:flex; align-items:center; justify-content:center;
+  padding:16px; opacity:0; pointer-events:none; transition:opacity .2s;
+}
+.modal-overlay.open { opacity:1; pointer-events:all; }
+.modal-box { background:var(--surface); border:1px solid var(--border2); border-radius:20px; width:100%; max-width:520px; max-height:90vh; overflow-y:auto; }
+
+/* ── POMODORO TIMER ── */
+#pomo-timer-display { font-family:'Syne',sans-serif; font-size:5rem; font-weight:800; letter-spacing:-.04em; }
+
+/* ── HEATMAP ── */
+.heatmap-grid { display:flex; gap:3px; flex-wrap:nowrap; overflow-x:auto; padding-bottom:4px; }
+.heatmap-col  { display:flex; flex-direction:column; gap:3px; }
+.heatmap-cell { width:11px; height:11px; border-radius:2px; background:#ffffff08; flex-shrink:0; }
+.heatmap-cell[data-level="1"] { background:#00e5a033; }
+.heatmap-cell[data-level="2"] { background:#00e5a066; }
+.heatmap-cell[data-level="3"] { background:#00e5a099; }
+.heatmap-cell[data-level="4"] { background:var(--accent); }
+
+/* ── LEADERBOARD ── */
+.lb-row { display:flex; align-items:center; gap:12px; padding:10px 14px; border-radius:12px; border:1px solid var(--border); background:var(--card); transition:border-color .15s; }
+.lb-row:hover { border-color:var(--border2); }
+.lb-row.me { border-color:var(--accent2); background:#7c6af708; }
+.lb-rank { font-family:'Syne',sans-serif; font-size:1.1rem; font-weight:800; width:28px; text-align:center; color:var(--muted); }
+.lb-rank.gold   { color:#fbbf24; }
+.lb-rank.silver { color:#a0a0b0; }
+.lb-rank.bronze { color:#cd7f32; }
+
+/* ── ROUTINE BUILDER ── */
+.slot-builder-row { display:grid; grid-template-columns:1fr 1fr 1fr auto auto; gap:8px; align-items:end; }
+@media(max-width:640px) { .slot-builder-row { grid-template-columns:1fr 1fr; } }
+
+/* ── ONBOARDING ── */
+#onboarding { position:fixed; inset:0; z-index:150; background:var(--bg); display:flex; align-items:center; justify-content:center; padding:1.5rem; }
+
+/* ── SYNC ── */
+#sync-badge { position:fixed; top:16px; right:16px; z-index:99; font-size:.7rem; font-weight:700; padding:4px 12px; border-radius:99px; transition:all .3s; display:none; }
+.sync-ok   { background:#064e3b; color:var(--accent); border:1px solid #00e5a033; }
+.sync-busy { background:#1c1917; color:var(--coin);   border:1px solid #fbbf2433; }
+.sync-err  { background:#450a0a; color:var(--danger); border:1px solid #f76a6a33; }
+
+/* ── CLOCK ── */
+#clock-display { font-family:'Syne',sans-serif; font-size:3rem; font-weight:800; letter-spacing:-.04em; line-height:1; }
+
+/* ── SECTION HEADERS ── */
+.section-title { font-family:'Syne',sans-serif; font-size:1.3rem; font-weight:800; margin-bottom:16px; }
+
+/* ── COIN DISPLAY ── */
+.coin-display { display:inline-flex; align-items:center; gap:5px; background:#fbbf2412; border:1px solid #fbbf2428; border-radius:99px; padding:3px 10px; font-size:.8rem; font-weight:700; color:var(--coin); }
+
+/* ── TOGGLE ── */
+.toggle { position:relative; width:40px; height:22px; }
+.toggle input { opacity:0; width:0; height:0; }
+.toggle-slider { position:absolute; inset:0; background:#ffffff18; border-radius:99px; cursor:pointer; transition:.2s; }
+.toggle-slider::before { content:''; position:absolute; height:16px; width:16px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:.2s; }
+.toggle input:checked + .toggle-slider { background:var(--accent); }
+.toggle input:checked + .toggle-slider::before { transform:translateX(18px); }
+
+/* ── PROGRESS RING ── */
+.prog-ring { transform:rotate(-90deg); }
+.prog-ring-bg   { fill:none; stroke:#ffffff0a; }
+.prog-ring-fill { fill:none; stroke:var(--accent); stroke-linecap:round; transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1); }
+
+/* ── EMPTY STATE ── */
+.empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 24px; text-align:center; gap:12px; color:var(--muted); }
+.empty-state .empty-icon { font-size:3rem; opacity:.4; }
+
+/* ── TOAST ── */
+#toast { position:fixed; bottom:72px; left:50%; transform:translateX(-50%); z-index:999; background:var(--card); border:1px solid var(--border2); border-radius:10px; padding:10px 20px; font-size:.85rem; font-weight:600; display:none; white-space:nowrap; box-shadow:0 8px 32px #00000060; }
+</style>
+</head>
+<body>
+
+<!-- ══ SYNC BADGE ══ -->
+<div id="sync-badge"></div>
+
+<!-- ══ TOAST ══ -->
+<div id="toast"></div>
+
+<!-- ══════════════════════════════════════
+     AUTH SCREEN
+══════════════════════════════════════ -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div style="text-align:center;margin-bottom:2rem">
+      <div style="font-size:3rem;margin-bottom:.5rem">🚀</div>
+      <h1 class="font-display" style="font-size:2rem;font-weight:800;letter-spacing:-.03em">RoutineX</h1>
+      <p style="color:var(--muted);font-size:.85rem;margin-top:4px">Your Life OS — Build the day. Own the year.</p>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="auth-login" class="slide-up">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <input id="li-user" class="inp" type="text" placeholder="ইউজারনেম" autocomplete="username">
+        <input id="li-pass" class="inp" type="password" placeholder="পাসওয়ার্ড" autocomplete="current-password">
+        <p id="li-err" style="color:var(--danger);font-size:.8rem;display:none;text-align:center"></p>
+        <button class="btn btn-accent btn-full" onclick="doLogin()" id="li-btn" style="margin-top:4px">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> লগইন করো
+        </button>
+        <div class="auth-divider">অথবা</div>
+        <button class="btn btn-ghost btn-full" onclick="showAuthTab('register')">নতুন অ্যাকাউন্ট তৈরি করো →</button>
+      </div>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="auth-register" style="display:none">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <input id="rg-user"  class="inp" type="text"     placeholder="ইউজারনেম (৩+ অক্ষর)">
+        <input id="rg-pass"  class="inp" type="password" placeholder="পাসওয়ার্ড (৪+ অক্ষর)">
+        <input id="rg-pass2" class="inp" type="password" placeholder="পাসওয়ার্ড নিশ্চিত করো">
+        <p id="rg-err" style="color:var(--danger);font-size:.8rem;display:none;text-align:center"></p>
+        <button class="btn btn-accent btn-full" onclick="doRegister()" id="rg-btn" style="margin-top:4px">
+          <i class="fa-solid fa-user-plus"></i> অ্যাকাউন্ট তৈরি করো
+        </button>
+        <div class="auth-divider">অথবা</div>
+        <button class="btn btn-ghost btn-full" onclick="showAuthTab('login')">← লগইনে ফিরে যাও</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     ONBOARDING (first time, no routine)
+══════════════════════════════════════ -->
+<div id="onboarding" style="display:none">
+  <div style="width:100%;max-width:480px;text-align:center">
+    <div style="font-size:4rem;margin-bottom:1rem">🗓️</div>
+    <h2 class="font-display" style="font-size:1.8rem;font-weight:800;margin-bottom:.5rem">রুটিন নেই এখনো!</h2>
+    <p style="color:var(--muted);font-size:.9rem;margin-bottom:2rem;line-height:1.6">তোমার প্রথম রুটিন তৈরি করো।<br>নিজে বানাও, অথবা AI কে বলো।</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-accent" style="padding:.75rem 1.5rem" onclick="goTo('routines');closeOnboarding()">
+        <i class="fa-solid fa-pencil"></i> নিজে বানাই
+      </button>
+      <button class="btn btn-accent2" style="padding:.75rem 1.5rem" onclick="goTo('ai-builder');closeOnboarding()">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> AI দিয়ে বানাই
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TOP HEADER BAR
+══════════════════════════════════════ -->
+<nav id="top-header">
+  <div class="brand">🚀 RoutineX</div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="text-align:right;display:none" id="hdr-xp-wrap">
+      <div style="font-size:.68rem;color:var(--muted);margin-bottom:2px" id="hdr-level">Lv 1</div>
+      <div style="width:80px" class="xp-bar-bg"><div id="hdr-xp-bar" class="xp-bar-fill" style="background:var(--accent2);width:0%"></div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;cursor:pointer" onclick="doLogout()" title="লগআউট">
+      <div id="hdr-avatar" class="avatar" style="width:34px;height:34px;font-size:.85rem">?</div>
+      <div style="display:none" id="hdr-info">
+        <div id="hdr-username" style="font-weight:700;font-size:.82rem;line-height:1.2">—</div>
+        <div style="display:flex;align-items:center;gap:5px;margin-top:1px">
+          <span id="hdr-coins" class="coin-display" style="font-size:.7rem;padding:1px 7px">🪙 0</span>
+        </div>
+      </div>
+      <i class="fa-solid fa-right-from-bracket" style="font-size:.8rem;color:var(--muted)"></i>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     BOTTOM NAV (mobile)
+══════════════════════════════════════ -->
+<div id="bottom-nav">
+  <div class="bnav-item active" data-view="dashboard" onclick="goTo('dashboard')">
+    <i class="fa-solid fa-house"></i><span>হোম</span>
+  </div>
+  <div class="bnav-item" data-view="routines" onclick="goTo('routines')">
+    <i class="fa-solid fa-list-check"></i><span>রুটিন</span>
+  </div>
+  <div class="bnav-item" data-view="ai-builder" onclick="goTo('ai-builder')">
+    <i class="fa-solid fa-wand-magic-sparkles"></i><span>AI</span>
+  </div>
+  <div class="bnav-item" data-view="leaderboard" onclick="goTo('leaderboard')">
+    <i class="fa-solid fa-trophy"></i><span>র‍্যাংক</span>
+  </div>
+  <div class="bnav-item" data-view="history" onclick="goTo('history')">
+    <i class="fa-solid fa-chart-line"></i><span>ইতিহাস</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════ -->
+<div id="main-content" style="display:none">
+
+  <!-- ── DASHBOARD ── -->
+  <div id="view-dashboard" class="view active">
+    <!-- Clock + date -->
+    <div style="margin-bottom:20px">
+      <div id="clock-display">00:00:00</div>
+      <div id="date-display" style="color:var(--accent);font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-top:4px">—</div>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="stat-grid" style="margin-bottom:20px">
+      <div class="card" style="padding:16px">
+        <div style="font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">আজকের XP</div>
+        <div id="stat-xp" style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--accent)">0</div>
+        <div id="stat-level-badge" class="badge badge-accent2" style="margin-top:6px">লেভেল ১</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">কয়েন 🪙</div>
+        <div id="stat-coins" style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--coin)">0</div>
+        <div style="font-size:.7rem;color:var(--muted);margin-top:6px">study slots থেকে</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">সম্পন্ন স্লট</div>
+        <div id="stat-done" style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--accent2)">0/0</div>
+        <div style="margin-top:8px" class="xp-bar-bg"><div id="stat-prog-bar" class="xp-bar-fill" style="background:var(--accent2);width:0%"></div></div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">দিনের গতি</div>
+        <div id="stat-day-pct" style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--accent3)">0%</div>
+        <div style="margin-top:8px" class="xp-bar-bg"><div id="stat-day-bar" class="xp-bar-fill" style="background:var(--accent3);width:0%"></div></div>
+      </div>
+    </div>
+
+    <!-- Current slot -->
+    <div id="current-slot-card" class="card" style="padding:16px;margin-bottom:20px;border-color:#00e5a033">
+      <div style="display:flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;color:var(--accent);margin-bottom:8px">
+        <span class="live-dot" style="display:flex;align-items:center;gap:4px">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block;position:relative">
+            <span style="position:absolute;inset:-3px;border-radius:50%;border:2px solid var(--accent);animation:pulse-ring 1.5s ease-out infinite"></span>
+          </span>
+          এখন চলছে
+        </span>
+      </div>
+      <div id="cur-slot-title" class="font-display" style="font-size:1.2rem;font-weight:800">—</div>
+      <div id="cur-slot-desc"  style="color:var(--muted);font-size:.85rem;margin-top:2px">—</div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn btn-ghost btn-sm" onclick="openPomodoro()"><i class="fa-solid fa-clock"></i> ফোকাস</button>
+        <button class="btn btn-ghost btn-sm" onclick="speakCurrent()"><i class="fa-solid fa-volume-high"></i></button>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <h2 class="section-title" style="margin:0">আজকের রুটিন</h2>
+      <div id="active-routine-name" class="badge badge-muted">—</div>
+    </div>
+    <div id="timeline" class="timeline-wrap"></div>
+  </div>
+
+  <!-- ── ROUTINES ── -->
+  <div id="view-routines" class="view">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+      <h2 class="section-title" style="margin:0">আমার রুটিন</h2>
+      <button class="btn btn-accent" onclick="openRoutineEditor(null)">
+        <i class="fa-solid fa-plus"></i> নতুন রুটিন
+      </button>
+    </div>
+    <div id="routines-list" style="display:flex;flex-direction:column;gap:12px"></div>
+  </div>
+
+  <!-- ── AI BUILDER ── -->
+  <div id="view-ai-builder" class="view">
+    <h2 class="section-title">AI রুটিন বিল্ডার ✨</h2>
+
+    <!-- Step 1: Fill info → generate prompt -->
+    <div class="card" style="padding:20px;margin-bottom:16px">
+      <div style="font-size:.78rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px">
+        ধাপ ১ — তোমার দিনের তথ্য দাও
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div>
+          <label style="font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px">ঘুম থেকে ওঠার সময়</label>
+          <input id="ai-wake" class="inp" placeholder="যেমন: ৭:০০ AM বা 6:30 AM">
+        </div>
+        <div>
+          <label style="font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px">ঘুমাতে যাওয়ার সময়</label>
+          <input id="ai-sleep" class="inp" placeholder="যেমন: ১১:৩০ PM বা 11:00 PM">
+        </div>
+        <div>
+          <label style="font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px">পড়াশোনার বিষয়সমূহ ও সময়</label>
+          <textarea id="ai-subjects" class="inp" rows="2" style="resize:none" placeholder="যেমন: সকাল ৮-১১ গণিত, বিকাল ৪-৭ পদার্থবিজ্ঞান ও রসায়ন, রাত ৮-১০ MCQ"></textarea>
+        </div>
+        <div>
+          <label style="font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px">অন্যান্য তথ্য (ঐচ্ছিক)</label>
+          <textarea id="ai-extra" class="inp" rows="2" style="resize:none" placeholder="যেমন: দুপুর ১-২ ঘুম, নামাজের সময়, ব্যায়াম, খাওয়ার সময়..."></textarea>
+        </div>
+        <button class="btn btn-accent2 btn-full" onclick="generateAIPrompt()" style="margin-top:4px">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> প্রম্পট তৈরি করো
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 2: Generated prompt to copy -->
+    <div id="ai-prompt-section" style="display:none">
+      <div class="card" style="padding:20px;margin-bottom:16px;border-color:var(--accent2)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <div style="font-size:.78rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.06em">
+            ধাপ ২ — এই প্রম্পটটি কপি করো
+          </div>
+          <button class="btn btn-ghost btn-xs" onclick="copyPrompt()" id="copy-prompt-btn">
+            <i class="fa-solid fa-copy"></i> কপি
+          </button>
+        </div>
+        <div id="ai-generated-prompt" style="font-size:.8rem;line-height:1.7;color:var(--muted);background:var(--bg);border-radius:8px;padding:12px;border:1px solid var(--border);white-space:pre-wrap;max-height:220px;overflow-y:auto"></div>
+        <div style="margin-top:12px;padding:10px 12px;background:#7c6af710;border:1px solid #7c6af733;border-radius:8px;font-size:.78rem;color:var(--muted);line-height:1.6">
+          📋 এই প্রম্পটটি <strong style="color:var(--text)">ChatGPT, Claude, Gemini</strong> বা যেকোনো AI chatbot-এ পেস্ট করো।<br>
+          AI তোমাকে রুটিন দেখাবে। পছন্দ হলে confirm করো — তখন AI JSON format-এ রুটিন দেবে।
+        </div>
+      </div>
+
+      <!-- Step 3: Paste JSON -->
+      <div class="card" style="padding:20px;margin-bottom:16px">
+        <div style="font-size:.78rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px">
+          ধাপ ৩ — AI-এর JSON রুটিন এখানে পেস্ট করো
+        </div>
+        <textarea id="ai-json-input" class="inp" rows="6" style="resize:vertical;font-family:monospace;font-size:.78rem" placeholder='{"routine_name":"My Routine","slots":[{"id":"sl_1","title":"ঘুম থেকে ওঠা","start":"07:00 AM","end":"07:30 AM","category":"wake","xp":30,"desc":""},...]}'></textarea>
+        <div id="ai-json-error" style="display:none;color:var(--danger);font-size:.78rem;margin-top:6px"></div>
+        <div id="ai-json-preview" style="display:none;margin-top:12px"></div>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn btn-ghost btn-sm" onclick="parseJSONPreview()"><i class="fa-solid fa-eye"></i> প্রিভিউ</button>
+          <button class="btn btn-accent btn-full" onclick="importJSONRoutine()"><i class="fa-solid fa-file-import"></i> ইম্পোর্ট করো</button>
+        </div>
+      </div>
+
+      <!-- JSON format help -->
+      <div class="card" style="padding:16px;border-color:#ffffff08">
+        <div style="font-size:.75rem;font-weight:700;color:var(--muted);margin-bottom:8px">📌 AI-কে দেওয়ার জন্য JSON ফরম্যাট নির্দেশ</div>
+        <div style="font-size:.72rem;color:var(--muted);line-height:1.7;background:var(--bg);padding:10px;border-radius:8px;font-family:monospace;white-space:pre-wrap">Category values: study, break, rest, nap, wake, sleep, meal, prep, winddown, other
+Time format: "HH:MM AM" or "HH:MM PM"
+XP: ~100/hour for study, 20-50 for others
+
+Expected JSON:
+{
+  "routine_name": "রুটিনের নাম",
+  "slots": [
+    {
+      "id": "sl_1",
+      "title": "স্লটের নাম",
+      "desc": "বিবরণ",
+      "start": "07:00 AM",
+      "end": "08:00 AM",
+      "category": "study",
+      "xp": 100
+    }
+  ]
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LEADERBOARD ── -->
+  <div id="view-leaderboard" class="view">
+    <h2 class="section-title">লিডারবোর্ড 🏆</h2>
+
+    <!-- Tabs -->
+    <div style="display:flex;gap:6px;margin-bottom:20px">
+      <button class="btn btn-accent btn-sm" id="lb-tab-all"     onclick="switchLBTab('all')">সর্বকালীন</button>
+      <button class="btn btn-ghost btn-sm" id="lb-tab-weekly"  onclick="switchLBTab('weekly')">সাপ্তাহিক</button>
+    </div>
+
+    <!-- Chart -->
+    <div class="card" style="padding:16px;margin-bottom:20px">
+      <canvas id="lb-chart" height="180"></canvas>
+    </div>
+
+    <!-- List -->
+    <div id="lb-list" style="display:flex;flex-direction:column;gap:8px"></div>
+  </div>
+
+  <!-- ── HISTORY ── -->
+  <div id="view-history" class="view">
+    <h2 class="section-title">XP ইতিহাস 📈</h2>
+
+    <!-- Streak + summary -->
+    <div class="stat-grid" style="margin-bottom:20px">
+      <div class="card" style="padding:16px">
+        <div style="font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">🔥 স্ট্রিক</div>
+        <div id="hist-streak" style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--accent3)">0</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:2px">দিন ধারাবাহিক</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">🏆 সেরা দিন</div>
+        <div id="hist-best" style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--accent)">0</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:2px">XP</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">📅 এই সপ্তাহ</div>
+        <div id="hist-week" style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--accent2)">0</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:2px">XP</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">∑ মোট XP</div>
+        <div id="hist-total" style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--coin)">0</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:2px">সব সময়</div>
+      </div>
+    </div>
+
+    <!-- Heatmap -->
+    <div class="card" style="padding:16px;margin-bottom:20px">
+      <div style="font-size:.78rem;font-weight:700;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em">গত ৩ মাস — প্রতিদিনের XP</div>
+      <div id="heatmap-container" style="overflow-x:auto"></div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:10px;font-size:.7rem;color:var(--muted)">
+        কম <div class="heatmap-cell"></div><div class="heatmap-cell" data-level="1"></div><div class="heatmap-cell" data-level="2"></div><div class="heatmap-cell" data-level="3"></div><div class="heatmap-cell" data-level="4"></div> বেশি
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div style="display:grid;grid-template-columns:1fr;gap:16px">
+      <div class="card" style="padding:16px">
+        <canvas id="hist-weekly-chart" height="160"></canvas>
+      </div>
+      <div class="card" style="padding:16px">
+        <canvas id="hist-monthly-chart" height="160"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main-content -->
+
+<!-- ══════════════════════════════════════
+     MODALS
+══════════════════════════════════════ -->
+
+<!-- POMODORO -->
+<div id="modal-pomo" class="modal-overlay" onclick="if(event.target===this)closePomo()">
+  <div class="modal-box" style="padding:32px;text-align:center">
+    <div id="pomo-slot-name" style="color:var(--muted);font-size:.85rem;margin-bottom:8px">—</div>
+    <div id="pomo-timer-display" style="font-family:'Syne',sans-serif;font-size:5rem;font-weight:800;color:var(--accent);letter-spacing:-.04em;line-height:1;margin-bottom:8px">50:00</div>
+    <div id="pomo-xp-hint" style="color:var(--accent2);font-size:.82rem;font-weight:600;margin-bottom:28px">—</div>
+    <div style="display:flex;gap:12px;justify-content:center">
+      <button id="pomo-btn" class="btn btn-accent" style="padding:.75rem 2rem;font-size:1rem" onclick="togglePomo()">শুরু</button>
+      <button class="btn btn-ghost" style="padding:.75rem 1.5rem" onclick="closePomo()">বন্ধ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ROUTINE EDITOR -->
+<div id="modal-routine" class="modal-overlay" onclick="if(event.target===this)closeRoutineEditor()">
+  <div class="modal-box" style="padding:24px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <h3 class="font-display" style="font-size:1.2rem;font-weight:800" id="routine-modal-title">নতুন রুটিন</h3>
+      <button class="btn btn-ghost btn-xs" onclick="closeRoutineEditor()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <input id="routine-name-inp" class="inp" placeholder="রুটিনের নাম (যেমন: Study Day)">
+      <div style="display:flex;gap:8px;align-items:center">
+        <label class="toggle"><input type="checkbox" id="routine-active-toggle"><span class="toggle-slider"></span></label>
+        <span style="font-size:.85rem;font-weight:600">এই রুটিনটি Active করো</span>
+      </div>
+      <div style="border-top:1px solid var(--border);padding-top:12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <span style="font-size:.85rem;font-weight:700">স্লটসমূহ</span>
+          <button class="btn btn-ghost btn-xs" onclick="addSlotRow()"><i class="fa-solid fa-plus"></i> স্লট যোগ</button>
+        </div>
+        <div id="slot-rows" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+      <div style="display:flex;gap:8px;padding-top:8px">
+        <button class="btn btn-accent btn-full" onclick="saveRoutine()"><i class="fa-solid fa-floppy-disk"></i> সেভ করো</button>
+        <button id="routine-delete-btn" class="btn btn-danger" onclick="deleteRoutine()" style="display:none"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</body>
+</html>
+<script type="module">
+// ════════════════════════════════════════════════════════════════
+// SUPABASE INIT
+// ════════════════════════════════════════════════════════════════
+const { createClient } = supabase;
+const sb = createClient(
+  'https://olfvcgjabgciufqoufeq.supabase.co',
+  'sb_publishable_34y4AnLFW3bHCMoj6-tyrw_yb2CaGfq'
+);
+
+// ════════════════════════════════════════════════════════════════
+// CONSTANTS
+// ════════════════════════════════════════════════════════════════
+const LEVELS = [0,500,1500,3000,5000,8000,12000,17000,23000,30000,40000];
+const LEVEL_NAMES = ['','নতুন','শিক্ষার্থী','অনুসন্ধানকারী','চ্যালেঞ্জার','প্রো','এলিট','মাস্টার','গ্র্যান্ড','লেজেন্ড','মিথ','দেবতা'];
+const CAT_COLORS = {
+  study:'#7c6af7', break:'#3b82f6', rest:'#60a5fa',
+  nap:'#818cf8', wake:'#00e5a0', sleep:'#4b5563',
+  meal:'#f97316', prep:'#eab308', winddown:'#ec4899', other:'#6b6b7e'
+};
+
+// ════════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════════
+let currentUser   = null;   // { id, username, coins }
+let routines      = [];     // all routines for user
+let activeRoutine = null;   // the active one {id, name, slots[]}
+let completedSlots= {};     // {slotId: true}
+let xpHistory     = {};     // {"YYYY-MM-DD": xp}
+let coinsHistory  = {};     // {"YYYY-MM-DD": coins}
+let todayLogId    = null;   // supabase row id for today's log
+let allLogs       = [];     // all daily_logs rows for leaderboard
+
+let currentSlotIdx = 0;
+let clockInterval  = null;
+let syncTimer      = null;
+let pomSlotIdx     = 0;
+let pomInterval    = null;
+let pomSeconds     = 3000;
+let pomRunning     = false;
+
+let editingRoutineId  = null;
+let lbChart           = null;
+let histWeeklyChart   = null;
+let histMonthlyChart  = null;
+let currentLBTab      = 'all';
+
+// ════════════════════════════════════════════════════════════════
+// DATE HELPERS
+// ════════════════════════════════════════════════════════════════
+function todayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function localDateKey(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function lastNDays(n) {
+  return Array.from({length:n},(_,i)=>{ const d=new Date(); d.setDate(d.getDate()-(n-1-i)); return localDateKey(d); });
+}
+
+// ════════════════════════════════════════════════════════════════
+// XP / LEVEL / COINS
+// ════════════════════════════════════════════════════════════════
+function getLevelInfo(totalXP) {
+  for (let i=LEVELS.length-1;i>=0;i--) if(totalXP>=LEVELS[i]) return {level:i+1,next:LEVELS[i+1]??null,prev:LEVELS[i]};
+  return {level:1,next:LEVELS[1],prev:0};
+}
+function getTodayXP()   { return xpHistory[todayKey()]  || 0; }
+function getTotalXP()   { return Object.values(xpHistory).reduce((s,v)=>s+v,0); }
+function getTodayCoins(){ return coinsHistory[todayKey()] || 0; }
+function getTotalCoins(){ return Object.values(coinsHistory).reduce((s,v)=>s+v,0); }
+
+function recalcToday() {
+  if (!activeRoutine) return;
+  let xp = 0, coins = 0;
+  activeRoutine.slots.forEach(sl => {
+    if (completedSlots[sl.id]) {
+      xp += sl.xp || 0;
+      if (sl.category === 'study') {
+        // Coins: 10 per hour of study
+        const hrs = slotDurationHours(sl);
+        coins += Math.round(hrs * 10);
+      }
+    }
+  });
+  xpHistory[todayKey()]    = xp;
+  coinsHistory[todayKey()] = coins;
+  return { xp, coins };
+}
+
+function slotDurationHours(sl) {
+  const [sh,sm,sp] = parseT(sl.start), [eh,em,ep] = parseT(sl.end);
+  let s = toMins(sh,sm,sp), e = toMins(eh,em,ep);
+  if (e <= s) e += 1440;
+  return (e - s) / 60;
+}
+
+// ════════════════════════════════════════════════════════════════
+// TIME HELPERS
+// ════════════════════════════════════════════════════════════════
+function parseT(str) { const m=str.match(/(\d+):(\d+) ?([APap][Mm])/); if(!m)return[0,0,'AM']; return[+m[1],+m[2],m[3].toUpperCase()]; }
+function toMins(h,m,p) { let v=h*60+m; if(p==='PM'&&h!==12)v+=720; if(p==='AM'&&h===12)v=m; return v; }
+function minsToTime(v) { const h=Math.floor(v/60)%24,m=v%60,p=h>=12?'PM':'AM',h12=h%12||12; return `${h12}:${String(m).padStart(2,'0')} ${p}`; }
+
+// ════════════════════════════════════════════════════════════════
+// SUPABASE QUERIES
+// ════════════════════════════════════════════════════════════════
+async function dbGetUser(username) {
+  const {data} = await sb.from('users').select('*').eq('username', username.toLowerCase()).single();
+  return data;
+}
+async function dbCreateUser(username, password) {
+  const {data,error} = await sb.from('users').insert({username:username.toLowerCase(),password,coins:0}).select().single();
+  if(error) throw error;
+  return data;
+}
+async function dbUpdateCoins(userId, coins) {
+  await sb.from('users').update({coins}).eq('id',userId);
+}
+async function dbGetRoutines(username) {
+  const {data} = await sb.from('routines').select('*').eq('username',username.toLowerCase()).order('created_at',{ascending:false});
+  return data || [];
+}
+async function dbSaveRoutine(r) {
+  if (r.id) {
+    const {data} = await sb.from('routines').update({name:r.name,slots:r.slots,is_active:r.is_active}).eq('id',r.id).select().single();
+    return data;
+  } else {
+    const {data,error} = await sb.from('routines').insert({username:currentUser.username.toLowerCase(),name:r.name,slots:r.slots,is_active:r.is_active}).select().single();
+    if(error) throw error;
+    return data;
+  }
+}
+async function dbDeleteRoutine(id) {
+  await sb.from('routines').delete().eq('id',id);
+}
+async function dbSetActiveRoutine(username, activeId) {
+  // Deactivate all, then activate one
+  await sb.from('routines').update({is_active:false}).eq('username',username.toLowerCase());
+  if (activeId) await sb.from('routines').update({is_active:true}).eq('id',activeId);
+}
+async function dbGetLogs(username) {
+  const {data} = await sb.from('daily_logs').select('*').eq('username',username.toLowerCase());
+  return data || [];
+}
+async function dbGetAllLogs() {
+  const {data} = await sb.from('daily_logs').select('username,date,xp,coins');
+  return data || [];
+}
+async function dbUpsertLog(username, date, completedSlots, xp, coins) {
+  if (todayLogId) {
+    await sb.from('daily_logs').update({completed_slots:completedSlots,xp,coins}).eq('id',todayLogId);
+  } else {
+    const {data} = await sb.from('daily_logs').insert({username:username.toLowerCase(),date,completed_slots:completedSlots,xp,coins}).select().single();
+    if (data) todayLogId = data.id;
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+// SYNC (debounced)
+// ════════════════════════════════════════════════════════════════
+function scheduleSave() {
+  clearTimeout(syncTimer);
+  showSync('busy','⏳ সিঙ্ক...');
+  syncTimer = setTimeout(doSave, 1500);
+}
+async function doSave() {
+  if (!currentUser) return;
+  recalcToday();
+  const xp    = getTodayXP();
+  const coins = getTodayCoins();
+  try {
+    await dbUpsertLog(currentUser.username, todayKey(), completedSlots, xp, coins);
+    await dbUpdateCoins(currentUser.id, getTotalCoins());
+    showSync('ok','✓ সিঙ্ক');
+  } catch(e) { showSync('err','✗ ব্যর্থ'); }
+}
+
+// ════════════════════════════════════════════════════════════════
+// AUTH
+// ════════════════════════════════════════════════════════════════
+window.showAuthTab = function(tab) {
+  document.getElementById('auth-login').style.display    = tab==='login'    ? 'block' : 'none';
+  document.getElementById('auth-register').style.display = tab==='register' ? 'block' : 'none';
+};
+
+window.doLogin = async function() {
+  const user = document.getElementById('li-user').value.trim().toLowerCase();
+  const pass = document.getElementById('li-pass').value;
+  setAuthErr('li','');
+  if (!user||!pass) { setAuthErr('li','ইউজারনেম ও পাসওয়ার্ড দাও'); return; }
+  setBtnLoading('li-btn',true);
+  try {
+    const found = await dbGetUser(user);
+    if (!found || found.password !== pass) { setAuthErr('li','ইউজারনেম বা পাসওয়ার্ড ভুল'); setBtnLoading('li-btn',false); return; }
+    saveSession(found);
+    await bootApp(found);
+  } catch(e) { setAuthErr('li','সংযোগ ব্যর্থ।'); setBtnLoading('li-btn',false); }
+};
+
+window.doRegister = async function() {
+  const user  = document.getElementById('rg-user').value.trim().toLowerCase();
+  const pass  = document.getElementById('rg-pass').value;
+  const pass2 = document.getElementById('rg-pass2').value;
+  setAuthErr('rg','');
+  if (!user||!pass)  { setAuthErr('rg','সব ঘর পূরণ করো'); return; }
+  if (user.length<3) { setAuthErr('rg','ইউজারনেম কমপক্ষে ৩ অক্ষর'); return; }
+  if (pass.length<4) { setAuthErr('rg','পাসওয়ার্ড কমপক্ষে ৪ অক্ষর'); return; }
+  if (pass!==pass2)  { setAuthErr('rg','পাসওয়ার্ড মিলছে না'); return; }
+  setBtnLoading('rg-btn',true);
+  try {
+    const exists = await dbGetUser(user);
+    if (exists) { setAuthErr('rg','এই ইউজারনেম নেওয়া হয়েছে'); setBtnLoading('rg-btn',false); return; }
+    const newUser = await dbCreateUser(user, pass);
+    saveSession(newUser);
+    await bootApp(newUser);
+  } catch(e) { setAuthErr('rg','সংযোগ ব্যর্থ। '+e.message); setBtnLoading('rg-btn',false); }
+};
+
+window.doLogout = function() {
+  if (!confirm('লগআউট করতে চাও?')) return;
+  clearSession();
+  location.reload();
+};
+
+function saveSession(user)  { localStorage.setItem('rx_sess', JSON.stringify({id:user.id,username:user.username})); }
+function clearSession()     { localStorage.removeItem('rx_sess'); }
+function setAuthErr(pre,m)  { const e=document.getElementById(pre+'-err'); e.textContent=m; e.style.display=m?'block':'none'; }
+function setBtnLoading(id,on){ const b=document.getElementById(id); if(!b)return; b.disabled=on; b.innerHTML=on?'<i class="fa-solid fa-spinner fa-spin"></i> লোড হচ্ছে...': (id==='li-btn'?'<i class="fa-solid fa-arrow-right-to-bracket"></i> লগইন করো':'<i class="fa-solid fa-user-plus"></i> অ্যাকাউন্ট তৈরি করো'); }
+
+// ════════════════════════════════════════════════════════════════
+// BOOT APP
+// ════════════════════════════════════════════════════════════════
+async function bootApp(user) {
+  currentUser = { id: user.id, username: user.username, coins: user.coins||0 };
+
+  // Load routines
+  routines = await dbGetRoutines(user.username);
+  activeRoutine = routines.find(r=>r.is_active) || null;
+
+  // Load logs for this user
+  const logs = await dbGetLogs(user.username);
+  xpHistory = {}; coinsHistory = {};
+  logs.forEach(l => {
+    xpHistory[l.date]    = l.xp    || 0;
+    coinsHistory[l.date] = l.coins || 0;
+  });
+
+  // Today's log
+  const tlog = logs.find(l=>l.date===todayKey());
+  if (tlog) { todayLogId = tlog.id; completedSlots = tlog.completed_slots || {}; }
+  else       { todayLogId = null;   completedSlots = {}; }
+
+  // Midnight reset check
+  const lk = `rx_last_${user.username}`;
+  if (localStorage.getItem(lk) && localStorage.getItem(lk) !== todayKey()) completedSlots = {};
+  localStorage.setItem(lk, todayKey());
+
+  // Show app
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('main-content').style.display = 'block';
+
+  updateSidebar();
+  startClock();
+  renderTimeline();
+  updateStats();
+
+  // No routine? Show onboarding
+  if (!activeRoutine) { document.getElementById('onboarding').style.display = 'flex'; return; }
+  goTo('dashboard');
+}
+
+// ════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════════════════════════════
+window.goTo = function(view) {
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+view)?.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.view===view));
+  document.querySelectorAll('.bnav-item').forEach(n=>n.classList.toggle('active', n.dataset.view===view));
+  if (view==='leaderboard') loadLeaderboard();
+  if (view==='history')     renderHistory();
+  if (view==='routines')    renderRoutineList();
+};
+
+window.closeOnboarding = function() {
+  document.getElementById('onboarding').style.display='none';
+};
+
+// ════════════════════════════════════════════════════════════════
+// CLOCK & SLOT DETECTION
+// ════════════════════════════════════════════════════════════════
+function startClock() {
+  if (clockInterval) clearInterval(clockInterval);
+  tickClock();
+  clockInterval = setInterval(tickClock, 1000);
+}
+function tickClock() {
+  const now = new Date();
+  document.getElementById('clock-display').textContent = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
+  document.getElementById('date-display').textContent  = now.toLocaleDateString('bn-BD',{weekday:'long',month:'long',day:'numeric'});
+  detectCurrentSlot(now);
+  updateDayProgress(now);
+}
+function detectCurrentSlot(now) {
+  if (!activeRoutine?.slots?.length) return;
+  const cur = now.getHours()*60+now.getMinutes();
+  let found = -1;
+  activeRoutine.slots.forEach((sl,i)=>{
+    const [sh,sm,sp]=parseT(sl.start), [eh,em,ep]=parseT(sl.end);
+    const s=toMins(sh,sm,sp), e=toMins(eh,em,ep);
+    if(e<=s){ if(cur>=s||cur<e) found=i; }
+    else    { if(cur>=s&&cur<e) found=i; }
+  });
+  if (found!==-1 && found!==currentSlotIdx) { currentSlotIdx=found; renderTimeline(); }
+  if (found!==-1) {
+    const sl = activeRoutine.slots[found];
+    document.getElementById('cur-slot-title').textContent = sl.title;
+    document.getElementById('cur-slot-desc').textContent  = sl.desc||'';
+  }
+}
+function updateDayProgress(now) {
+  if (!activeRoutine?.slots?.length) return;
+  const first = activeRoutine.slots[0], last = activeRoutine.slots[activeRoutine.slots.length-1];
+  const [sh,sm,sp]=parseT(first.start); const [eh,em,ep]=parseT(last.end);
+  const dayStart=toMins(sh,sm,sp), dayEnd=toMins(eh,em,ep)||1440;
+  const cur=now.getHours()*60+now.getMinutes();
+  const pct=Math.max(0,Math.min(100,((cur-dayStart)/(dayEnd-dayStart))*100));
+  document.getElementById('stat-day-pct').textContent  = Math.round(pct)+'%';
+  document.getElementById('stat-day-bar').style.width  = pct+'%';
+}
+
+// ════════════════════════════════════════════════════════════════
+// TIMELINE
+// ════════════════════════════════════════════════════════════════
+function renderTimeline() {
+  const cont = document.getElementById('timeline');
+  if (!activeRoutine?.slots?.length) {
+    cont.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><p>কোনো রুটিন সক্রিয় নেই</p><button class="btn btn-accent btn-sm" onclick="goTo('routines')">রুটিন তৈরি করো</button></div>`;
+    document.getElementById('active-routine-name').textContent = 'কোনো রুটিন নেই';
+    return;
+  }
+  document.getElementById('active-routine-name').textContent = activeRoutine.name;
+  cont.innerHTML = activeRoutine.slots.map((sl,i) => {
+    const done   = !!completedSlots[sl.id];
+    const active = i === currentSlotIdx;
+    const col    = CAT_COLORS[sl.category] || CAT_COLORS.other;
+    return `<div class="slot-row">
+      <div class="slot-check ${done?'done':''}" onclick="toggleSlot('${sl.id}',${i})">
+        ${done?'<i class="fa-solid fa-check" style="font-size:.8rem"></i>':''}
+      </div>
+      <div class="slot-card ${active?'active':''}" onclick="openPomodoro(${i})" style="${active?'border-color:var(--accent)':''};${done?'opacity:.6':''}">
+        <div style="display:flex;justify-content:space-between;align-items:start;gap:8px">
+          <div style="flex:1;min-width:0">
+            <div style="font-size:.72rem;font-weight:700;color:var(--muted);margin-bottom:2px">${sl.start} — ${sl.end}</div>
+            <div style="font-weight:700;font-size:.95rem;${done?'text-decoration:line-through;color:var(--muted)':''}">${sl.title}</div>
+            ${sl.desc?`<div style="font-size:.78rem;color:var(--muted);margin-top:1px">${sl.desc}</div>`:''}
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+            <span style="font-size:.65rem;font-weight:800;padding:2px 7px;border-radius:99px;background:${col}22;color:${col};border:1px solid ${col}44">${sl.xp||0} XP</span>
+            ${sl.category==='study'?`<span class="badge badge-coin" style="font-size:.6rem">+${Math.round(slotDurationHours(sl)*10)}🪙</span>`:''}
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.toggleSlot = function(slotId, idx) {
+  const was = !!completedSlots[slotId];
+  completedSlots[slotId] = !was;
+  recalcToday();
+  if (!was) {
+    const sl = activeRoutine.slots[idx];
+    spawnXPPop(sl.xp||0, slotId);
+  }
+  updateStats();
+  renderTimeline();
+  scheduleSave();
+};
+
+function spawnXPPop(xp, slotId) {
+  const el = document.createElement('div');
+  el.className = 'xp-pop';
+  el.textContent = `+${xp} XP ⚡`;
+  el.style.color = 'var(--accent)';
+  const ref = document.querySelector(`[onclick*="'${slotId}'"]`);
+  const r   = ref ? ref.getBoundingClientRect() : {left:window.innerWidth/2-40,top:window.innerHeight/2};
+  el.style.left = (r.left+10)+'px';
+  el.style.top  = (r.top+window.scrollY-10)+'px';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),1500);
+}
+
+// ════════════════════════════════════════════════════════════════
+// STATS UPDATE
+// ════════════════════════════════════════════════════════════════
+function updateStats() {
+  const xp    = getTodayXP();
+  const coins = getTodayCoins();
+  const total = getTotalXP();
+  const {level,next,prev} = getLevelInfo(total);
+  const done  = activeRoutine?.slots?.filter(s=>completedSlots[s.id]).length || 0;
+  const total_slots = activeRoutine?.slots?.length || 0;
+  const donePct = total_slots ? (done/total_slots)*100 : 0;
+  const lvlPct  = next ? ((total-prev)/(next-prev))*100 : 100;
+
+  document.getElementById('stat-xp').textContent           = xp.toLocaleString();
+  document.getElementById('stat-coins').textContent        = getTotalCoins().toLocaleString();
+  document.getElementById('stat-done').textContent         = `${done}/${total_slots}`;
+  document.getElementById('stat-prog-bar').style.width     = donePct+'%';
+  document.getElementById('stat-level-badge').textContent  = `লেভেল ${level} • ${LEVEL_NAMES[level]||'মহান'}`;
+  updateSidebar();
+}
+
+function updateSidebar() {
+  if (!currentUser) return;
+  const total = getTotalXP();
+  const {level,next,prev} = getLevelInfo(total);
+  const pct = next ? ((total-prev)/(next-prev))*100 : 100;
+  // Top header
+  document.getElementById('hdr-avatar').textContent   = currentUser.username.charAt(0).toUpperCase();
+  document.getElementById('hdr-username').textContent = currentUser.username;
+  document.getElementById('hdr-coins').textContent    = `🪙 ${getTotalCoins()}`;
+  document.getElementById('hdr-level').textContent    = `Lv ${level} • ${LEVEL_NAMES[level]||''}`;
+  document.getElementById('hdr-xp-bar').style.width   = pct+'%';
+  document.getElementById('hdr-info').style.display   = 'block';
+  document.getElementById('hdr-xp-wrap').style.display= 'block';
+}
+
+// ════════════════════════════════════════════════════════════════
+// POMODORO
+// ════════════════════════════════════════════════════════════════
+window.openPomodoro = function(idx) {
+  if (idx===undefined) idx=currentSlotIdx;
+  if (!activeRoutine?.slots?.length) return;
+  pomSlotIdx = idx;
+  const sl = activeRoutine.slots[idx];
+  document.getElementById('pomo-slot-name').textContent = sl.title;
+  document.getElementById('pomo-xp-hint').textContent   = `✨ সম্পন্ন করলে +${sl.xp||0} XP পাবে`;
+  pomSeconds = 50*60; updatePomoDisplay();
+  openModal('modal-pomo');
+};
+window.closePomo = function() {
+  closeModal('modal-pomo');
+  clearInterval(pomInterval); pomRunning=false;
+  document.getElementById('pomo-btn').textContent='শুরু';
+};
+window.togglePomo = function() {
+  const btn = document.getElementById('pomo-btn');
+  if (!pomRunning) {
+    pomRunning=true; btn.textContent='থামুন';
+    pomInterval = setInterval(()=>{
+      pomSeconds--; updatePomoDisplay();
+      if (pomSeconds<=0) {
+        clearInterval(pomInterval); pomRunning=false; btn.textContent='শুরু';
+        const sl = activeRoutine.slots[pomSlotIdx];
+        if (!completedSlots[sl.id]) {
+          completedSlots[sl.id]=true; recalcToday();
+          updateStats(); renderTimeline(); scheduleSave();
+          spawnXPPop(sl.xp||0, sl.id);
+        }
+        showToast(`🎉 সেশন সম্পন্ন! +${sl.xp||0} XP`);
+        closePomo();
+      }
+    },1000);
+  } else {
+    pomRunning=false; btn.textContent='চালু'; clearInterval(pomInterval);
+  }
+};
+function updatePomoDisplay() {
+  const m=Math.floor(pomSeconds/60), s=pomSeconds%60;
+  document.getElementById('pomo-timer-display').textContent=`${m}:${s.toString().padStart(2,'0')}`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// SPEAK
+// ════════════════════════════════════════════════════════════════
+window.speakCurrent = function() {
+  if (!activeRoutine?.slots?.[currentSlotIdx]) return;
+  const sl = activeRoutine.slots[currentSlotIdx];
+  const msg = new SpeechSynthesisUtterance(`${sl.title}. ${sl.desc||''}`);
+  msg.lang='bn-BD'; window.speechSynthesis.speak(msg);
+};
+
+// ════════════════════════════════════════════════════════════════
+// ROUTINE EDITOR
+// ════════════════════════════════════════════════════════════════
+function renderRoutineList() {
+  const cont = document.getElementById('routines-list');
+  if (!routines.length) {
+    cont.innerHTML=`<div class="empty-state"><div class="empty-icon">📋</div><p>কোনো রুটিন নেই</p></div>`;
+    return;
+  }
+  cont.innerHTML = routines.map(r=>`
+    <div class="card" style="padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:.95rem;display:flex;align-items:center;gap:8px">
+          ${r.name}
+          ${r.is_active?'<span class="badge badge-accent">সক্রিয়</span>':''}
+        </div>
+        <div style="color:var(--muted);font-size:.78rem;margin-top:3px">${(r.slots||[]).length} টি স্লট</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        ${!r.is_active?`<button class="btn btn-ghost btn-xs" onclick="activateRoutine('${r.id}')">Activate</button>`:''}
+        <button class="btn btn-ghost btn-xs" onclick="openRoutineEditor('${r.id}')"><i class="fa-solid fa-pen"></i></button>
+      </div>
+    </div>`).join('');
+}
+
+window.activateRoutine = async function(id) {
+  showSync('busy','⏳...');
+  await dbSetActiveRoutine(currentUser.username, id);
+  routines.forEach(r=>r.is_active = r.id===id);
+  activeRoutine = routines.find(r=>r.id===id);
+  completedSlots={};
+  renderRoutineList(); renderTimeline(); updateStats();
+  showSync('ok','✓'); showToast('রুটিন সক্রিয় হয়েছে ✓');
+};
+
+window.openRoutineEditor = function(id) {
+  editingRoutineId = id;
+  const r = id ? routines.find(x=>x.id===id) : null;
+  document.getElementById('routine-modal-title').textContent = r ? 'রুটিন এডিট' : 'নতুন রুটিন';
+  document.getElementById('routine-name-inp').value = r?.name || '';
+  document.getElementById('routine-active-toggle').checked = r?.is_active || false;
+  document.getElementById('routine-delete-btn').style.display = r ? 'inline-flex' : 'none';
+  // Render slot rows
+  const rows = document.getElementById('slot-rows');
+  rows.innerHTML='';
+  const slots = r?.slots || [];
+  if (!slots.length) addSlotRow();
+  else slots.forEach(sl=>addSlotRow(sl));
+  openModal('modal-routine');
+};
+
+window.closeRoutineEditor = function() { closeModal('modal-routine'); };
+
+window.addSlotRow = function(sl=null) {
+  const id = sl?.id || 'sl_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+  const div = document.createElement('div');
+  div.className = 'slot-builder-row';
+  div.dataset.slotId = id;
+  div.style.cssText = 'display:grid;grid-template-columns:2fr 80px 80px 100px 36px;gap:6px;align-items:end;margin-bottom:4px;background:var(--surface);padding:10px;border-radius:10px;border:1px solid var(--border)';
+  div.innerHTML=`
+    <div>
+      <div style="font-size:.7rem;color:var(--muted);margin-bottom:3px">নাম</div>
+      <input class="inp" style="font-size:.82rem;padding:.45rem .7rem" placeholder="স্লটের নাম" value="${sl?.title||''}">
+    </div>
+    <div>
+      <div style="font-size:.7rem;color:var(--muted);margin-bottom:3px">শুরু</div>
+      <input class="inp" style="font-size:.78rem;padding:.45rem .5rem" placeholder="09:00 AM" value="${sl?.start||''}">
+    </div>
+    <div>
+      <div style="font-size:.7rem;color:var(--muted);margin-bottom:3px">শেষ</div>
+      <input class="inp" style="font-size:.78rem;padding:.45rem .5rem" placeholder="11:00 AM" value="${sl?.end||''}">
+    </div>
+    <div>
+      <div style="font-size:.7rem;color:var(--muted);margin-bottom:3px">ক্যাটাগরি</div>
+      <select class="inp" style="font-size:.78rem;padding:.45rem .5rem">
+        ${['study','break','rest','nap','wake','sleep','meal','prep','winddown','other'].map(c=>`<option value="${c}" ${sl?.category===c?'selected':''}>${c}</option>`).join('')}
+      </select>
+    </div>
+    <div style="display:flex;align-items:flex-end;padding-bottom:1px">
+      <button class="btn btn-danger btn-xs" onclick="this.closest('[data-slot-id]').remove()" style="width:32px;height:32px;padding:0"><i class="fa-solid fa-xmark"></i></button>
+    </div>`;
+  document.getElementById('slot-rows').appendChild(div);
+};
+
+window.saveRoutine = async function() {
+  const name = document.getElementById('routine-name-inp').value.trim();
+  if (!name) { showToast('রুটিনের নাম দাও'); return; }
+  const isActive = document.getElementById('routine-active-toggle').checked;
+  const rows = [...document.querySelectorAll('#slot-rows [data-slot-id]')];
+  const slots = rows.map(row=>{
+    const inps = row.querySelectorAll('input,select');
+    const title = inps[0].value.trim();
+    const start = inps[1].value.trim();
+    const end   = inps[2].value.trim();
+    const cat   = inps[3].value;
+    if (!title) return null;
+    // XP based on category + duration
+    let xp = 30;
+    if (cat==='study') {
+      try { const [sh,sm,sp]=parseT(start),[eh,em,ep]=parseT(end); const dur=(toMins(eh,em,ep)-toMins(sh,sm,sp)+1440)%1440; xp=Math.round(dur/60*100)||50; } catch(e){}
+    }
+    return { id: row.dataset.slotId, title, start, end, category:cat, xp, desc:'' };
+  }).filter(Boolean);
+
+  if (!slots.length) { showToast('কমপক্ষে একটি স্লট যোগ করো'); return; }
+
+  showSync('busy','⏳...');
+  try {
+    if (isActive) await dbSetActiveRoutine(currentUser.username, null); // deactivate others first
+    const saved = await dbSaveRoutine({ id: editingRoutineId||null, name, slots, is_active: isActive });
+    routines = await dbGetRoutines(currentUser.username);
+    activeRoutine = routines.find(r=>r.is_active) || activeRoutine;
+    completedSlots = {};
+    renderRoutineList(); renderTimeline(); updateStats();
+    closeRoutineEditor();
+    showSync('ok','✓'); showToast('রুটিন সেভ হয়েছে ✓');
+    if (!document.getElementById('onboarding').style.display==='none') closeOnboarding();
+  } catch(e) { showSync('err','✗'); showToast('সেভ ব্যর্থ: '+e.message); }
+};
+
+window.deleteRoutine = async function() {
+  if (!editingRoutineId) return;
+  if (!confirm('এই রুটিন মুছে ফেলবে?')) return;
+  await dbDeleteRoutine(editingRoutineId);
+  routines = await dbGetRoutines(currentUser.username);
+  if (activeRoutine?.id===editingRoutineId) { activeRoutine=null; completedSlots={}; }
+  renderRoutineList(); renderTimeline(); updateStats();
+  closeRoutineEditor(); showToast('রুটিন মুছে ফেলা হয়েছে');
+};
+
+// ════════════════════════════════════════════════════════════════
+// AI BUILDER — Prompt generator + JSON importer (no API calls)
+// ════════════════════════════════════════════════════════════════
+window.generateAIPrompt = function() {
+  const wake     = document.getElementById('ai-wake').value.trim();
+  const sleep    = document.getElementById('ai-sleep').value.trim();
+  const subjects = document.getElementById('ai-subjects').value.trim();
+  const extra    = document.getElementById('ai-extra').value.trim();
+
+  if (!wake || !sleep) { showToast('ঘুম ও ওঠার সময় দাও'); return; }
+
+  const prompt = `আমার জন্য একটি পূর্ণ দৈনিক রুটিন তৈরি করো।
+
+আমার তথ্য:
+- ঘুম থেকে ওঠার সময়: ${wake}
+- ঘুমাতে যাওয়ার সময়: ${sleep}
+- পড়াশোনা: ${subjects || 'উল্লেখ নেই'}
+${extra ? `- অন্যান্য: ${extra}` : ''}
+
+প্রথমে আমাকে রুটিনটি দেখাও এবং জিজ্ঞেস করো আমি কনফার্ম করতে চাই কিনা বা পরিবর্তন করতে চাই কিনা।
+
+আমি কনফার্ম করলে, রুটিনটি নিচের JSON ফরম্যাটে দাও:
+
+{
+  "routine_name": "রুটিনের নাম",
+  "slots": [
+    {
+      "id": "sl_1",
+      "title": "স্লটের নাম",
+      "desc": "সংক্ষিপ্ত বিবরণ",
+      "start": "07:00 AM",
+      "end": "08:00 AM",
+      "category": "study",
+      "xp": 100
+    }
+  ]
+}
+
+নিয়মাবলী:
+- category শুধুমাত্র এগুলোর একটি হবে: study, break, rest, nap, wake, sleep, meal, prep, winddown, other
+- সময় ফরম্যাট: "HH:MM AM" বা "HH:MM PM" (যেমন "07:30 AM", "11:00 PM")
+- XP: study-এর জন্য প্রতি ঘণ্টায় ~100, বাকিগুলোর জন্য 20-50
+- সব স্লট মিলিয়ে পুরো দিন কভার করতে হবে, কোনো ফাঁক রাখা যাবে না
+- JSON ছাড়া আর কিছু লিখবে না কনফার্মের পরে`;
+
+  document.getElementById('ai-generated-prompt').textContent = prompt;
+  document.getElementById('ai-prompt-section').style.display = 'block';
+  document.getElementById('ai-prompt-section').scrollIntoView({behavior:'smooth', block:'start'});
+};
+
+window.copyPrompt = function() {
+  const text = document.getElementById('ai-generated-prompt').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn = document.getElementById('copy-prompt-btn');
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> কপি হয়েছে!';
+    btn.style.color = 'var(--accent)';
+    setTimeout(()=>{ btn.innerHTML='<i class="fa-solid fa-copy"></i> কপি'; btn.style.color=''; }, 2000);
+  }).catch(()=>{
+    // Fallback for older browsers
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('প্রম্পট কপি হয়েছে ✓');
+  });
+};
+
+window.parseJSONPreview = function() {
+  const raw = document.getElementById('ai-json-input').value.trim();
+  const errEl = document.getElementById('ai-json-error');
+  const previewEl = document.getElementById('ai-json-preview');
+  errEl.style.display = 'none'; previewEl.style.display = 'none';
+
+  if (!raw) { errEl.textContent = 'JSON পেস্ট করো'; errEl.style.display = 'block'; return null; }
+  let parsed;
+  try {
+    const match = raw.match(/\{[\s\S]*\}/);
+    parsed = JSON.parse(match?.[0] || raw);
+  } catch(e) {
+    errEl.textContent = '❌ JSON ফরম্যাট ভুল। ঠিকমতো কপি করো।'; errEl.style.display='block'; return null;
+  }
+  if (!parsed.slots?.length) {
+    errEl.textContent = '❌ slots পাওয়া যায়নি।'; errEl.style.display='block'; return null;
+  }
+  previewEl.innerHTML = `
+    <div style="font-size:.78rem;font-weight:700;color:var(--accent);margin-bottom:8px">✓ ${parsed.slots.length} টি স্লট পাওয়া গেছে — "${parsed.routine_name||'রুটিন'}"</div>
+    <div style="display:flex;flex-direction:column;gap:4px;max-height:200px;overflow-y:auto">
+      ${parsed.slots.map(sl=>`
+        <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--card);border-radius:7px;border:1px solid var(--border)">
+          <span style="font-size:.68rem;color:var(--muted);min-width:108px;flex-shrink:0">${sl.start||'?'} — ${sl.end||'?'}</span>
+          <span style="font-weight:600;font-size:.82rem;flex:1">${sl.title||'?'}</span>
+          <span style="font-size:.62rem;font-weight:800;padding:1px 6px;border-radius:99px;background:${CAT_COLORS[sl.category]||'#666'}22;color:${CAT_COLORS[sl.category]||'#666'};flex-shrink:0">${sl.xp||0} XP</span>
+        </div>`).join('')}
+    </div>`;
+  previewEl.style.display = 'block';
+  return parsed;
+};
+
+window.importJSONRoutine = async function() {
+  const parsed = parseJSONPreview();
+  if (!parsed) return;
+  const r = {
+    id: null,
+    name: parsed.routine_name || 'AI রুটিন',
+    slots: parsed.slots.map((sl,i)=>({
+      id: sl.id || 'sl_ai_'+i,
+      title: sl.title || 'স্লট',
+      desc:  sl.desc  || '',
+      start: sl.start || '08:00 AM',
+      end:   sl.end   || '09:00 AM',
+      category: sl.category || 'other',
+      xp: sl.xp || 30
+    })),
+    is_active: true
+  };
+  showSync('busy','⏳...');
+  try {
+    await dbSetActiveRoutine(currentUser.username, null);
+    const saved = await dbSaveRoutine(r);
+    routines = await dbGetRoutines(currentUser.username);
+    activeRoutine = routines.find(x=>x.id===saved.id) || routines.find(x=>x.is_active);
+    completedSlots = {};
+    closeOnboarding();
+    renderTimeline(); updateStats();
+    document.getElementById('ai-json-input').value = '';
+    document.getElementById('ai-json-preview').style.display = 'none';
+    document.getElementById('ai-prompt-section').style.display = 'none';
+    goTo('dashboard');
+    showSync('ok','✓'); showToast('রুটিন ইম্পোর্ট হয়েছে ✓');
+  } catch(e) { showSync('err','✗'); showToast('ইম্পোর্ট ব্যর্থ: '+e.message); }
+};
+
+// ════════════════════════════════════════════════════════════════
+// LEADERBOARD
+// ════════════════════════════════════════════════════════════════
+window.switchLBTab = function(tab) {
+  currentLBTab = tab;
+  document.getElementById('lb-tab-all').className    = tab==='all'    ? 'btn btn-accent btn-sm' : 'btn btn-ghost btn-sm';
+  document.getElementById('lb-tab-weekly').className = tab==='weekly' ? 'btn btn-accent btn-sm' : 'btn btn-ghost btn-sm';
+  renderLeaderboard();
+};
+
+async function loadLeaderboard() {
+  document.getElementById('lb-list').innerHTML = `<div style="text-align:center;padding:24px;color:var(--muted)"><i class="fa-solid fa-spinner fa-spin"></i> লোড হচ্ছে...</div>`;
+  try {
+    allLogs = await dbGetAllLogs();
+    renderLeaderboard();
+  } catch(e) { document.getElementById('lb-list').innerHTML = '<div class="empty-state"><p>লোড ব্যর্থ</p></div>'; }
+}
+
+function renderLeaderboard() {
+  const days7 = new Set(lastNDays(7));
+  // Aggregate XP per user
+  const agg = {};
+  allLogs.forEach(l=>{
+    if (!agg[l.username]) agg[l.username]={username:l.username,total:0,weekly:0};
+    agg[l.username].total  += l.xp||0;
+    if (days7.has(l.date)) agg[l.username].weekly += l.xp||0;
+  });
+  let sorted = Object.values(agg).sort((a,b)=>
+    currentLBTab==='weekly' ? b.weekly-a.weekly : b.total-a.total
+  );
+  const scoreKey = currentLBTab==='weekly' ? 'weekly' : 'total';
+  const top5 = sorted.slice(0,5);
+
+  // Chart
+  if (lbChart) lbChart.destroy();
+  const ctx = document.getElementById('lb-chart').getContext('2d');
+  lbChart = new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels: top5.map(u=>u.username),
+      datasets:[{label:'XP',data:top5.map(u=>u[scoreKey]),backgroundColor:top5.map((_,i)=>['#00e5a0','#7c6af7','#f7a06a','#3b82f6','#ec4899'][i]||'#6b6b7e'),borderRadius:8}]
+    },
+    options:{
+      responsive:true,
+      plugins:{legend:{display:false},title:{display:true,text:currentLBTab==='weekly'?'সাপ্তাহিক টপ ৫':'সর্বকালীন টপ ৫',color:'#f0f0f5',font:{size:13}}},
+      scales:{x:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'}},y:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'},beginAtZero:true}}
+    }
+  });
+
+  // List
+  const list = document.getElementById('lb-list');
+  if (!sorted.length) { list.innerHTML='<div class="empty-state"><div class="empty-icon">🏆</div><p>এখনো কোনো ডেটা নেই</p></div>'; return; }
+  list.innerHTML = sorted.slice(0,20).map((u,i)=>{
+    const rankClass = i===0?'gold':i===1?'silver':i===2?'bronze':'';
+    const isMe = u.username===currentUser?.username?.toLowerCase();
+    return `<div class="lb-row ${isMe?'me':''}">
+      <span class="lb-rank ${rankClass}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</span>
+      <div class="avatar" style="width:28px;height:28px;font-size:.78rem;background:${['#00e5a066','#7c6af766','#f7a06a66','#3b82f666'][i]||'var(--accent2)'}66">${u.username.charAt(0).toUpperCase()}</div>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:.88rem">${u.username}${isMe?' <span style="font-size:.7rem;color:var(--accent)">(তুমি)</span>':''}</div>
+      </div>
+      <div style="font-family:\'Syne\',sans-serif;font-weight:800;color:${i<3?['#fbbf24','#a0a0b0','#cd7f32'][i]:'var(--muted)'};font-size:.95rem">${u[scoreKey].toLocaleString()} XP</div>
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════════════════
+// HISTORY
+// ════════════════════════════════════════════════════════════════
+function renderHistory() {
+  const days90  = lastNDays(90);
+  const days30  = lastNDays(30);
+  const days7   = lastNDays(7);
+
+  // Stats
+  const streak  = calcStreak();
+  const best    = Math.max(0,...Object.values(xpHistory));
+  const weekXP  = days7.reduce((s,d)=>s+(xpHistory[d]||0),0);
+  const total   = getTotalXP();
+  document.getElementById('hist-streak').textContent = streak;
+  document.getElementById('hist-best').textContent   = best;
+  document.getElementById('hist-week').textContent   = weekXP;
+  document.getElementById('hist-total').textContent  = total;
+
+  // Heatmap
+  renderHeatmap(days90);
+
+  // Weekly chart
+  if (histWeeklyChart) histWeeklyChart.destroy();
+  const wCtx = document.getElementById('hist-weekly-chart').getContext('2d');
+  histWeeklyChart = new Chart(wCtx,{
+    type:'bar',
+    data:{
+      labels:days7.map(d=>new Date(d+'T00:00:00').toLocaleDateString('en-US',{weekday:'short',day:'numeric'})),
+      datasets:[{label:'XP',data:days7.map(d=>xpHistory[d]||0),backgroundColor:days7.map((_,i)=>i===6?'var(--accent)':'#7c6af766'),borderRadius:8}]
+    },
+    options:{responsive:true,plugins:{legend:{display:false},title:{display:true,text:'সাপ্তাহিক XP',color:'#f0f0f5',font:{size:12}}},scales:{x:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'}},y:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'},beginAtZero:true}}}
+  });
+
+  // Monthly chart
+  if (histMonthlyChart) histMonthlyChart.destroy();
+  const mCtx = document.getElementById('hist-monthly-chart').getContext('2d');
+  histMonthlyChart = new Chart(mCtx,{
+    type:'line',
+    data:{
+      labels:days30.map((d,i)=>i%5===0?new Date(d+'T00:00:00').getDate()+'':''),
+      datasets:[{label:'দৈনিক XP',data:days30.map(d=>xpHistory[d]||0),borderColor:'var(--accent)',backgroundColor:'#00e5a012',fill:true,tension:.4,pointRadius:2}]
+    },
+    options:{responsive:true,plugins:{legend:{display:false},title:{display:true,text:'মাসিক XP (৩০ দিন)',color:'#f0f0f5',font:{size:12}}},scales:{x:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'}},y:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'},beginAtZero:true}}}
+  });
+}
+
+function calcStreak() {
+  let streak=0, d=new Date();
+  for (let i=0;i<365;i++) {
+    const k=localDateKey(d);
+    if ((xpHistory[k]||0)>0) streak++;
+    else if (i>0) break;
+    d.setDate(d.getDate()-1);
+  }
+  return streak;
+}
+
+function renderHeatmap(days) {
+  const maxXP = Math.max(1,...days.map(d=>xpHistory[d]||0));
+  // Group into weeks (columns of 7)
+  const cont = document.getElementById('heatmap-container');
+  const grid = document.createElement('div');
+  grid.className='heatmap-grid';
+  let col=null;
+  days.forEach((d,i)=>{
+    if (i%7===0){ col=document.createElement('div'); col.className='heatmap-col'; grid.appendChild(col); }
+    const xp=xpHistory[d]||0;
+    const level=xp===0?0:xp<maxXP*.25?1:xp<maxXP*.5?2:xp<maxXP*.75?3:4;
+    const cell=document.createElement('div');
+    cell.className='heatmap-cell'; if(level) cell.dataset.level=level;
+    cell.title=`${d}: ${xp} XP`;
+    col.appendChild(cell);
+  });
+  cont.innerHTML=''; cont.appendChild(grid);
+}
+
+// ════════════════════════════════════════════════════════════════
+// MODAL HELPERS
+// ════════════════════════════════════════════════════════════════
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ════════════════════════════════════════════════════════════════
+// SYNC BADGE & TOAST
+// ════════════════════════════════════════════════════════════════
+let syncHideT = null;
+function showSync(state,text) {
+  const el=document.getElementById('sync-badge');
+  el.className='sync-'+state; el.textContent=text; el.style.display='block';
+  clearTimeout(syncHideT);
+  if (state==='ok') syncHideT=setTimeout(()=>el.style.display='none',3000);
+}
+let toastT=null;
+function showToast(msg) {
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.style.display='block';
+  clearTimeout(toastT); toastT=setTimeout(()=>el.style.display='none',2800);
+}
+window.showToast = showToast;
+
+// ════════════════════════════════════════════════════════════════
+// AUTO SESSION RESTORE
+// ════════════════════════════════════════════════════════════════
+(async function init() {
+  const saved = localStorage.getItem('rx_sess');
+  if (saved) {
+    try {
+      const sess = JSON.parse(saved);
+      showSync('busy','⏳ সেশন পুনরুদ্ধার...');
+      const user = await dbGetUser(sess.username);
+      if (user) { await bootApp(user); return; }
+    } catch(e) {}
+    localStorage.removeItem('rx_sess');
+  }
+  document.getElementById('auth-screen').style.display='flex';
+})();
+
+</script>
