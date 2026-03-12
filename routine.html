@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -337,10 +338,10 @@ select.inp { cursor:pointer; }
     <h2 class="font-display" style="font-size:1.8rem;font-weight:800;margin-bottom:.5rem">রুটিন নেই এখনো!</h2>
     <p style="color:var(--muted);font-size:.9rem;margin-bottom:2rem;line-height:1.6">তোমার প্রথম রুটিন তৈরি করো।<br>নিজে বানাও, অথবা AI কে বলো।</p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-      <button class="btn btn-accent" style="padding:.75rem 1.5rem" onclick="goTo('routines');closeOnboarding()">
+      <button class="btn btn-accent" style="padding:.75rem 1.5rem" onclick="closeOnboarding();openRoutineEditor(null);switchRoutineMode('manual')">
         <i class="fa-solid fa-pencil"></i> নিজে বানাই
       </button>
-      <button class="btn btn-accent2" style="padding:.75rem 1.5rem" onclick="goTo('ai-builder');closeOnboarding()">
+      <button class="btn btn-accent2" style="padding:.75rem 1.5rem" onclick="closeOnboarding();openRoutineEditor(null);switchRoutineMode('ai')">
         <i class="fa-solid fa-wand-magic-sparkles"></i> AI দিয়ে বানাই
       </button>
     </div>
@@ -380,8 +381,8 @@ select.inp { cursor:pointer; }
   <div class="bnav-item" data-view="routines" onclick="goTo('routines')">
     <i class="fa-solid fa-list-check"></i><span>রুটিন</span>
   </div>
-  <div class="bnav-item" data-view="ai-builder" onclick="goTo('ai-builder')">
-    <i class="fa-solid fa-wand-magic-sparkles"></i><span>AI</span>
+  <div class="bnav-item" data-view="tasks" onclick="goTo('tasks')">
+    <i class="fa-solid fa-check-double"></i><span>টাস্ক</span>
   </div>
   <div class="bnav-item" data-view="leaderboard" onclick="goTo('leaderboard')">
     <i class="fa-solid fa-trophy"></i><span>র‍্যাংক</span>
@@ -425,7 +426,7 @@ select.inp { cursor:pointer; }
         <div style="margin-top:8px" class="xp-bar-bg"><div id="stat-prog-bar" class="xp-bar-fill" style="background:var(--accent2);width:0%"></div></div>
       </div>
       <div class="card" style="padding:16px">
-        <div style="font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">দিনের গতি</div>
+        <div style="font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">দিনের অগ্রগতি</div>
         <div id="stat-day-pct" style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--accent3)">0%</div>
         <div style="margin-top:8px" class="xp-bar-bg"><div id="stat-day-bar" class="xp-bar-fill" style="background:var(--accent3);width:0%"></div></div>
       </div>
@@ -468,94 +469,24 @@ select.inp { cursor:pointer; }
     <div id="routines-list" style="display:flex;flex-direction:column;gap:12px"></div>
   </div>
 
-  <!-- ── AI BUILDER ── -->
-  <div id="view-ai-builder" class="view">
-    <h2 class="section-title">AI রুটিন বিল্ডার ✨</h2>
-
-    <!-- Step 1: Fill info → generate prompt -->
-    <div class="card" style="padding:20px;margin-bottom:16px">
-      <div style="font-size:.78rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px">
-        ধাপ ১ — তোমার দিনের তথ্য দাও
+  <!-- ── TASKS ── -->
+  <div id="view-tasks" class="view">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+      <h2 class="section-title" style="margin:0">আমার টাস্ক ✅</h2>
+      <button class="btn btn-accent" onclick="openTaskEditor()">
+        <i class="fa-solid fa-plus"></i> নতুন টাস্ক
+      </button>
+    </div>
+    <div style="margin-bottom:16px;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <span style="font-size:.8rem;color:var(--muted)">আজকের টাস্ক:</span>
+        <span id="tasks-progress" style="font-weight:800;color:var(--accent);margin-left:6px">0/0</span>
       </div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div>
-          <label style="font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px">ঘুম থেকে ওঠার সময়</label>
-          <input id="ai-wake" class="inp" placeholder="যেমন: ৭:০০ AM বা 6:30 AM">
-        </div>
-        <div>
-          <label style="font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px">ঘুমাতে যাওয়ার সময়</label>
-          <input id="ai-sleep" class="inp" placeholder="যেমন: ১১:৩০ PM বা 11:00 PM">
-        </div>
-        <div>
-          <label style="font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px">পড়াশোনার বিষয়সমূহ ও সময়</label>
-          <textarea id="ai-subjects" class="inp" rows="2" style="resize:none" placeholder="যেমন: সকাল ৮-১১ গণিত, বিকাল ৪-৭ পদার্থবিজ্ঞান ও রসায়ন, রাত ৮-১০ MCQ"></textarea>
-        </div>
-        <div>
-          <label style="font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px">অন্যান্য তথ্য (ঐচ্ছিক)</label>
-          <textarea id="ai-extra" class="inp" rows="2" style="resize:none" placeholder="যেমন: দুপুর ১-২ ঘুম, নামাজের সময়, ব্যায়াম, খাওয়ার সময়..."></textarea>
-        </div>
-        <button class="btn btn-accent2 btn-full" onclick="generateAIPrompt()" style="margin-top:4px">
-          <i class="fa-solid fa-wand-magic-sparkles"></i> প্রম্পট তৈরি করো
-        </button>
+      <div style="width:100px;height:6px;background:var(--border);border-radius:99px;overflow:hidden">
+        <div id="tasks-progress-bar" style="height:100%;background:var(--accent);width:0%;transition:width .3s"></div>
       </div>
     </div>
-
-    <!-- Step 2: Generated prompt to copy -->
-    <div id="ai-prompt-section" style="display:none">
-      <div class="card" style="padding:20px;margin-bottom:16px;border-color:var(--accent2)">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-          <div style="font-size:.78rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.06em">
-            ধাপ ২ — এই প্রম্পটটি কপি করো
-          </div>
-          <button class="btn btn-ghost btn-xs" onclick="copyPrompt()" id="copy-prompt-btn">
-            <i class="fa-solid fa-copy"></i> কপি
-          </button>
-        </div>
-        <div id="ai-generated-prompt" style="font-size:.8rem;line-height:1.7;color:var(--muted);background:var(--bg);border-radius:8px;padding:12px;border:1px solid var(--border);white-space:pre-wrap;max-height:220px;overflow-y:auto"></div>
-        <div style="margin-top:12px;padding:10px 12px;background:#7c6af710;border:1px solid #7c6af733;border-radius:8px;font-size:.78rem;color:var(--muted);line-height:1.6">
-          📋 এই প্রম্পটটি <strong style="color:var(--text)">ChatGPT, Claude, Gemini</strong> বা যেকোনো AI chatbot-এ পেস্ট করো।<br>
-          AI তোমাকে রুটিন দেখাবে। পছন্দ হলে confirm করো — তখন AI JSON format-এ রুটিন দেবে।
-        </div>
-      </div>
-
-      <!-- Step 3: Paste JSON -->
-      <div class="card" style="padding:20px;margin-bottom:16px">
-        <div style="font-size:.78rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px">
-          ধাপ ৩ — AI-এর JSON রুটিন এখানে পেস্ট করো
-        </div>
-        <textarea id="ai-json-input" class="inp" rows="6" style="resize:vertical;font-family:monospace;font-size:.78rem" placeholder='{"routine_name":"My Routine","slots":[{"id":"sl_1","title":"ঘুম থেকে ওঠা","start":"07:00 AM","end":"07:30 AM","category":"wake","xp":30,"desc":""},...]}'></textarea>
-        <div id="ai-json-error" style="display:none;color:var(--danger);font-size:.78rem;margin-top:6px"></div>
-        <div id="ai-json-preview" style="display:none;margin-top:12px"></div>
-        <div style="display:flex;gap:8px;margin-top:12px">
-          <button class="btn btn-ghost btn-sm" onclick="parseJSONPreview()"><i class="fa-solid fa-eye"></i> প্রিভিউ</button>
-          <button class="btn btn-accent btn-full" onclick="importJSONRoutine()"><i class="fa-solid fa-file-import"></i> ইম্পোর্ট করো</button>
-        </div>
-      </div>
-
-      <!-- JSON format help -->
-      <div class="card" style="padding:16px;border-color:#ffffff08">
-        <div style="font-size:.75rem;font-weight:700;color:var(--muted);margin-bottom:8px">📌 AI-কে দেওয়ার জন্য JSON ফরম্যাট নির্দেশ</div>
-        <div style="font-size:.72rem;color:var(--muted);line-height:1.7;background:var(--bg);padding:10px;border-radius:8px;font-family:monospace;white-space:pre-wrap">Category values: study, break, rest, nap, wake, sleep, meal, prep, winddown, other
-Time format: "HH:MM AM" or "HH:MM PM"
-XP: ~100/hour for study, 20-50 for others
-
-Expected JSON:
-{
-  "routine_name": "রুটিনের নাম",
-  "slots": [
-    {
-      "id": "sl_1",
-      "title": "স্লটের নাম",
-      "desc": "বিবরণ",
-      "start": "07:00 AM",
-      "end": "08:00 AM",
-      "category": "study",
-      "xp": 100
-    }
-  ]
-}</div>
-      </div>
-    </div>
+    <div id="tasks-list" style="display:flex;flex-direction:column;gap:10px"></div>
   </div>
 
   <!-- ── LEADERBOARD ── -->
@@ -690,12 +621,24 @@ Expected JSON:
 
 <!-- ROUTINE EDITOR -->
 <div id="modal-routine" class="modal-overlay" onclick="if(event.target===this)closeRoutineEditor()">
-  <div class="modal-box" style="padding:24px">
+  <div class="modal-box" style="padding:24px;max-width:560px">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
       <h3 class="font-display" style="font-size:1.2rem;font-weight:800" id="routine-modal-title">নতুন রুটিন</h3>
       <button class="btn btn-ghost btn-xs" onclick="closeRoutineEditor()"><i class="fa-solid fa-xmark"></i></button>
     </div>
-    <div style="display:flex;flex-direction:column;gap:12px">
+    
+    <!-- Mode Toggle: Manual vs AI -->
+    <div id="routine-mode-toggle" style="display:flex;gap:6px;margin-bottom:16px">
+      <button class="btn btn-accent btn-sm btn-full" id="mode-manual-btn" onclick="switchRoutineMode('manual')">
+        <i class="fa-solid fa-pencil"></i> নিজে বানাই
+      </button>
+      <button class="btn btn-ghost btn-sm btn-full" id="mode-ai-btn" onclick="switchRoutineMode('ai')">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> AI দিয়ে বানাই
+      </button>
+    </div>
+    
+    <!-- Manual Mode -->
+    <div id="manual-mode-content" style="display:flex;flex-direction:column;gap:12px">
       <input id="routine-name-inp" class="inp" placeholder="রুটিনের নাম (যেমন: Study Day)">
       <div style="display:flex;gap:8px;align-items:center">
         <label class="toggle"><input type="checkbox" id="routine-active-toggle"><span class="toggle-slider"></span></label>
@@ -706,13 +649,84 @@ Expected JSON:
           <span style="font-size:.85rem;font-weight:700">স্লটসমূহ</span>
           <button class="btn btn-ghost btn-xs" onclick="addSlotRow()"><i class="fa-solid fa-plus"></i> স্লট যোগ</button>
         </div>
-        <div id="slot-rows" style="display:flex;flex-direction:column;gap:8px"></div>
+        <div id="slot-rows" style="display:flex;flex-direction:column;gap:8px;max-height:280px;overflow-y:auto"></div>
       </div>
       <div style="display:flex;gap:8px;padding-top:8px">
         <button class="btn btn-accent btn-full" onclick="saveRoutine()"><i class="fa-solid fa-floppy-disk"></i> সেভ করো</button>
         <button id="routine-delete-btn" class="btn btn-danger" onclick="deleteRoutine()" style="display:none"><i class="fa-solid fa-trash"></i></button>
       </div>
     </div>
+    
+    <!-- AI Mode -->
+    <div id="ai-mode-content" style="display:none;flex-direction:column;gap:12px">
+      <div class="card" style="padding:16px;background:var(--bg);border-color:var(--border)">
+        <div style="font-size:.75rem;font-weight:700;color:var(--accent2);margin-bottom:12px">ধাপ ১ — তোমার দিনের তথ্য দাও</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <input id="ai-wake" class="inp" style="font-size:.82rem;padding:.5rem .7rem" placeholder="ঘুম থেকে ওঠার সময় (যেমন: 6:30 AM)">
+          <input id="ai-sleep" class="inp" style="font-size:.82rem;padding:.5rem .7rem" placeholder="ঘুমাতে যাওয়ার সময় (যেমন: 11:00 PM)">
+          <textarea id="ai-subjects" class="inp" rows="2" style="font-size:.82rem;resize:none" placeholder="পড়াশোনার বিষয় ও সময়"></textarea>
+          <textarea id="ai-extra" class="inp" rows="1" style="font-size:.82rem;resize:none" placeholder="অন্যান্য (ঐচ্ছিক)"></textarea>
+        </div>
+        <button class="btn btn-accent2 btn-full" onclick="generateAIPrompt()" style="margin-top:10px">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> প্রম্পট তৈরি করো
+        </button>
+      </div>
+      
+      <div id="ai-prompt-section" style="display:none">
+        <div class="card" style="padding:14px;background:var(--bg);border-color:var(--accent2);margin-bottom:10px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <span style="font-size:.7rem;font-weight:700;color:var(--accent2)">ধাপ ২ — প্রম্পট কপি করো</span>
+            <button class="btn btn-ghost btn-xs" onclick="copyPrompt()" id="copy-prompt-btn"><i class="fa-solid fa-copy"></i></button>
+          </div>
+          <div id="ai-generated-prompt" style="font-size:.7rem;color:var(--muted);background:var(--surface);padding:10px;border-radius:8px;max-height:120px;overflow-y:auto;white-space:pre-wrap"></div>
+        </div>
+        <div class="card" style="padding:14px;background:var(--bg);border-color:var(--border)">
+          <div style="font-size:.7rem;font-weight:700;color:var(--accent);margin-bottom:8px">ধাপ ৩ — AI JSON পেস্ট করো</div>
+          <textarea id="ai-json-input" class="inp" rows="4" style="font-size:.72rem;font-family:monospace;resize:vertical" placeholder='{"routine_name":"...","slots":[...]}'></textarea>
+          <div id="ai-json-error" style="display:none;color:var(--danger);font-size:.7rem;margin-top:4px"></div>
+          <div id="ai-json-preview" style="display:none;margin-top:8px"></div>
+          <div style="display:flex;gap:6px;margin-top:10px">
+            <button class="btn btn-ghost btn-xs" onclick="parseJSONPreview()"><i class="fa-solid fa-eye"></i> প্রিভিউ</button>
+            <button class="btn btn-accent btn-full btn-sm" onclick="importJSONRoutine()"><i class="fa-solid fa-file-import"></i> ইম্পোর্ট</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TASK EDITOR -->
+<div id="modal-task" class="modal-overlay" onclick="if(event.target===this)closeTaskEditor()">
+  <div class="modal-box" style="padding:24px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <h3 class="font-display" style="font-size:1.2rem;font-weight:800" id="task-modal-title">নতুন টাস্ক</h3>
+      <button class="btn btn-ghost btn-xs" onclick="closeTaskEditor()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <input id="task-title-inp" class="inp" placeholder="টাস্কের নাম">
+      <div style="display:flex;gap:8px">
+        <select id="task-priority-inp" class="inp" style="flex:1">
+          <option value="low">সাধারণ</option>
+          <option value="medium" selected>মাঝারি</option>
+          <option value="high">জরুরি</option>
+        </select>
+        <input id="task-due-inp" class="inp" type="date" style="flex:1">
+      </div>
+      <textarea id="task-desc-inp" class="inp" rows="2" placeholder="বিবরণ (ঐচ্ছিক)" style="resize:none"></textarea>
+      <div style="display:flex;gap:8px;padding-top:8px">
+        <button class="btn btn-accent btn-full" onclick="saveTask()"><i class="fa-solid fa-floppy-disk"></i> সেভ করো</button>
+        <button id="task-delete-btn" class="btn btn-danger" onclick="deleteTask()" style="display:none"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOADING SCREEN -->
+<div id="loading-screen" style="position:fixed;inset:0;z-index:300;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px">
+  <div style="font-size:3rem">🚀</div>
+  <div style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800">RoutineX</div>
+  <div style="display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.85rem">
+    <i class="fa-solid fa-spinner fa-spin"></i> লোড হচ্ছে...
   </div>
 </div>
 
@@ -750,8 +764,11 @@ let activeRoutine = null;   // the active one {id, name, slots[]}
 let completedSlots= {};     // {slotId: true}
 let xpHistory     = {};     // {"YYYY-MM-DD": xp}
 let coinsHistory  = {};     // {"YYYY-MM-DD": coins}
+let spentCoins    = {};     // {"YYYY-MM-DD": negative coins spent} <- FIX: track spending separately
 let todayLogId    = null;   // supabase row id for today's log
 let allLogs       = [];     // all daily_logs rows for leaderboard
+let tasks         = [];     // user's tasks [{id, title, desc, priority, due, done}]
+let editingTaskId = null;   // currently editing task
 
 let currentSlotIdx = 0;
 let clockInterval  = null;
@@ -791,7 +808,12 @@ function getLevelInfo(totalXP) {
 function getTodayXP()   { return xpHistory[todayKey()]  || 0; }
 function getTotalXP()   { return Object.values(xpHistory).reduce((s,v)=>s+v,0); }
 function getTodayCoins(){ return coinsHistory[todayKey()] || 0; }
-function getTotalCoins(){ return Object.values(coinsHistory).reduce((s,v)=>s+v,0); }
+function getTotalCoins(){ 
+  // FIX: Subtract spent coins from total
+  const earned = Object.values(coinsHistory).reduce((s,v)=>s+v,0);
+  const spent  = Object.values(spentCoins).reduce((s,v)=>s+Math.abs(v),0);
+  return Math.max(0, earned - spent);
+}
 
 function recalcToday() {
   if (!activeRoutine) return;
@@ -969,6 +991,12 @@ async function bootApp(user) {
     coinsHistory[l.date] = l.coins || 0;
   });
 
+  // Load spent coins
+  spentCoins = await dbLoadSpentCoins(user.username);
+
+  // Load tasks
+  tasks = await dbGetTasks(user.username);
+
   // Today's log
   const tlog = logs.find(l=>l.date===todayKey());
   if (tlog) { todayLogId = tlog.id; completedSlots = tlog.completed_slots || {}; }
@@ -983,6 +1011,9 @@ async function bootApp(user) {
   myPurchases = await dbGetPurchases(user.username);
   const themeRow = myPurchases.find(p=>p.item_id==='active_theme');
   if (themeRow?.expires_at) applyTheme(themeRow.expires_at); // expires_at stores theme id
+
+  // Hide loading screen
+  document.getElementById('loading-screen').style.display = 'none';
 
   // Show app
   document.getElementById('auth-screen').style.display = 'none';
@@ -1009,12 +1040,275 @@ window.goTo = function(view) {
   if (view==='leaderboard') loadLeaderboard();
   if (view==='history')     renderHistory();
   if (view==='routines')    renderRoutineList();
+  if (view==='tasks')       renderTasks();
   if (view==='shop')        renderShop();
 };
 
 window.closeOnboarding = function() {
   document.getElementById('onboarding').style.display='none';
 };
+
+// ════════════════════════════════════════════════════════════════
+// ROUTINE MODE SWITCHING (Manual vs AI)
+// ════════════════════════════════════════════════════════════════
+window.switchRoutineMode = function(mode) {
+  const manualBtn = document.getElementById('mode-manual-btn');
+  const aiBtn = document.getElementById('mode-ai-btn');
+  const manualContent = document.getElementById('manual-mode-content');
+  const aiContent = document.getElementById('ai-mode-content');
+  
+  if (mode === 'manual') {
+    manualBtn.className = 'btn btn-accent btn-sm btn-full';
+    aiBtn.className = 'btn btn-ghost btn-sm btn-full';
+    manualContent.style.display = 'flex';
+    aiContent.style.display = 'none';
+  } else {
+    manualBtn.className = 'btn btn-ghost btn-sm btn-full';
+    aiBtn.className = 'btn btn-accent2 btn-sm btn-full';
+    manualContent.style.display = 'none';
+    aiContent.style.display = 'flex';
+  }
+};
+
+// ════════════════════════════════════════════════════════════════
+// AI BUILDER FUNCTIONS (integrated into routine editor)
+// ════════════════════════════════════════════════════════════════
+window.generateAIPrompt = function() {
+  const wake = document.getElementById('ai-wake').value.trim();
+  const sleep = document.getElementById('ai-sleep').value.trim();
+  const subjects = document.getElementById('ai-subjects').value.trim();
+  const extra = document.getElementById('ai-extra').value.trim();
+  if (!wake || !sleep) { showToast('ঘুম ও ওঠার সময় দাও'); return; }
+  
+  const prompt = `আমার জন্য একটি পূর্ণ দৈনিক রুটিন তৈরি করো।
+
+আমার তথ্য:
+- ঘুম থেকে ওঠার সময়: ${wake}
+- ঘুমাতে যাওয়ার সময়: ${sleep}
+- পড়াশোনা: ${subjects || 'উল্লেখ নেই'}
+${extra ? `- অন্যান্য: ${extra}` : ''}
+
+প্রথমে আমাকে রুটিনটি দেখাও এবং জিজ্ঞেস করো আমি কনফার্ম করতে চাই কিনা।
+
+আমি কনফার্ম করলে, রুটিনটি নিচের JSON ফরম্যাটে দাও:
+{"routine_name":"রুটিনের নাম","slots":[{"id":"sl_1","title":"স্লটের নাম","desc":"বিবরণ","start":"07:00 AM","end":"08:00 AM","category":"study","xp":100}]}
+
+নিয়মাবলী:
+- category শুধুমাত্র এগুলোর একটি হবে: study, break, rest, nap, wake, sleep, meal, prep, winddown, other
+- সময় ফরম্যাট: "HH:MM AM" বা "HH:MM PM"
+- XP: study-এর জন্য প্রতি ঘণ্টায় ~100, বাকিগুলোর জন্য 20-50`;
+
+  document.getElementById('ai-generated-prompt').textContent = prompt;
+  document.getElementById('ai-prompt-section').style.display = 'block';
+};
+
+window.copyPrompt = function() {
+  const text = document.getElementById('ai-generated-prompt').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn = document.getElementById('copy-prompt-btn');
+    btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+    showToast('কপি হয়েছে ✓');
+    setTimeout(()=>{ btn.innerHTML='<i class="fa-solid fa-copy"></i>'; }, 2000);
+  }).catch(()=>showToast('কপি ব্যর্থ'));
+};
+
+window.parseJSONPreview = function() {
+  const raw = document.getElementById('ai-json-input').value.trim();
+  const errEl = document.getElementById('ai-json-error');
+  const previewEl = document.getElementById('ai-json-preview');
+  errEl.style.display = 'none'; previewEl.style.display = 'none';
+  if (!raw) { errEl.textContent = 'JSON পেস্ট করো'; errEl.style.display = 'block'; return null; }
+  let parsed;
+  try {
+    const match = raw.match(/\{[\s\S]*\}/);
+    parsed = JSON.parse(match?.[0] || raw);
+  } catch(e) { errEl.textContent = '❌ JSON ফরম্যাট ভুল'; errEl.style.display='block'; return null; }
+  if (!parsed.slots?.length) { errEl.textContent = '❌ slots পাওয়া যায়নি'; errEl.style.display='block'; return null; }
+  previewEl.innerHTML = `<div style="font-size:.7rem;color:var(--accent)">✓ ${parsed.slots.length} টি স্লট — "${parsed.routine_name||'রুটিন'}"</div>`;
+  previewEl.style.display = 'block';
+  return parsed;
+};
+
+window.importJSONRoutine = async function() {
+  const parsed = parseJSONPreview();
+  if (!parsed) return;
+  const r = {
+    id: null,
+    name: parsed.routine_name || 'AI রুটিন',
+    slots: parsed.slots.map((sl,i)=>({
+      id: sl.id || 'sl_ai_'+i,
+      title: sl.title || 'স্লট',
+      desc: sl.desc || '',
+      start: sl.start || '08:00 AM',
+      end: sl.end || '09:00 AM',
+      category: sl.category || 'other',
+      xp: sl.xp || 30
+    })),
+    is_active: true
+  };
+  showSync('busy','⏳...');
+  try {
+    await dbSetActiveRoutine(currentUser.username, null);
+    const saved = await dbSaveRoutine(r);
+    routines = await dbGetRoutines(currentUser.username);
+    activeRoutine = routines.find(x=>x.id===saved.id) || routines.find(x=>x.is_active);
+    completedSlots = {};
+    closeRoutineEditor();
+    renderTimeline(); updateStats();
+    goTo('dashboard');
+    showSync('ok','✓'); showToast('রুটিন ইম্পোর্ট হয়েছে ✓');
+  } catch(e) { showSync('err','✗'); showToast('ইম্পোর্ট ব্যর্থ: '+e.message); }
+};
+
+// ════════════════════════════════════════════════════════════════
+// TASKS MANAGEMENT
+// ════════════════════════════════════════════════════════════════
+async function dbGetTasks(username) {
+  const {data} = await sb.from('tasks').select('*').eq('username', username.toLowerCase()).order('created_at',{ascending:false});
+  return data || [];
+}
+async function dbSaveTask(task) {
+  if (task.id) {
+    const {data,error} = await sb.from('tasks').update({
+      title: task.title, 
+      description: task.description,  // Changed from desc
+      priority: task.priority, 
+      due: task.due, 
+      done: task.done
+    }).eq('id', task.id).select().single();
+    if(error) throw error; return data;
+  } else {
+    const {data,error} = await sb.from('tasks').insert({
+      username: currentUser.username.toLowerCase(), 
+      title: task.title, 
+      description: task.description,  // Changed from desc
+      priority: task.priority, 
+      due: task.due, 
+      done: false
+    }).select().single();
+    if(error) throw error; return data;
+  }
+}
+async function dbDeleteTask(taskId) {
+  await sb.from('tasks').delete().eq('id', taskId);
+}
+
+function renderTasks() {
+  const today = todayKey();
+  const pending = tasks.filter(t=>!t.done);
+  const doneToday = tasks.filter(t=>t.done && t.due===today);
+  const total = pending.length + doneToday.length;
+  const done = doneToday.length;
+  
+  document.getElementById('tasks-progress').textContent = `${done}/${total}`;
+  document.getElementById('tasks-progress-bar').style.width = total ? `${(done/total)*100}%` : '0%';
+  
+  const listEl = document.getElementById('tasks-list');
+  if (!tasks.length) {
+    listEl.innerHTML = `<div class="empty-state"><div class="empty-icon">✅</div><p>কোনো টাস্ক নেই</p><button class="btn btn-accent btn-sm" onclick="openTaskEditor()">টাস্ক যোগ করো</button></div>`;
+    return;
+  }
+  
+  const priorityOrder = {high:0, medium:1, low:2};
+  const sorted = [...tasks].sort((a,b)=>{
+    if (a.done !== b.done) return a.done ? 1 : -1;
+    return priorityOrder[a.priority] - priorityOrder[b.priority];
+  });
+  
+  listEl.innerHTML = sorted.map(t=>{
+    const isDone = t.done;
+    const priorityColor = t.priority==='high'?'var(--danger)':t.priority==='medium'?'var(--accent3)':'var(--muted)';
+    const priorityBadge = t.priority==='high'?'জরুরি':t.priority==='medium'?'মাঝারি':'সাধারণ';
+    return `<div class="card" style="padding:12px 14px;display:flex;align-items:center;gap:12px;${isDone?'opacity:.5':''}">
+      <div onclick="toggleTask('${t.id}')" style="width:28px;height:28px;border-radius:50%;border:2px solid ${priorityColor};background:${isDone?priorityColor:'transparent'};display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .2s">
+        ${isDone?'<i class="fa-solid fa-check" style="font-size:.7rem;color:#fff"></i>':''}
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:.9rem;${isDone?'text-decoration:line-through;color:var(--muted)':''}">${t.title}</div>
+        ${t.desc?`<div style="font-size:.75rem;color:var(--muted);margin-top:2px">${t.desc}</div>`:''}
+        <div style="display:flex;gap:6px;margin-top:4px">
+          <span style="font-size:.62rem;padding:1px 6px;border-radius:99px;background:${priorityColor}22;color:${priorityColor};border:1px solid ${priorityColor}44">${priorityBadge}</span>
+          ${t.due?`<span style="font-size:.62rem;color:var(--muted)">📅 ${t.due}</span>`:''}
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-xs" onclick="openTaskEditor('${t.id}')"><i class="fa-solid fa-pen"></i></button>
+    </div>`;
+  }).join('');
+}
+
+window.toggleTask = async function(taskId) {
+  const task = tasks.find(t=>t.id===taskId);
+  if (!task) return;
+  task.done = !task.done;
+  try {
+    await dbSaveTask(task);
+    renderTasks();
+    if (task.done) showToast('টাস্ক সম্পন্ন! ✓');
+  } catch(e) { showToast('সেভ ব্যর্থ'); }
+};
+
+window.openTaskEditor = function(taskId) {
+  editingTaskId = taskId;
+  const task = taskId ? tasks.find(t=>t.id===taskId) : null;
+  document.getElementById('task-modal-title').textContent = task ? 'টাস্ক এডিট' : 'নতুন টাস্ক';
+  document.getElementById('task-title-inp').value = task?.title || '';
+  document.getElementById('task-priority-inp').value = task?.priority || 'medium';
+  document.getElementById('task-due-inp').value = task?.due || todayKey();
+  document.getElementById('task-desc-inp').value = task?.desc || '';
+  document.getElementById('task-delete-btn').style.display = task ? 'inline-flex' : 'none';
+  openModal('modal-task');
+};
+
+window.closeTaskEditor = function() { closeModal('modal-task'); };
+
+window.saveTask = async function() {
+  const title = document.getElementById('task-title-inp').value.trim();
+  if (!title) { showToast('টাস্কের নাম দাও'); return; }
+  const task = {
+    id: editingTaskId || null,
+    title,
+    desc: document.getElementById('task-desc-inp').value.trim(),
+    priority: document.getElementById('task-priority-inp').value,
+    due: document.getElementById('task-due-inp').value,
+    done: editingTaskId ? tasks.find(t=>t.id===editingTaskId)?.done || false : false
+  };
+  try {
+    const saved = await dbSaveTask(task);
+    tasks = await dbGetTasks(currentUser.username);
+    renderTasks(); closeTaskEditor();
+    showToast('টাস্ক সেভ হয়েছে ✓');
+  } catch(e) { showToast('সেভ ব্যর্থ'); }
+};
+
+window.deleteTask = async function() {
+  if (!editingTaskId || !confirm('এই টাস্ক মুছে ফেলবে?')) return;
+  try {
+    await dbDeleteTask(editingTaskId);
+    tasks = await dbGetTasks(currentUser.username);
+    renderTasks(); closeTaskEditor();
+    showToast('টাস্ক মুছে ফেলা হয়েছে');
+  } catch(e) { showToast('মুছতে ব্যর্থ'); }
+};
+
+// ════════════════════════════════════════════════════════════════
+// SPENT COINS DB HELPER
+// ════════════════════════════════════════════════════════════════
+async function dbSaveSpentCoins(username, spentData) {
+  // Store in user metadata or separate table
+  const {error} = await sb.from('user_meta').upsert({
+    username: username.toLowerCase(),
+    key: 'spent_coins',
+    value: JSON.stringify(spentData)
+  }, {onConflict: 'username,key'});
+  if (error) console.warn('Could not save spent coins:', error);
+}
+
+async function dbLoadSpentCoins(username) {
+  try {
+    const {data} = await sb.from('user_meta').select('value').eq('username', username.toLowerCase()).eq('key', 'spent_coins').single();
+    return data?.value ? JSON.parse(data.value) : {};
+  } catch(e) { return {}; }
+}
 
 // ════════════════════════════════════════════════════════════════
 // CLOCK & SLOT DETECTION
@@ -1050,13 +1344,16 @@ function detectCurrentSlot(now) {
 }
 function updateDayProgress(now) {
   if (!activeRoutine?.slots?.length) return;
-  const first = activeRoutine.slots[0], last = activeRoutine.slots[activeRoutine.slots.length-1];
-  const [sh,sm,sp]=parseT(first.start); const [eh,em,ep]=parseT(last.end);
-  const dayStart=toMins(sh,sm,sp), dayEnd=toMins(eh,em,ep)||1440;
-  const cur=now.getHours()*60+now.getMinutes();
-  const pct=Math.max(0,Math.min(100,((cur-dayStart)/(dayEnd-dayStart))*100));
-  document.getElementById('stat-day-pct').textContent  = Math.round(pct)+'%';
-  document.getElementById('stat-day-bar').style.width  = pct+'%';
+  
+  // Calculate percentage of day passed from 12 AM
+  const cur = now.getHours() * 60 + now.getMinutes();
+  const totalDayMinutes = 24 * 60; // 1440 minutes in a day
+  
+  // Percentage from 12 AM (0 minutes) to current time
+  const pct = Math.max(0, Math.min(100, (cur / totalDayMinutes) * 100));
+  
+  document.getElementById('stat-day-pct').textContent = Math.round(pct) + '%';
+  document.getElementById('stat-day-bar').style.width = pct + '%';
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -1776,18 +2073,23 @@ function renderHeatmap(days) {
 // SHOP
 // ════════════════════════════════════════════════════════════════
 const SHOP_THEMES = [
-  { id:'theme_default',  name:'ডিফল্ট',      price:0,   preview:'linear-gradient(135deg,#070709,#0f0f12)',
+  { id:'theme_default',  name:'ডিফল্ট',      price:0,   rental:false, preview:'linear-gradient(135deg,#070709,#0f0f12)',
     vars:{ '--bg':'#070709','--surface':'#0f0f12','--card':'#16161c','--accent':'#00e5a0','--accent2':'#7c6af7','--accent3':'#f7a06a' } },
-  { id:'theme_ocean',    name:'মহাসাগর',      price:80,  preview:'linear-gradient(135deg,#020b18,#0a2a4a)',
+  { id:'theme_ocean',    name:'মহাসাগর',      price:80,  rental:false, preview:'linear-gradient(135deg,#020b18,#0a2a4a)',
     vars:{ '--bg':'#020b18','--surface':'#071a30','--card':'#0c2540','--accent':'#00d4ff','--accent2':'#0080ff','--accent3':'#00ffcc' } },
-  { id:'theme_sunset',   name:'সূর্যাস্ত',    price:80,  preview:'linear-gradient(135deg,#1a0a00,#2d1500)',
+  { id:'theme_sunset',   name:'সূর্যাস্ত',    price:80,  rental:false, preview:'linear-gradient(135deg,#1a0a00,#2d1500)',
     vars:{ '--bg':'#1a0a00','--surface':'#2a1200','--card':'#3a1c00','--accent':'#ff7e00','--accent2':'#ff3d6b','--accent3':'#ffcc00' } },
-  { id:'theme_galaxy',   name:'গ্যালাক্সি',   price:120, preview:'linear-gradient(135deg,#07001a,#120038)',
+  { id:'theme_galaxy',   name:'গ্যালাক্সি',   price:120, rental:false, preview:'linear-gradient(135deg,#07001a,#120038)',
     vars:{ '--bg':'#07001a','--surface':'#0f0028','--card':'#180040','--accent':'#bf80ff','--accent2':'#ff6ef7','--accent3':'#80ffee' } },
-  { id:'theme_forest',   name:'বন',           price:80,  preview:'linear-gradient(135deg,#011a08,#052e12)',
+  { id:'theme_forest',   name:'বন',           price:80,  rental:false, preview:'linear-gradient(135deg,#011a08,#052e12)',
     vars:{ '--bg':'#011a08','--surface':'#052e12','--card':'#0a3d1c','--accent':'#00ff87','--accent2':'#5eff6e','--accent3':'#e8ff5c' } },
-  { id:'theme_cherry',   name:'চেরি',         price:120, preview:'linear-gradient(135deg,#1a0010,#2e0020)',
+  { id:'theme_cherry',   name:'চেরি',         price:120, rental:false, preview:'linear-gradient(135deg,#1a0010,#2e0020)',
     vars:{ '--bg':'#1a0010','--surface':'#2e0020','--card':'#400030','--accent':'#ff4da6','--accent2':'#ff80bf','--accent3':'#ffb3d9' } },
+  // PREMIUM RENTAL THEMES (3-day rental, very expensive)
+  { id:'theme_aurora',   name:'অরোরা ⭐',     price:500, rental:true, rentalDays:3, preview:'linear-gradient(135deg,#0a1628,#1a0a3a,#0a2828)',
+    vars:{ '--bg':'#0a1628','--surface':'#122040','--card':'#1a3050','--accent':'#00ffc8','--accent2':'#a855f7','--accent3':'#06b6d4' } },
+  { id:'theme_neon',     name:'নিয়ন ⭐⭐',   price:800, rental:true, rentalDays:3, preview:'linear-gradient(135deg,#0d001a,#1a0020,#001a1a)',
+    vars:{ '--bg':'#0d001a','--surface':'#150025','--card':'#200035','--accent':'#ff00ff','--accent2':'#00ffff','--accent3':'#ffff00' } },
 ];
 const SHOP_BOOSTS = [
   { id:'boost_xp_1d',  name:'XP বুস্ট ×১.৫', price:100, desc:'২৪ ঘণ্টার জন্য XP ১.৫× হবে', icon:'⚡' },
@@ -1836,21 +2138,47 @@ function renderShop() {
   const coins = getTotalCoins();
   document.getElementById('shop-balance').textContent = `🪙 ${coins}`;
 
+  // Check for expired rental themes and deactivate
+  const now = Date.now();
+  myPurchases.filter(p => p.item_id.startsWith('theme_') && p.expires_at && new Date(p.expires_at).getTime() <= now)
+    .forEach(p => { if(activeThemeId === p.item_id) applyTheme('theme_default'); });
+
   // Themes
-  const ownedThemes = new Set(myPurchases.filter(p=>p.item_id.startsWith('theme_')).map(p=>p.item_id));
-  ownedThemes.add('theme_default'); // always owned
+  const ownedThemeIds = new Set();
+  const rentalExpiries = {};
+  myPurchases.filter(p=>p.item_id.startsWith('theme_')).forEach(p => {
+    if (!p.expires_at || new Date(p.expires_at).getTime() > now) {
+      ownedThemeIds.add(p.item_id);
+      if (p.expires_at) rentalExpiries[p.item_id] = new Date(p.expires_at);
+    }
+  });
+  ownedThemeIds.add('theme_default'); // always owned
+  
   document.getElementById('shop-themes').innerHTML = SHOP_THEMES.map(t=>{
-    const owned  = ownedThemes.has(t.id);
+    const owned  = ownedThemeIds.has(t.id);
     const active = t.id === activeThemeId;
     const canBuy = coins >= t.price && !owned;
-    return `<div class="shop-item ${owned?'owned':''} ${active?'active-theme':''}">
+    const isRental = t.rental;
+    const expiry = rentalExpiries[t.id];
+    const timeLeft = expiry ? Math.max(0, Math.ceil((expiry - new Date()) / 3600000)) : null; // hours left
+    
+    let statusHtml = '';
+    if (active) {
+      statusHtml = `<div style="font-size:.68rem;color:var(--accent2);font-weight:700">✓ চালু আছে${isRental && timeLeft ? ` (${timeLeft}ঘণ্টা বাকি)` : ''}</div>`;
+    } else if (owned) {
+      statusHtml = `<button class="btn btn-ghost btn-xs btn-full" onclick="activateTheme('${t.id}')">চালু করো</button>`;
+    } else {
+      statusHtml = `<button class="btn ${canBuy?'btn-accent':'btn-ghost'} btn-xs btn-full" ${canBuy?'':'disabled'} onclick="buyTheme('${t.id}',${t.price})">
+        <span class="shop-price">🪙 ${t.price}</span>
+        ${isRental ? '<span style="font-size:.6rem;opacity:.7">/৩দিন</span>' : ''}
+      </button>`;
+    }
+    
+    return `<div class="shop-item ${owned?'owned':''} ${active?'active-theme':''}" style="${isRental && !owned?'border-color:var(--coin)44':''}">
       <div class="shop-preview" style="background:${t.preview}"></div>
       <div style="font-weight:700;font-size:.85rem">${t.name}</div>
-      ${active ? '<div style="font-size:.68rem;color:var(--accent2);font-weight:700">✓ চালু আছে</div>' :
-        owned  ? `<button class="btn btn-ghost btn-xs btn-full" onclick="activateTheme('${t.id}')">চালু করো</button>` :
-                 `<button class="btn ${canBuy?'btn-accent':'btn-ghost'} btn-xs btn-full" ${canBuy?'':'disabled'} onclick="buyTheme('${t.id}',${t.price})">
-                    <span class="shop-price">🪙 ${t.price}</span>
-                  </button>`}
+      ${isRental && !owned ? '<div style="font-size:.6rem;color:var(--coin);font-weight:700">⭐ প্রিমিয়াম (৩দিন)</div>' : ''}
+      ${statusHtml}
     </div>`;
   }).join('');
 
@@ -1873,25 +2201,35 @@ function renderShop() {
 
 window.buyTheme = async function(themeId, price) {
   if (getTotalCoins() < price) { showToast('পর্যাপ্ত কয়েন নেই'); return; }
+  const theme = SHOP_THEMES.find(t=>t.id===themeId);
+  const isRental = theme?.rental;
+  const rentalDays = theme?.rentalDays || 0;
+  const expiresAt = isRental ? new Date(Date.now() + rentalDays*86400000).toISOString() : null;
+  
   try {
     showSync('busy','⏳...');
-    await dbAddPurchase(currentUser.username, themeId, null);
+    await dbAddPurchase(currentUser.username, themeId, expiresAt);
     await dbUpdateCoins(currentUser.id, getTotalCoins() - price);
-    // Deduct from history
-    const keys = Object.keys(coinsHistory).sort();
-    let remaining = price;
-    for (let i=keys.length-1; i>=0 && remaining>0; i--) {
-      const take = Math.min(coinsHistory[keys[i]], remaining);
-      coinsHistory[keys[i]] -= take; remaining -= take;
-    }
+    // FIX: Record spent coins separately so balance doesn't regrow
+    const today = todayKey();
+    if (!spentCoins[today]) spentCoins[today] = 0;
+    spentCoins[today] -= price;
+    // Save spent coins to DB
+    await dbSaveSpentCoins(currentUser.username, spentCoins);
     myPurchases = await dbGetPurchases(currentUser.username);
     activateTheme(themeId);
     renderShop(); updateSidebar();
-    showSync('ok','✓'); showToast(`${SHOP_THEMES.find(t=>t.id===themeId)?.name} কেনা হয়েছে! ✓`);
+    showSync('ok','✓'); showToast(`${theme?.name} কেনা হয়েছে! ✓${isRental ? ' (৩দিনের জন্য)' : ''}`);
   } catch(e) { showSync('err','✗'); showToast('কেনা ব্যর্থ'); }
 };
 
 window.activateTheme = async function(themeId) {
+  // Check if theme has expired
+  const purchase = myPurchases.find(p=>p.item_id===themeId);
+  if (purchase?.expires_at && new Date(purchase.expires_at).getTime() <= Date.now()) {
+    showToast('এই থিমের মেয়াদ শেষ হয়েছে');
+    return;
+  }
   applyTheme(themeId);
   try { await dbSetActiveTheme(currentUser.username, themeId); } catch(e){}
   renderShop();
@@ -1907,12 +2245,11 @@ window.buyBoost = async function(boostId, price) {
     showSync('busy','⏳...');
     await dbAddPurchase(currentUser.username, boostId, exp);
     await dbUpdateCoins(currentUser.id, getTotalCoins() - price);
-    const keys = Object.keys(coinsHistory).sort();
-    let remaining = price;
-    for (let i=keys.length-1; i>=0 && remaining>0; i--) {
-      const take = Math.min(coinsHistory[keys[i]], remaining);
-      coinsHistory[keys[i]] -= take; remaining -= take;
-    }
+    // FIX: Record spent coins separately
+    const today = todayKey();
+    if (!spentCoins[today]) spentCoins[today] = 0;
+    spentCoins[today] -= price;
+    await dbSaveSpentCoins(currentUser.username, spentCoins);
     myPurchases = await dbGetPurchases(currentUser.username);
     renderShop(); updateSidebar();
     showSync('ok','✓'); showToast(`${boost?.name} সক্রিয় হয়েছে! ✓`);
@@ -1951,13 +2288,16 @@ window.showToast = showToast;
   if (saved) {
     try {
       const sess = JSON.parse(saved);
-      showSync('busy','⏳ সেশন পুনরুদ্ধার...');
+      // Show loading screen for returning users
+      document.getElementById('loading-screen').style.display = 'flex';
       const user = await dbGetUser(sess.username);
       if (user) { await bootApp(user); return; }
     } catch(e) {}
     localStorage.removeItem('rx_sess');
   }
-  document.getElementById('auth-screen').style.display='flex';
+  // Hide loading screen if not logged in
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'flex';
 })();
 
 </script>
