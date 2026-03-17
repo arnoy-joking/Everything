@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -363,7 +361,7 @@ select.inp { cursor:pointer; }
       <div style="display:none" id="hdr-info">
         <div id="hdr-username" style="font-weight:700;font-size:.82rem;line-height:1.2">—</div>
         <div style="display:flex;align-items:center;gap:5px;margin-top:1px">
-          <span id="hdr-coins" class="coin-display" style="font-size:.7rem;padding:1px 7px">🪙 0</span>
+          <span id="hdr-coins" class="coin-display" style="font-size:.7rem;padding:1px 7px">🟡 0</span>
         </div>
       </div>
       <i class="fa-solid fa-right-from-bracket" style="font-size:.8rem;color:var(--muted)"></i>
@@ -416,7 +414,7 @@ select.inp { cursor:pointer; }
         <div id="stat-level-badge" class="badge badge-accent2" style="margin-top:6px">লেভেল ১</div>
       </div>
       <div class="card" style="padding:16px">
-        <div style="font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">কয়েন 🪙</div>
+        <div style="font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">কয়েন 🟡</div>
         <div id="stat-coins" style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--coin)">0</div>
         <div style="font-size:.7rem;color:var(--muted);margin-top:6px">study slots থেকে</div>
       </div>
@@ -587,7 +585,7 @@ select.inp { cursor:pointer; }
   <div id="view-shop" class="view">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:8px">
       <h2 class="section-title" style="margin:0">শপ 🛍️</h2>
-      <div id="shop-balance" class="coin-display" style="font-size:.85rem">🪙 0</div>
+      <div id="shop-balance" class="coin-display" style="font-size:.85rem">🟡 0</div>
     </div>
     <p style="color:var(--muted);font-size:.82rem;margin-bottom:20px">Study slots সম্পন্ন করে coins অর্জন করো এবং কিনে নাও।</p>
 
@@ -1234,7 +1232,7 @@ function renderTasks() {
       </div>
       <div style="flex:1;min-width:0">
         <div style="font-weight:700;font-size:.9rem;${isDone?'text-decoration:line-through;color:var(--muted)':''}">${t.title}</div>
-        ${t.desc?`<div style="font-size:.75rem;color:var(--muted);margin-top:2px">${t.desc}</div>`:''}
+        ${t.description?`<div style="font-size:.75rem;color:var(--muted);margin-top:2px">${t.description}</div>`:''}
         <div style="display:flex;gap:6px;margin-top:4px">
           <span style="font-size:.62rem;padding:1px 6px;border-radius:99px;background:${priorityColor}22;color:${priorityColor};border:1px solid ${priorityColor}44">${priorityBadge}</span>
           ${t.due?`<span style="font-size:.62rem;color:var(--muted)">📅 ${t.due}</span>`:''}
@@ -1393,7 +1391,7 @@ function renderTimeline() {
           </div>
           <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
             <span style="font-size:.65rem;font-weight:800;padding:2px 7px;border-radius:99px;background:${col}22;color:${col};border:1px solid ${col}44">${sl.xp||0} XP</span>
-            ${sl.category==='study'?`<span class="badge badge-coin" style="font-size:.6rem">+${Math.round(slotDurationHours(sl)*10)}🪙</span>`:''}
+            ${sl.category==='study'?`<span class="badge badge-coin" style="font-size:.6rem">+${Math.round(slotDurationHours(sl)*10)}🟡</span>`:''}
           </div>
         </div>
       </div>
@@ -1456,7 +1454,7 @@ function updateSidebar() {
   // Top header
   document.getElementById('hdr-avatar').textContent   = currentUser.username.charAt(0).toUpperCase();
   document.getElementById('hdr-username').textContent = currentUser.username;
-  document.getElementById('hdr-coins').textContent    = `🪙 ${getTotalCoins()}`;
+  document.getElementById('hdr-coins').textContent    = `🟡 ${getTotalCoins()}`;
   document.getElementById('hdr-level').textContent    = `Lv ${level} • ${LEVEL_NAMES[level]||''}`;
   document.getElementById('hdr-xp-bar').style.width   = pct+'%';
   document.getElementById('hdr-info').style.display   = 'block';
@@ -2103,7 +2101,7 @@ const SHOP_THEMES = [
 const SHOP_BOOSTS = [
   { id:'boost_xp_1d',  name:'XP বুস্ট ×১.৫', price:100, desc:'২৪ ঘণ্টার জন্য XP ১.৫× হবে', icon:'⚡' },
   { id:'boost_xp_3d',  name:'XP বুস্ট ×১.৫', price:250, desc:'৩ দিনের জন্য XP ১.৫× হবে',   icon:'⚡⚡' },
-  { id:'boost_coin_2d',name:'কয়েন বুস্ট ×২', price:150, desc:'২ দিনের জন্য কয়েন ২× হবে',   icon:'🪙🪙' },
+  { id:'boost_coin_2d',name:'কয়েন বুস্ট ×২', price:150, desc:'২ দিনের জন্য কয়েন ২× হবে',   icon:'🟡🟡' },
 ];
 
 let myPurchases    = [];   // array of {item_id, purchased_at, expires_at}
@@ -2145,7 +2143,7 @@ function getCoinMultiplier() {
 
 function renderShop() {
   const coins = getTotalCoins();
-  document.getElementById('shop-balance').textContent = `🪙 ${coins}`;
+  document.getElementById('shop-balance').textContent = `🟡 ${coins}`;
 
   // Check for expired rental themes and deactivate
   const now = Date.now();
@@ -2178,7 +2176,7 @@ function renderShop() {
       statusHtml = `<button class="btn btn-ghost btn-xs btn-full" onclick="activateTheme('${t.id}')">চালু করো</button>`;
     } else {
       statusHtml = `<button class="btn ${canBuy?'btn-accent':'btn-ghost'} btn-xs btn-full" ${canBuy?'':'disabled'} onclick="buyTheme('${t.id}',${t.price})">
-        <span class="shop-price">🪙 ${t.price}</span>
+        <span class="shop-price">🟡 ${t.price}</span>
         ${isRental ? '<span style="font-size:.6rem;opacity:.7">/৩দিন</span>' : ''}
       </button>`;
     }
@@ -2202,7 +2200,7 @@ function renderShop() {
       ${active
         ? '<div style="font-size:.68rem;color:var(--accent);font-weight:700">✓ সক্রিয়</div>'
         : `<button class="btn ${canBuy?'btn-accent2':'btn-ghost'} btn-xs btn-full" ${canBuy?'':'disabled'} onclick="buyBoost('${b.id}',${b.price})">
-             <span class="shop-price">🪙 ${b.price}</span>
+             <span class="shop-price">🟡 ${b.price}</span>
            </button>`}
     </div>`;
   }).join('');
