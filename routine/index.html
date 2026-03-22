@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -766,21 +767,38 @@ select.inp { cursor:pointer; }
 
 <!-- CUSTOM TIME MODAL FOR STUDY SLOTS -->
 <div id="modal-custom-time" class="modal-overlay" onclick="if(event.target===this)closeCustomTime()">
-  <div class="modal-box" style="padding:24px;text-align:center;max-width:360px">
-    <div style="font-size:2rem;margin-bottom:8px">⏱️</div>
-    <h3 class="font-display" style="font-size:1.2rem;font-weight:800;margin-bottom:4px">কাস্টম সময়</h3>
-    <div id="custom-slot-name" style="color:var(--muted);font-size:.8rem;margin-bottom:16px">—</div>
-    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
-      <div style="display:flex;align-items:center;justify-content:center;gap:8px">
-        <input id="custom-minutes" type="number" class="inp" style="width:80px;text-align:center;font-size:1.2rem;font-weight:700" min="1" max="480" value="30" oninput="updateCustomXP()">
-        <span style="font-weight:600;color:var(--muted)">মিনিট</span>
+  <div class="modal-box" style="padding:28px;text-align:center;max-width:340px">
+    <div style="font-size:1.5rem;margin-bottom:4px">⏱️</div>
+    <div id="custom-slot-name" style="color:var(--muted);font-size:.85rem;margin-bottom:20px">—</div>
+    
+    <!-- Hour & Minute Inputs -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:24px">
+      <div style="text-align:center">
+        <input type="number" id="custom-hours" min="0" max="8" value="0" oninput="updateCustomXP()" style="width:80px;font-family:'Inter',sans-serif;font-size:2.5rem;font-weight:800;text-align:center;background:var(--bg);border:2px solid var(--accent2);border-radius:12px;padding:12px;color:var(--text);outline:none">
+        <div style="font-size:.7rem;color:var(--muted);margin-top:6px">ঘণ্টা</div>
       </div>
-      <div id="custom-xp-preview" style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--accent)">+50 XP</div>
-      <div id="custom-coin-preview" style="font-size:.85rem;color:var(--coin);font-weight:600">+5 🟡</div>
+      <div style="font-size:2rem;font-weight:800;color:var(--muted)">:</div>
+      <div style="text-align:center">
+        <input type="number" id="custom-minutes" min="0" max="59" value="30" oninput="updateCustomXP()" style="width:80px;font-family:'Inter',sans-serif;font-size:2.5rem;font-weight:800;text-align:center;background:var(--bg);border:2px solid var(--accent);border-radius:12px;padding:12px;color:var(--text);outline:none">
+        <div style="font-size:.7rem;color:var(--muted);margin-top:6px">মিনিট</div>
+      </div>
     </div>
-    <div style="display:flex;gap:10px;justify-content:center">
-      <button class="btn btn-accent" style="padding:.6rem 1.5rem" onclick="confirmCustomTime()">✓ সম্পন্ন</button>
-      <button class="btn btn-ghost" onclick="closeCustomTime()">বাতিল</button>
+    
+    <!-- XP & Coin Preview -->
+    <div style="display:flex;justify-content:center;gap:12px;margin-bottom:24px">
+      <div style="flex:1;text-align:center;padding:14px 12px;background:linear-gradient(135deg,#00e5a015,#00e5a008);border-radius:12px;border:1px solid var(--accent)33">
+        <div style="font-size:.65rem;color:var(--muted);margin-bottom:4px">অর্জিত XP</div>
+        <div id="custom-xp-preview" style="font-family:'Inter',sans-serif;font-size:1.4rem;font-weight:800;color:var(--accent)">+50</div>
+      </div>
+      <div style="flex:1;text-align:center;padding:14px 12px;background:linear-gradient(135deg,#fbbf2415,#fbbf2408);border-radius:12px;border:1px solid var(--coin)33">
+        <div style="font-size:.65rem;color:var(--muted);margin-bottom:4px">কয়েন</div>
+        <div id="custom-coin-preview" style="font-family:'Inter',sans-serif;font-size:1.4rem;font-weight:800;color:var(--coin)">+5</div>
+      </div>
+    </div>
+    
+    <div style="display:flex;gap:12px;justify-content:center">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeCustomTime()">বাতিল</button>
+      <button class="btn btn-accent" style="flex:1.5" onclick="confirmCustomTime()">✓ সম্পন্ন করো</button>
     </div>
   </div>
 </div>
@@ -2230,15 +2248,15 @@ function renderHeatmap(days) {
 const SHOP_THEMES = [
   { id:'theme_default',  name:'ডিফল্ট',      price:0,   rental:false, preview:'linear-gradient(135deg,#070709,#0f0f12)',
     vars:{ '--bg':'#070709','--surface':'#0f0f12','--card':'#16161c','--accent':'#00e5a0','--accent2':'#7c6af7','--accent3':'#f7a06a' } },
-  { id:'theme_ocean',    name:'মহাসাগর',      price:80,  rental:true, rentalDays:3, preview:'linear-gradient(135deg,#020b18,#0a2a4a)',
+  { id:'theme_ocean',    name:'মহাসাগর',      price:80,  rental:false, preview:'linear-gradient(135deg,#020b18,#0a2a4a)',
     vars:{ '--bg':'#020b18','--surface':'#071a30','--card':'#0c2540','--accent':'#00d4ff','--accent2':'#0080ff','--accent3':'#00ffcc' } },
-  { id:'theme_sunset',   name:'সূর্যাস্ত',    price:80,  rental:true, rentalDays:3, preview:'linear-gradient(135deg,#1a0a00,#2d1500)',
+  { id:'theme_sunset',   name:'সূর্যাস্ত',    price:80,  rental:false, preview:'linear-gradient(135deg,#1a0a00,#2d1500)',
     vars:{ '--bg':'#1a0a00','--surface':'#2a1200','--card':'#3a1c00','--accent':'#ff7e00','--accent2':'#ff3d6b','--accent3':'#ffcc00' } },
-  { id:'theme_galaxy',   name:'গ্যালাক্সি',   price:120, rental:true, rentalDays:3, preview:'linear-gradient(135deg,#07001a,#120038)',
+  { id:'theme_galaxy',   name:'গ্যালাক্সি',   price:120, rental:false, preview:'linear-gradient(135deg,#07001a,#120038)',
     vars:{ '--bg':'#07001a','--surface':'#0f0028','--card':'#180040','--accent':'#bf80ff','--accent2':'#ff6ef7','--accent3':'#80ffee' } },
-  { id:'theme_forest',   name:'বন',           price:80,  rental:true, rentalDays:3, preview:'linear-gradient(135deg,#011a08,#052e12)',
+  { id:'theme_forest',   name:'বন',           price:80,  rental:false, preview:'linear-gradient(135deg,#011a08,#052e12)',
     vars:{ '--bg':'#011a08','--surface':'#052e12','--card':'#0a3d1c','--accent':'#00ff87','--accent2':'#5eff6e','--accent3':'#e8ff5c' } },
-  { id:'theme_cherry',   name:'চেরি',         price:120, rental:true, rentalDays:3, preview:'linear-gradient(135deg,#1a0010,#2e0020)',
+  { id:'theme_cherry',   name:'চেরি',         price:120, rental:false, preview:'linear-gradient(135deg,#1a0010,#2e0020)',
     vars:{ '--bg':'#1a0010','--surface':'#2e0020','--card':'#400030','--accent':'#ff4da6','--accent2':'#ff80bf','--accent3':'#ffb3d9' } },
   // PREMIUM RENTAL THEMES (3-day rental, very expensive)
   { id:'theme_aurora',   name:'অরোরা ⭐',     price:500, rental:true, rentalDays:3, preview:'linear-gradient(135deg,#0a1628,#1a0a3a,#0a2828)',
@@ -2456,6 +2474,7 @@ window.openCustomTime = function(slotId, idx) {
   customTimeSlotIdx = idx;
   const sl = activeRoutine.slots[idx];
   document.getElementById('custom-slot-name').textContent = sl.title;
+  document.getElementById('custom-hours').value = 0;
   document.getElementById('custom-minutes').value = 30;
   updateCustomXP();
   openModal('modal-custom-time');
@@ -2468,21 +2487,29 @@ window.closeCustomTime = function() {
 };
 
 window.updateCustomXP = function() {
+  const hours = parseInt(document.getElementById('custom-hours').value) || 0;
   const mins = parseInt(document.getElementById('custom-minutes').value) || 0;
-  const xp = Math.round(mins * (100/60)); // 100 XP per hour = 1.67 XP per minute
-  const coins = Math.round(mins * (10/60) * 10) / 10; // 10 coins per hour
-  document.getElementById('custom-xp-preview').textContent = `+${xp} XP`;
-  document.getElementById('custom-coin-preview').textContent = `+${coins.toFixed(1)} 🟡`;
+  const totalMinutes = (hours * 60) + mins;
+  
+  const xp = Math.round(totalMinutes * (100/60)); // 100 XP per hour
+  const coins = (totalMinutes * (10/60)).toFixed(1); // 10 coins per hour
+  
+  document.getElementById('custom-xp-preview').textContent = `+${xp}`;
+  document.getElementById('custom-coin-preview').textContent = `+${coins}`;
 };
 
 window.confirmCustomTime = function() {
   if (!customTimeSlotId || customTimeSlotIdx === null) return;
+  
+  const hours = parseInt(document.getElementById('custom-hours').value) || 0;
   const mins = parseInt(document.getElementById('custom-minutes').value) || 0;
-  if (mins < 1) { showToast('সময় দাও'); return; }
+  const totalMinutes = (hours * 60) + mins;
+  
+  if (totalMinutes < 1) { showToast('সময় দাও'); return; }
   
   const sl = activeRoutine.slots[customTimeSlotIdx];
-  const xp = Math.round(mins * (100/60));
-  const coins = Math.round(mins * (10/60) * 10) / 10;
+  const xp = Math.round(totalMinutes * (100/60));
+  const coins = Math.round(totalMinutes * (10/60) * 10) / 10;
   
   // Apply multipliers
   const xpMult = typeof getBoostMultiplier === 'function' ? getBoostMultiplier() : 1;
@@ -2492,7 +2519,7 @@ window.confirmCustomTime = function() {
   const finalCoins = Math.round(coins * coinMult);
   
   // Mark slot as done and add custom XP/coins
-  completedSlots[sl.id] = { custom: true, minutes: mins, xp: finalXP, coins: finalCoins };
+  completedSlots[sl.id] = { custom: true, minutes: totalMinutes, xp: finalXP, coins: finalCoins };
   
   // Update XP history
   const today = todayKey();
@@ -2504,7 +2531,9 @@ window.confirmCustomTime = function() {
   renderTimeline();
   scheduleSave();
   closeCustomTime();
-  showToast(`✓ ${mins} মিনিট সম্পন্ন! +${finalXP} XP, +${finalCoins} 🟡`);
+  
+  const timeStr = hours > 0 ? `${hours}ঘণ্টা ${mins}মিনিট` : `${mins} মিনিট`;
+  showToast(`✓ ${timeStr} সম্পন্ন! +${finalXP} XP, +${finalCoins} 🟡`);
 };
 
 // ════════════════════════════════════════════════════════════════
