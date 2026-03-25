@@ -1,36 +1,38 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Search</title>
+    <title>Video Search & Radio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .video-card:hover img {
-            transform: scale(1.05);
-        }
+        .video-card:hover img { transform: scale(1.05); }
         .line-clamp-2 {
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
+        /* Custom scrollbar for the radio queue */
+        #radioQueue::-webkit-scrollbar { width: 4px; }
+        #radioQueue::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen font-sans">
+<body class="bg-gray-50 min-h-screen font-sans flex flex-col">
 
-    <!-- Header / Search Bar -->
+    <!-- Header -->
     <nav class="bg-white shadow-sm sticky top-0 z-50 p-4">
         <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-4">
-            <div class="flex items-center gap-2 text-red-600 font-bold text-xl shrink-0">
+            <div class="flex items-center gap-2 text-red-600 font-bold text-xl shrink-0 cursor-pointer" onclick="location.reload()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                <span>Search</span>
+                <span>TubeRadio</span>
             </div>
-            <div class="relative w-full">
+            <div class="relative w-full max-w-2xl">
                 <input 
                     type="text" 
                     id="searchInput" 
-                    placeholder="Search for videos..." 
+                    placeholder="Search for a seed video..." 
                     class="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 >
                 <button 
@@ -43,120 +45,199 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="max-w-6xl mx-auto p-4 md:p-6">
-        <div id="statusMessage" class="text-center py-12 text-gray-500 hidden">
-            Searching for videos...
-        </div>
+    <div class="flex flex-col lg:flex-row flex-1 overflow-hidden">
+        <!-- Main Search Results -->
+        <main class="flex-1 overflow-y-auto p-4 md:p-6 bg-white">
+            <h2 id="viewTitle" class="text-xl font-bold mb-6 text-gray-800">Search Results</h2>
+            <div id="statusMessage" class="text-center py-12 text-gray-500 hidden">Enter a query to begin.</div>
+            <div id="resultsGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+        </main>
 
-        <div id="resultsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <!-- Videos will be injected here -->
-        </div>
-    </main>
+        <!-- Radio Sidebar -->
+        <aside id="radioSidebar" class="w-full lg:w-80 bg-gray-50 border-l border-gray-200 flex flex-col hidden">
+            <div class="p-4 border-b border-gray-200 bg-white flex justify-between items-center">
+                <h2 class="font-bold text-gray-800 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                    Radio Mix
+                </h2>
+                <button onclick="closeRadio()" class="text-gray-400 hover:text-gray-600">✕</button>
+            </div>
+            <div id="radioQueue" class="flex-1 overflow-y-auto p-4 space-y-3">
+                <!-- Radio items injected here -->
+            </div>
+        </aside>
+    </div>
 
     <script>
+        const PROXY = '';
         const API_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
+        const CLIENT_VERSION = '2.20260130.01.00';
+
         const searchInput = document.getElementById('searchInput');
         const searchBtn = document.getElementById('searchBtn');
         const resultsGrid = document.getElementById('resultsGrid');
         const statusMessage = document.getElementById('statusMessage');
+        const radioSidebar = document.getElementById('radioSidebar');
+        const radioQueue = document.getElementById('radioQueue');
+        const viewTitle = document.getElementById('viewTitle');
+
+        // --- Search Logic ---
 
         async function searchYouTube(query) {
             if (!query.trim()) return;
-
-            // UI State
             statusMessage.classList.remove('hidden');
             statusMessage.textContent = "Searching...";
             resultsGrid.innerHTML = '';
+            viewTitle.textContent = `Results for "${query}"`;
 
             try {
-                const response = await fetch(`https://ytst.arnoy799.workers.dev/?url=https://www.youtube.com/youtubei/v1/search?key=${API_KEY}`, {
+                const response = await fetch(`https://www.youtube.com/youtubei/v1/search?key=${API_KEY}`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        context: {
-                            client: {
-                                clientName: "WEB",
-                                clientVersion: "2.20250101.01.00"
-                            }
-                        },
+                        context: { client: { clientName: "WEB", clientVersion: CLIENT_VERSION } },
                         query: query
                     })
                 });
 
-                if (!response.ok) throw new Error('Failed to fetch data');
-
                 const json = await response.json();
-                
-                // Navigate through the complex YouTubei JSON structure
                 const sections = json.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer?.contents;
                 const videoItems = sections?.[0]?.itemSectionRenderer?.contents || [];
 
-                renderVideos(videoItems);
+                renderSearchResults(videoItems);
             } catch (error) {
-                console.error(error);
-                statusMessage.textContent = "Error loading videos. Please try again.";
+                statusMessage.textContent = "Error connecting to YouTube API.";
             } finally {
-                if (resultsGrid.children.length > 0) {
-                    statusMessage.classList.add('hidden');
-                }
+                if (resultsGrid.children.length > 0) statusMessage.classList.add('hidden');
             }
         }
 
-        function renderVideos(items) {
+        function renderSearchResults(items) {
             resultsGrid.innerHTML = '';
-            
             items.forEach(item => {
-                // Focus only on videoRenderers
                 const video = item.videoRenderer;
                 if (!video) return;
 
                 const videoId = video.videoId;
                 const title = video.title.runs[0].text;
                 const thumbnail = video.thumbnail.thumbnails[0].url;
-                const channelName = video.ownerText.runs[0].text;
-                const views = video.shortViewCountText?.simpleText || "No views";
-                const publishedTime = video.publishedTimeText?.simpleText || "";
+                const channel = video.ownerText.runs[0].text;
 
                 const card = document.createElement('div');
-                card.className = "video-card bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer";
-                card.onclick = () => window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
-
+                card.className = "group bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all";
                 card.innerHTML = `
-                    <div class="relative aspect-video overflow-hidden bg-gray-200">
-                        <img src="${thumbnail}" alt="${title}" class="w-full h-full object-cover transition-transform duration-300">
-                        <div class="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded">
-                            ${video.lengthText?.simpleText || ''}
+                    <div class="relative aspect-video overflow-hidden bg-gray-100">
+                        <img src="${thumbnail}" class="w-full h-full object-cover transition-transform duration-300">
+                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                             <button onclick="startRadio('${videoId}')" class="bg-red-600 text-white px-4 py-2 rounded-full font-bold text-sm transform scale-90 group-hover:scale-100 transition-transform">
+                                Start Radio
+                             </button>
                         </div>
                     </div>
                     <div class="p-3">
-                        <h3 class="font-semibold text-sm line-clamp-2 mb-1 text-gray-900" title="${title}">
-                            ${title}
-                        </h3>
-                        <p class="text-xs text-gray-600 mb-1 hover:text-gray-900">${channelName}</p>
-                        <div class="flex items-center gap-1 text-[11px] text-gray-500">
-                            <span>${views}</span>
-                            <span>•</span>
-                            <span>${publishedTime}</span>
-                        </div>
+                        <h3 class="font-bold text-sm line-clamp-2 mb-1 cursor-pointer hover:text-red-600" onclick="window.open('https://youtube.com/watch?v=${videoId}')">${title}</h3>
+                        <p class="text-xs text-gray-500">${channel}</p>
                     </div>
                 `;
                 resultsGrid.appendChild(card);
             });
+        }
 
-            if (resultsGrid.children.length === 0) {
-                statusMessage.textContent = "No videos found for this search.";
+        // --- Radio Logic ---
+
+        async function startRadio(seedVideoId) {
+            radioSidebar.classList.remove('hidden');
+            radioQueue.innerHTML = '<div class="text-center py-4 text-xs text-gray-400">Loading mix...</div>';
+            
+            const playlistId = `RD${seedVideoId}`;
+            const nextUrl = `${PROXY}${encodeURIComponent(`https://www.youtube.com/youtubei/v1/next?key=${API_KEY}`)}`;
+
+            try {
+                const response = await fetch(nextUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        context: { client: { clientName: 'WEB', clientVersion: CLIENT_VERSION, hl: 'en', gl: 'US' } },
+                        videoId: seedVideoId,
+                        playlistId: playlistId
+                    })
+                });
+
+                const data = await response.json();
+                const queueContents = data?.contents?.twoColumnWatchNextResults?.playlist?.playlist?.contents ?? [];
+                
+                radioQueue.innerHTML = '';
+                
+                const videos = queueContents
+                    .filter(item => item.playlistPanelVideoRenderer)
+                    .map(item => item.playlistPanelVideoRenderer);
+
+                videos.forEach(v => appendRadioItem(v));
+
+                // Handle continuation
+                const continuationItem = queueContents.find(item => item.continuationItemRenderer);
+                const ctoken = continuationItem?.continuationItemRenderer?.continuationEndpoint?.continuationCommand?.token;
+                if (ctoken) fetchNextBatch(ctoken);
+
+            } catch (error) {
+                radioQueue.innerHTML = '<div class="text-red-500 text-xs">Failed to load Radio.</div>';
             }
         }
 
-        // Event Listeners
-        searchBtn.addEventListener('click', () => searchYouTube(searchInput.value));
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') searchYouTube(searchInput.value);
-        });
+        async function fetchNextBatch(token) {
+            const browseUrl = `${PROXY}${encodeURIComponent(`https://www.youtube.com/youtubei/v1/browse?key=${API_KEY}`)}`;
+            try {
+                const response = await fetch(browseUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        context: { client: { clientName: 'WEB', clientVersion: CLIENT_VERSION } },
+                        continuation: token
+                    })
+                });
 
-        // Initial search
-        searchYouTube('Modern Web Design');
+                const data = await response.json();
+                const actions = data?.onResponseReceivedActions ?? [];
+                const newItems = actions[0]?.appendContinuationItemsAction?.continuationItems ?? [];
+
+                newItems.filter(item => item.playlistPanelVideoRenderer).forEach(item => {
+                    appendRadioItem(item.playlistPanelVideoRenderer);
+                });
+
+                const nextCtokenItem = newItems.find(item => item.continuationItemRenderer);
+                const nextToken = nextCtokenItem?.continuationItemRenderer?.continuationEndpoint?.continuationCommand?.token;
+                if (nextToken) fetchNextBatch(nextToken);
+            } catch (e) { console.error("Continuation error", e); }
+        }
+
+        function appendRadioItem(r) {
+            const div = document.createElement('div');
+            div.className = "flex gap-3 p-2 hover:bg-white rounded-lg cursor-pointer transition-colors border border-transparent hover:border-gray-200 group";
+            div.onclick = () => window.open(`https://www.youtube.com/watch?v=${r.videoId}`, '_blank');
+            
+            const thumb = r.thumbnail.thumbnails[0].url;
+            const title = r.title.runs?.[0]?.text || r.title.simpleText;
+            const author = r.longBylineText?.runs?.[0]?.text || "Unknown";
+
+            div.innerHTML = `
+                <img src="${thumb}" class="w-20 h-12 object-cover rounded bg-gray-200 shrink-0">
+                <div class="overflow-hidden">
+                    <h4 class="text-[11px] font-bold line-clamp-2 leading-tight group-hover:text-red-600">${title}</h4>
+                    <p class="text-[10px] text-gray-500 mt-1">${author}</p>
+                </div>
+            `;
+            radioQueue.appendChild(div);
+        }
+
+        function closeRadio() {
+            radioSidebar.classList.add('hidden');
+        }
+
+        // --- Initial Events ---
+        searchBtn.addEventListener('click', () => searchYouTube(searchInput.value));
+        searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') searchYouTube(searchInput.value); });
+        
+        searchYouTube('Lofi beats');
     </script>
 </body>
 </html>
