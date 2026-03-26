@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -449,7 +448,7 @@ select.inp { cursor:pointer; }
         <span style="font-size:1rem">📚</span>
         <span style="font-size:.75rem;font-weight:700;color:var(--accent2)">আজকের টপিক</span>
       </div>
-      <input id="today-topic-input" class="inp" style="font-size:.85rem" placeholder="আজ কী পড়ছো? লিখে রাখো..." onchange="saveTodayTopic()">
+      <input id="today-topic-input" class="inp" style="font-size:.85rem" placeholder="আজ কী পড়ছো? লিখে রাখো..." oninput="saveTodayTopic('today-topic-input')">
     </div>
     <!-- Desktop Today's Topic -->
     <div class="card hide-on-mobile" style="padding:14px;margin-bottom:20px;border-color:var(--accent2)44">
@@ -457,7 +456,7 @@ select.inp { cursor:pointer; }
         <span style="font-size:1rem">📚</span>
         <span style="font-size:.75rem;font-weight:700;color:var(--accent2)">আজকের টপিক</span>
       </div>
-      <input id="today-topic-input-desktop" class="inp" style="font-size:.85rem" placeholder="আজ কী পড়ছো? লিখে রাখো..." onchange="saveTodayTopic()">
+      <input id="today-topic-input-desktop" class="inp" style="font-size:.85rem" placeholder="আজ কী পড়ছো? লিখে রাখো..." oninput="saveTodayTopic('today-topic-input-desktop')">
     </div>
 
     <!-- Current slot -->
@@ -897,13 +896,23 @@ let todayTopic        = '';
 // ════════════════════════════════════════════════════════════════
 function todayKey() {
   const d = new Date();
+  // Day resets at 5 AM, so before 5 AM it's still "yesterday"
+  if (d.getHours() < 5) {
+    d.setDate(d.getDate() - 1);
+  }
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 function localDateKey(d) {
+  // For dates that are already set, use them as-is
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 function lastNDays(n) {
-  return Array.from({length:n},(_,i)=>{ const d=new Date(); d.setDate(d.getDate()-(n-1-i)); return localDateKey(d); });
+  const today = todayKey();
+  const [y, m, d] = today.split('-').map(Number);
+  return Array.from({length:n},(_,i)=>{
+    const date = new Date(y, m-1, d - (n-1-i));
+    return localDateKey(date);
+  });
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -1128,7 +1137,7 @@ async function bootApp(user) {
   if (tlog) { todayLogId = tlog.id; completedSlots = tlog.completed_slots || {}; }
   else       { todayLogId = null;   completedSlots = {}; }
 
-  // Midnight reset check
+  // 5 AM reset check - if the stored day is different from current "today", reset completed slots
   const lk = `rx_last_${user.username}`;
   if (localStorage.getItem(lk) && localStorage.getItem(lk) !== todayKey()) completedSlots = {};
   localStorage.setItem(lk, todayKey());
@@ -2246,23 +2255,15 @@ function renderHeatmap(days) {
 // SHOP
 // ════════════════════════════════════════════════════════════════
 const SHOP_THEMES = [
-  { id:'theme_default',  name:'ডিফল্ট',      price:0,   rental:false, preview:'linear-gradient(135deg,#070709,#0f0f12)',
-    vars:{ '--bg':'#070709','--surface':'#0f0f12','--card':'#16161c','--accent':'#00e5a0','--accent2':'#7c6af7','--accent3':'#f7a06a' } },
-  { id:'theme_ocean',    name:'মহাসাগর',      price:80,  rental:false, preview:'linear-gradient(135deg,#020b18,#0a2a4a)',
-    vars:{ '--bg':'#020b18','--surface':'#071a30','--card':'#0c2540','--accent':'#00d4ff','--accent2':'#0080ff','--accent3':'#00ffcc' } },
-  { id:'theme_sunset',   name:'সূর্যাস্ত',    price:80,  rental:false, preview:'linear-gradient(135deg,#1a0a00,#2d1500)',
-    vars:{ '--bg':'#1a0a00','--surface':'#2a1200','--card':'#3a1c00','--accent':'#ff7e00','--accent2':'#ff3d6b','--accent3':'#ffcc00' } },
-  { id:'theme_galaxy',   name:'গ্যালাক্সি',   price:120, rental:false, preview:'linear-gradient(135deg,#07001a,#120038)',
-    vars:{ '--bg':'#07001a','--surface':'#0f0028','--card':'#180040','--accent':'#bf80ff','--accent2':'#ff6ef7','--accent3':'#80ffee' } },
-  { id:'theme_forest',   name:'বন',           price:80,  rental:false, preview:'linear-gradient(135deg,#011a08,#052e12)',
-    vars:{ '--bg':'#011a08','--surface':'#052e12','--card':'#0a3d1c','--accent':'#00ff87','--accent2':'#5eff6e','--accent3':'#e8ff5c' } },
-  { id:'theme_cherry',   name:'চেরি',         price:120, rental:false, preview:'linear-gradient(135deg,#1a0010,#2e0020)',
-    vars:{ '--bg':'#1a0010','--surface':'#2e0020','--card':'#400030','--accent':'#ff4da6','--accent2':'#ff80bf','--accent3':'#ffb3d9' } },
+  { id:'theme_default', name:'ডিফল্ট', price:0, rental:false, preview:'linear-gradient(135deg,#0c0c10,#13131a)', vars:{ '--bg':'#0c0c10','--surface':'#13131a','--card':'#1a1a24','--accent':'#6ee7b7','--accent2':'#818cf8','--accent3':'#fb923c' } },
+  { id:'theme_ocean', name:'মহাসাগর', price:80, rental:false, preview:'linear-gradient(135deg,#040f1e,#071e3d)', vars:{ '--bg':'#040f1e','--surface':'#071e3d','--card':'#0b2a52','--accent':'#38bdf8','--accent2':'#6366f1','--accent3':'#34d399' } },
+  { id:'theme_sunset', name:'সূর্যাস্ত', price:80, rental:false, preview:'linear-gradient(135deg,#18080a,#2d1018)', vars:{ '--bg':'#18080a','--surface':'#2d1018','--card':'#3d1620','--accent':'#fb7185','--accent2':'#f97316','--accent3':'#fbbf24' } },
+  { id:'theme_galaxy', name:'গ্যালাক্সি', price:120, rental:false, preview:'linear-gradient(135deg,#080616,#110c2e)', vars:{ '--bg':'#080616','--surface':'#110c2e','--card':'#1a1244','--accent':'#a78bfa','--accent2':'#e879f9','--accent3':'#67e8f9' } },
+  { id:'theme_forest', name:'বন', price:80, rental:false, preview:'linear-gradient(135deg,#051a0c,#0a2e18)', vars:{ '--bg':'#051a0c','--surface':'#0a2e18','--card':'#0f3d22','--accent':'#4ade80','--accent2':'#a3e635','--accent3':'#fde68a' } },
+  { id:'theme_cherry', name:'চেরি', price:120, rental:false, preview:'linear-gradient(135deg,#1a0814,#2e0f22)', vars:{ '--bg':'#1a0814','--surface':'#2e0f22','--card':'#3d1430','--accent':'#f472b6','--accent2':'#e879f9','--accent3':'#fb7185' } },
   // PREMIUM RENTAL THEMES (3-day rental, very expensive)
-  { id:'theme_aurora',   name:'অরোরা ⭐',     price:500, rental:true, rentalDays:3, preview:'linear-gradient(135deg,#0a1628,#1a0a3a,#0a2828)',
-    vars:{ '--bg':'#0a1628','--surface':'#122040','--card':'#1a3050','--accent':'#00ffc8','--accent2':'#a855f7','--accent3':'#06b6d4' } },
-  { id:'theme_neon',     name:'নিয়ন ⭐⭐',   price:800, rental:true, rentalDays:3, preview:'linear-gradient(135deg,#0d001a,#1a0020,#001a1a)',
-    vars:{ '--bg':'#0d001a','--surface':'#150025','--card':'#200035','--accent':'#ff00ff','--accent2':'#00ffff','--accent3':'#ffff00' } },
+  { id:'theme_aurora', name:'অরোরা ⭐', price:500, rental:true, rentalDays:3, preview:'linear-gradient(135deg,#091520,#101830,#091e1e)', vars:{ '--bg':'#091520','--surface':'#101830','--card':'#162240','--accent':'#2dd4bf','--accent2':'#a78bfa','--accent3':'#38bdf8' } },
+  { id:'theme_neon', name:'নিয়ন ⭐⭐', price:800, rental:true, rentalDays:3, preview:'linear-gradient(135deg,#0d0d1a,#12101e,#0d1a1a)', vars:{ '--bg':'#0d0d1a','--surface':'#12101e','--card':'#1a1830','--accent':'#e879f9','--accent2':'#22d3ee','--accent3':'#facc15' } },
 ];
 const SHOP_BOOSTS = [
   { id:'boost_xp_1d',  name:'XP বুস্ট ×১.৫', price:100, desc:'২৪ ঘণ্টার জন্য XP ১.৫× হবে', icon:'⚡' },
@@ -2539,21 +2540,42 @@ window.confirmCustomTime = function() {
 // ════════════════════════════════════════════════════════════════
 // TODAY'S TOPIC
 // ════════════════════════════════════════════════════════════════
-window.saveTodayTopic = function() {
-  const topicMobile = document.getElementById('today-topic-input')?.value || '';
-  const topicDesktop = document.getElementById('today-topic-input-desktop')?.value || '';
-  todayTopic = topicMobile || topicDesktop;
+let topicSaveTimer = null;
+
+window.saveTodayTopic = function(sourceId) {
+  // Clear any pending save
+  clearTimeout(topicSaveTimer);
   
-  // Sync both inputs
-  if (document.getElementById('today-topic-input')) document.getElementById('today-topic-input').value = todayTopic;
-  if (document.getElementById('today-topic-input-desktop')) document.getElementById('today-topic-input-desktop').value = todayTopic;
+  // Debounce: wait 500ms after user stops typing
+  topicSaveTimer = setTimeout(() => {
+    // Get value from the source input that triggered the save
+    const sourceInput = document.getElementById(sourceId);
+    if (!sourceInput) return;
+    
+    todayTopic = sourceInput.value.trim();
+    
+    // Sync the other input
+    const otherId = sourceId === 'today-topic-input' ? 'today-topic-input-desktop' : 'today-topic-input';
+    const otherInput = document.getElementById(otherId);
+    if (otherInput) otherInput.value = todayTopic;
+    
+    // Save to localStorage immediately
+    const key = `rx_topic_${todayKey()}_${currentUser?.username || 'guest'}`;
+    localStorage.setItem(key, todayTopic);
+    
+    // Save to database
+    dbSaveTodayTopic(currentUser?.username, todayKey(), todayTopic);
+  }, 500);
+};
+
+// Function to update topic from either input
+window.updateTopicFromInput = function(inputElement) {
+  todayTopic = inputElement.value.trim();
   
-  // Save to localStorage
-  const key = `rx_topic_${todayKey()}_${currentUser?.username || 'guest'}`;
-  localStorage.setItem(key, todayTopic);
-  
-  // Save to database
-  dbSaveTodayTopic(currentUser?.username, todayKey(), todayTopic);
+  // Sync the other input
+  const otherId = inputElement.id === 'today-topic-input' ? 'today-topic-input-desktop' : 'today-topic-input';
+  const otherInput = document.getElementById(otherId);
+  if (otherInput) otherInput.value = todayTopic;
 };
 
 async function dbSaveTodayTopic(username, date, topic) {
@@ -2563,7 +2585,9 @@ async function dbSaveTodayTopic(username, date, topic) {
       key: `topic_${date}`,
       value: topic
     }, { onConflict: 'username,key' });
-  } catch(e) {}
+  } catch(e) {
+    console.error('Failed to save topic:', e);
+  }
 }
 
 async function dbGetTodayTopic(username, date) {
