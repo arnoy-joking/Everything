@@ -2257,17 +2257,17 @@ function renderHeatmap(days) {
 const SHOP_THEMES = [
   { id:'theme_default', name:'ডিফল্ট', price:0, rental:false, preview:'linear-gradient(135deg,#0c0c10,#13131a)', vars:{ '--bg':'#0c0c10','--surface':'#13131a','--card':'#1a1a24','--accent':'#6ee7b7','--accent2':'#818cf8','--accent3':'#fb923c' } },
   { id:'theme_ocean', name:'মহাসাগর', price:80, rental:false, preview:'linear-gradient(135deg,#040f1e,#071e3d)', vars:{ '--bg':'#040f1e','--surface':'#071e3d','--card':'#0b2a52','--accent':'#38bdf8','--accent2':'#6366f1','--accent3':'#34d399' } },
-  { id:'theme_sunset', name:'সূর্যাস্ত', price:80, rental:false, preview:'linear-gradient(135deg,#18080a,#2d1018)', vars:{ '--bg':'#18080a','--surface':'#2d1018','--card':'#3d1620','--accent':'#fb7185','--accent2':'#f97316','--accent3':'#fbbf24' } },
+  { id:'theme_sunset', name:'সূর্যাস্ত', price:80, rental:true, rentalDays:3, preview:'linear-gradient(135deg,#18080a,#2d1018)', vars:{ '--bg':'#18080a','--surface':'#2d1018','--card':'#3d1620','--accent':'#fb7185','--accent2':'#f97316','--accent3':'#fbbf24' } },
   { id:'theme_galaxy', name:'গ্যালাক্সি', price:120, rental:false, preview:'linear-gradient(135deg,#080616,#110c2e)', vars:{ '--bg':'#080616','--surface':'#110c2e','--card':'#1a1244','--accent':'#a78bfa','--accent2':'#e879f9','--accent3':'#67e8f9' } },
-  { id:'theme_forest', name:'বন', price:80, rental:false, preview:'linear-gradient(135deg,#051a0c,#0a2e18)', vars:{ '--bg':'#051a0c','--surface':'#0a2e18','--card':'#0f3d22','--accent':'#4ade80','--accent2':'#a3e635','--accent3':'#fde68a' } },
+  { id:'theme_forest', name:'বন', price:80, rental:true, rentalDays:3, preview:'linear-gradient(135deg,#051a0c,#0a2e18)', vars:{ '--bg':'#051a0c','--surface':'#0a2e18','--card':'#0f3d22','--accent':'#4ade80','--accent2':'#a3e635','--accent3':'#fde68a' } },
   { id:'theme_cherry', name:'চেরি', price:120, rental:false, preview:'linear-gradient(135deg,#1a0814,#2e0f22)', vars:{ '--bg':'#1a0814','--surface':'#2e0f22','--card':'#3d1430','--accent':'#f472b6','--accent2':'#e879f9','--accent3':'#fb7185' } },
   // PREMIUM RENTAL THEMES (3-day rental, very expensive)
-  { id:'theme_aurora', name:'অরোরা ⭐', price:500, rental:true, rentalDays:3, preview:'linear-gradient(135deg,#091520,#101830,#091e1e)', vars:{ '--bg':'#091520','--surface':'#101830','--card':'#162240','--accent':'#2dd4bf','--accent2':'#a78bfa','--accent3':'#38bdf8' } },
-  { id:'theme_neon', name:'নিয়ন ⭐⭐', price:800, rental:true, rentalDays:3, preview:'linear-gradient(135deg,#0d0d1a,#12101e,#0d1a1a)', vars:{ '--bg':'#0d0d1a','--surface':'#12101e','--card':'#1a1830','--accent':'#e879f9','--accent2':'#22d3ee','--accent3':'#facc15' } },
+  { id:'theme_aurora', name:'অরোরা ⭐', price:400, rental:false, preview:'linear-gradient(135deg,#091520,#101830,#091e1e)', vars:{ '--bg':'#091520','--surface':'#101830','--card':'#162240','--accent':'#2dd4bf','--accent2':'#a78bfa','--accent3':'#38bdf8' } },
+  { id:'theme_neon', name:'নিয়ন ⭐⭐', price:450, rental:true, rentalDays:3, preview:'linear-gradient(135deg,#0d0d1a,#12101e,#0d1a1a)', vars:{ '--bg':'#0d0d1a','--surface':'#12101e','--card':'#1a1830','--accent':'#e879f9','--accent2':'#22d3ee','--accent3':'#facc15' } },
 ];
 const SHOP_BOOSTS = [
-  { id:'boost_xp_1d',  name:'XP বুস্ট ×১.৫', price:100, desc:'২৪ ঘণ্টার জন্য XP ১.৫× হবে', icon:'⚡' },
-  { id:'boost_xp_3d',  name:'XP বুস্ট ×১.৫', price:250, desc:'৩ দিনের জন্য XP ১.৫× হবে',   icon:'⚡⚡' },
+  { id:'boost_xp_1d',  name:'XP বুস্ট ×১.৫', price:500, desc:'২৪ ঘণ্টার জন্য XP ১.৫× হবে', icon:'⚡' },
+  { id:'boost_xp_3d',  name:'XP বুস্ট ×১.৫', price:1500, desc:'৩ দিনের জন্য XP ১.৫× হবে',   icon:'⚡⚡' },
   { id:'boost_coin_2d',name:'কয়েন বুস্ট ×২', price:150, desc:'২ দিনের জন্য কয়েন ২× হবে',   icon:'🟡🟡' },
 ];
 
