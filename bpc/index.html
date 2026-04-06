@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Links</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --neon-cyan: #00f5ff;
+      --neon-pink: #ff2d78;
+      --neon-green: #39ff14;
+      --neon-purple: #bf00ff;
+      --dark-bg: #030308;
+      --card-bg: rgba(5, 5, 18, 0.72);
+      --border: rgba(0, 245, 255, 0.18);
+      --text: #c8d8e8;
+      --text-dim: #5a7080;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Space Mono', monospace;
+      background-color: var(--dark-bg);
+      color: var(--text);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Background image */
+    .bg {
+      position: fixed;
+      inset: 0;
+      background: url('https://images.unsplash.com/photo-1518800524495-b963b722bd92?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') center/cover no-repeat;
+      opacity: 0.13;
+      z-index: 0;
+      filter: saturate(1.8) hue-rotate(200deg);
+    }
+
+    /* Scanlines overlay */
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,0.18) 3px,
+        rgba(0,0,0,0.18) 4px
+      );
+      pointer-events: none;
+    }
+
+    /* Ambient glow blobs */
+    .glow-blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.18;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow-blob.one { width: 500px; height: 500px; background: var(--neon-cyan); top: -100px; left: -150px; animation: drift 12s ease-in-out infinite alternate; }
+    .glow-blob.two { width: 400px; height: 400px; background: var(--neon-pink); bottom: -80px; right: -100px; animation: drift 15s ease-in-out infinite alternate-reverse; }
+    .glow-blob.three { width: 300px; height: 300px; background: var(--neon-purple); top: 40%; left: 50%; transform: translate(-50%,-50%); animation: drift 18s ease-in-out infinite alternate; }
+
+    @keyframes drift {
+      0%   { transform: translate(0,0); }
+      100% { transform: translate(40px, 30px); }
+    }
+
+    /* Layout */
+    .container {
+      position: relative;
+      z-index: 2;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 80px 24px 80px;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 64px;
+      animation: fadeDown 0.8s ease both;
+    }
+
+    .header-eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--neon-cyan);
+      margin-bottom: 14px;
+      opacity: 0.75;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: #fff;
+      text-shadow:
+        0 0 30px rgba(0,245,255,0.4),
+        0 0 80px rgba(0,245,255,0.15);
+    }
+
+    h1 span {
+      color: var(--neon-cyan);
+      text-shadow:
+        0 0 10px var(--neon-cyan),
+        0 0 40px rgba(0,245,255,0.6);
+    }
+
+    .header-line {
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
+      margin: 24px auto 0;
+      box-shadow: 0 0 10px var(--neon-cyan);
+    }
+
+    /* Link cards */
+    .links-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .link-card {
+      display: block;
+      text-decoration: none;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 24px 28px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    /* Stagger cards */
+    .link-card:nth-child(1) { animation-delay: 0.15s; }
+    .link-card:nth-child(2) { animation-delay: 0.25s; }
+    .link-card:nth-child(3) { animation-delay: 0.35s; }
+    .link-card:nth-child(4) { animation-delay: 0.45s; }
+    .link-card:nth-child(5) { animation-delay: 0.55s; }
+    .link-card:nth-child(6) { animation-delay: 0.65s; }
+
+    /* Left accent bar */
+    .link-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--neon-cyan), var(--neon-pink));
+      opacity: 0;
+      transition: opacity 0.3s;
+      box-shadow: 0 0 12px var(--neon-cyan);
+    }
+
+    /* Hover shimmer */
+    .link-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,245,255,0.04) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .link-card:hover {
+      border-color: rgba(0,245,255,0.55);
+      transform: translateX(6px);
+      box-shadow:
+        0 0 30px rgba(0,245,255,0.08),
+        inset 0 0 40px rgba(0,245,255,0.03);
+    }
+
+    .link-card:hover::before { opacity: 1; }
+    .link-card:hover::after  { opacity: 1; }
+
+    .link-card:hover .link-name {
+      color: var(--neon-cyan);
+      text-shadow: 0 0 10px rgba(0,245,255,0.7);
+    }
+
+    .link-card:hover .link-arrow {
+      transform: translateX(6px);
+      opacity: 1;
+      color: var(--neon-cyan);
+    }
+
+    /* Card inner */
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+
+    .link-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #e8f4ff;
+      letter-spacing: 0.01em;
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+
+    .link-arrow {
+      font-size: 1.1rem;
+      opacity: 0.35;
+      transition: transform 0.3s, opacity 0.3s, color 0.3s;
+      flex-shrink: 0;
+    }
+
+    .link-desc {
+      font-size: 0.78rem;
+      line-height: 1.6;
+      color: var(--text-dim);
+      letter-spacing: 0.01em;
+    }
+
+    /* Tag pill */
+    .link-tag {
+      display: inline-block;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 2px;
+      border: 1px solid rgba(0,245,255,0.25);
+      color: var(--neon-cyan);
+      margin-bottom: 10px;
+      opacity: 0.7;
+    }
+
+    /* Color variants for tags */
+    .link-card:nth-child(2) .link-tag { border-color: rgba(255,45,120,0.3); color: var(--neon-pink); }
+    .link-card:nth-child(3) .link-tag { border-color: rgba(57,255,20,0.3); color: var(--neon-green); }
+    .link-card:nth-child(4) .link-tag { border-color: rgba(191,0,255,0.3); color: var(--neon-purple); }
+    .link-card:nth-child(5) .link-tag { border-color: rgba(0,245,255,0.25); color: var(--neon-cyan); }
+    .link-card:nth-child(6) .link-tag { border-color: rgba(255,45,120,0.3); color: var(--neon-pink); }
+
+    /* Divider */
+    .section-label {
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+      margin-top: 48px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 64px;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      opacity: 0.5;
+      animation: fadeUp 0.6s ease 0.8s both;
+    }
+
+    /* Animations */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cursor glow follow */
+    .cursor-glow {
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,245,255,0.05) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+      transform: translate(-50%, -50%);
+      transition: left 0.12s ease, top 0.12s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg"></div>
+  <div class="scanlines"></div>
+  <div class="glow-blob one"></div>
+  <div class="glow-blob two"></div>
+  <div class="glow-blob three"></div>
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <div class="container">
+
+    <header>
+      <p class="header-eyebrow">// navigation</p>
+      <h1>My <span>Links</span></h1>
+      <div class="header-line"></div>
+    </header>
+
+    <p class="section-label">Featured</p>
+
+    <div class="links-list">
+
+      <a class="link-card" href="physics2.html" target="_blank" rel="noopener">
+        <span class="link-tag">Course</span>
+        <div class="card-top">
+          <span class="link-name">Physics 2nd Paper</span>
+          <span class="link-arrow">→</span>
+        </div>
+        <p class="link-desc"></p>
+      </a>
+
+      <a class="link-card" href="biology2.html" target="_blank" rel="noopener">
+        <span class="link-tag">Courses</span>
+        <div class="card-top">
+          <span class="link-name">Biology 2nd Paper</span>
+          <span class="link-arrow">→</span>
+        </div>
+        <p class="link-desc"></p>
+      </a>
+
+      <a class="link-card" href="organic.html" target="_blank" rel="noopener">
+        <span class="link-tag">Courses</span>
+        <div class="card-top">
+          <span class="link-name">Organic</span>
+          <span class="link-arrow">→</span>
+        </div>
+        <p class="link-desc">Thoughts, updates, and random observations. Follow for irregular bursts of content.</p>
+      </a>
+
+      <a class="link-card" href="https://linkedin.com" target="_blank" rel="noopener">
+        <span class="link-tag">Professional</span>
+        <div class="card-top">
+          <span class="link-name">LinkedIn</span>
+          <span class="link-arrow">→</span>
+        </div>
+        <p class="link-desc">Work history, collaborations, and professional milestones. Let's connect if you have something interesting in mind.</p>
+      </a>
+
+      <a class="link-card" href="https://medium.com" target="_blank" rel="noopener">
+        <span class="link-tag">Writing</span>
+        <div class="card-top">
+          <span class="link-name">Blog</span>
+          <span class="link-arrow">→</span>
+        </div>
+        <p class="link-desc">Long-form articles on design systems, frontend engineering, and building things that matter.</p>
+      </a>
+
+      <a class="link-card" href="mailto:hello@example.com">
+        <span class="link-tag">Contact</span>
+        <div class="card-top">
+          <span class="link-name">Get in Touch</span>
+          <span class="link-arrow">→</span>
+        </div>
+        <p class="link-desc">Have a project in mind or just want to say hello? Drop me a line — I usually respond within a day.</p>
+      </a>
+
+    </div>
+
+    <footer>
+      &mdash;&nbsp; all systems nominal &nbsp;&mdash;
+    </footer>
+
+  </div>
+
+  <script>
+    const glow = document.getElementById('cursorGlow');
+    document.addEventListener('mousemove', e => {
+      glow.style.left = e.clientX + 'px';
+      glow.style.top  = e.clientY + 'px';
+    });
+  </script>
+</body>
+</html>
