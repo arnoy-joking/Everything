@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -287,6 +288,26 @@ select.inp { cursor:pointer; }
 /* ── LB TODAY BAR ── */
 .lb-today-bar { height:4px; border-radius:99px; background:#ffffff0a; overflow:hidden; margin-top:3px; }
 .lb-today-fill { height:100%; border-radius:99px; background:var(--accent); transition:width .6s; }
+
+/* ── CQ / MCQ TRACKER ── */
+.cqmcq-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px; }
+.cqmcq-row { display:flex; align-items:center; gap:10px; justify-content:space-between; }
+.cqmcq-item { display:flex; align-items:center; gap:10px; flex:1; }
+.cqmcq-label { font-size:.7rem; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:.06em; }
+.cqmcq-count { font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; line-height:1; min-width:40px; text-align:center; }
+.cqmcq-btn { width:32px; height:32px; border-radius:50%; border:1px solid var(--border2); background:transparent; color:var(--text); font-size:1rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+.cqmcq-btn:hover { border-color:var(--accent); background:#00e5a015; color:var(--accent); }
+.cqmcq-btn:active { transform:scale(.9); }
+.cqmcq-btn.cq-color:hover { border-color:#f7a06a; background:#f7a06a15; color:#f7a06a; }
+.cqmcq-btn.mcq-color:hover { border-color:#3b82f6; background:#3b82f615; color:#3b82f6; }
+.cqmcq-chip { display:inline-flex; align-items:center; gap:3px; padding:2px 7px; border-radius:99px; font-size:.6rem; font-weight:700; }
+.cqmcq-chip-cq { background:#f7a06a22; color:#f7a06a; border:1px solid #f7a06a33; }
+.cqmcq-chip-mcq { background:#3b82f622; color:#3b82f6; border:1px solid #3b82f633; }
+.cqmcq-form-input { width:100%; background:#1a1a22; border:1px solid var(--border2); border-radius:8px; padding:.45rem .7rem; color:var(--text); font-family:inherit; font-size:.78rem; outline:none; transition:border-color .2s; -moz-appearance:textfield; }
+.cqmcq-form-input:focus { border-color:var(--accent2); }
+.cqmcq-form-input::placeholder { color:var(--muted); font-size:.72rem; }
+.cqmcq-form-input::-webkit-outer-spin-button,
+.cqmcq-form-input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
 </style>
 </head>
 <body>
@@ -457,6 +478,45 @@ select.inp { cursor:pointer; }
         <span style="font-size:.75rem;font-weight:700;color:var(--accent2)">আজকের টপিক</span>
       </div>
       <input id="today-topic-input-desktop" class="inp" style="font-size:.85rem" placeholder="আজ কী পড়ছো? লিখে রাখো..." oninput="saveTodayTopic('today-topic-input-desktop')">
+    </div>
+
+    <!-- CQ / MCQ Tracker -->
+    <div class="cqmcq-card" style="margin-bottom:20px;border-color:#f7a06a33">
+      <div style="display:flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;color:var(--accent3);margin-bottom:14px">
+        <span>📝</span> CQ & MCQ ট্র্যাকার
+      </div>
+      <div class="cqmcq-row">
+        <!-- CQ -->
+        <div class="cqmcq-item">
+          <div style="flex:1">
+            <div class="cqmcq-label" style="color:#f7a06a">CQ সমাধান</div>
+            <div class="cqmcq-count" id="cq-count" style="color:#f7a06a">0</div>
+          </div>
+          <button class="cqmcq-btn cq-color" onclick="changeCQ(-1)">−</button>
+          <button class="cqmcq-btn cq-color" onclick="changeCQ(1)">+</button>
+        </div>
+        <!-- Divider -->
+        <div style="width:1px;height:48px;background:var(--border2);flex-shrink:0"></div>
+        <!-- MCQ -->
+        <div class="cqmcq-item">
+          <div style="flex:1">
+            <div class="cqmcq-label" style="color:#3b82f6">MCQ সমাধান</div>
+            <div class="cqmcq-count" id="mcq-count" style="color:#3b82f6">0</div>
+          </div>
+          <button class="cqmcq-btn mcq-color" onclick="changeMCQ(-1)">−</button>
+          <button class="cqmcq-btn mcq-color" onclick="changeMCQ(1)">+</button>
+        </div>
+      </div>
+      <!-- Form Input -->
+      <div class="cqmcq-form-row" style="display:flex;gap:10px;margin-top:12px">
+        <div style="flex:1">
+          <input id="cq-input" type="number" min="0" class="cqmcq-form-input" placeholder="CQ সংখ্যা লিখুন..." onkeydown="if(event.key==='Enter'){setCQFromInput();}">
+        </div>
+        <div style="flex:1">
+          <input id="mcq-input" type="number" min="0" class="cqmcq-form-input" placeholder="MCQ সংখ্যা লিখুন..." onkeydown="if(event.key==='Enter'){setMCQFromInput();}">
+        </div>
+      </div>
+      <div style="margin-top:8px;font-size:.65rem;color:var(--muted);text-align:center">র‍্যাংকিং এ গোপন পয়েন্ট যোগ হবে ✨</div>
     </div>
 
     <!-- Current slot -->
@@ -819,6 +879,21 @@ select.inp { cursor:pointer; }
       <div style="font-size:.7rem;color:var(--accent);font-weight:700;margin-bottom:6px">📚 আজকের টপিক</div>
       <div id="up-topic" style="font-size:.85rem;color:var(--text)">—</div>
     </div>
+    <!-- CQ / MCQ Stats in Spy Mode -->
+    <div id="up-cqmcq-section" style="margin-bottom:16px;padding:12px;background:var(--bg);border-radius:10px;border:1px solid var(--border)">
+      <div style="font-size:.7rem;color:var(--muted);font-weight:700;margin-bottom:8px">📝 CQ & MCQ ট্র্যাকার</div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <div style="flex:1;text-align:center">
+          <div style="font-size:.65rem;color:#f7a06a;font-weight:700">CQ সমাধান</div>
+          <div id="up-cq-count" style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:#f7a06a">0</div>
+        </div>
+        <div style="width:1px;height:32px;background:var(--border2)"></div>
+        <div style="flex:1;text-align:center">
+          <div style="font-size:.65rem;color:#3b82f6;font-weight:700">MCQ সমাধান</div>
+          <div id="up-mcq-count" style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:#3b82f6">0</div>
+        </div>
+      </div>
+    </div>
     <div style="font-size:.75rem;font-weight:700;color:var(--muted);margin-bottom:10px">আজকের সম্পন্ন স্লট</div>
     <div id="up-slots" style="display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto">—</div>
   </div>
@@ -890,6 +965,8 @@ let currentLBTab      = 'today';
 let customTimeSlotId  = null;
 let customTimeSlotIdx = null;
 let todayTopic        = '';
+let todayCQ           = 0;  // CQ solved today
+let todayMCQ          = 0;  // MCQ solved today
 
 // ════════════════════════════════════════════════════════════════
 // DATE HELPERS
@@ -1024,7 +1101,7 @@ async function dbGetLogs(username) {
   return data || [];
 }
 async function dbGetAllLogs() {
-  const {data} = await sb.from('daily_logs').select('username,date,xp,coins');
+  const {data} = await sb.from('daily_logs').select('username,date,xp,coins,completed_slots');
   return data || [];
 }
 async function dbUpsertLog(username, date, completedSlots, xp, coins) {
@@ -1137,6 +1214,11 @@ async function bootApp(user) {
   if (tlog) { todayLogId = tlog.id; completedSlots = tlog.completed_slots || {}; }
   else       { todayLogId = null;   completedSlots = {}; }
 
+  // Load today's CQ/MCQ from completed_slots
+  const todayCM = getCQMCQFromSlots(completedSlots);
+  todayCQ = todayCM.cq;
+  todayMCQ = todayCM.mcq;
+
   // 5 AM reset check - if the stored day is different from current "today", reset completed slots
   const lk = `rx_last_${user.username}`;
   if (localStorage.getItem(lk) && localStorage.getItem(lk) !== todayKey()) completedSlots = {};
@@ -1158,6 +1240,7 @@ async function bootApp(user) {
   startClock();
   renderTimeline();
   updateStats();
+  updateCQMCQDisplay();
   await loadTodayTopic();
 
   // No routine? Show onboarding
@@ -1914,6 +1997,63 @@ window.importJSONRoutine = async function() {
 };
 
 // ════════════════════════════════════════════════════════════════
+// CQ / MCQ TRACKER
+// ════════════════════════════════════════════════════════════════
+// Hidden scoring (never shown to users, only affects rank sorting):
+// 2 hours of study = 200 XP (study is 100 XP/hr)
+// 5 CQ  = same rank weight as 2hr study → 200/5 = 40 pts per CQ
+// 100 MCQ = same rank weight as 2hr study → 200/100 = 2 pts per MCQ
+const CQ_HIDDEN_PTS  = 40;
+const MCQ_HIDDEN_PTS = 2;
+
+function getCQMCQFromSlots(slots) {
+  if (!slots || typeof slots !== 'object') return { cq: 0, mcq: 0 };
+  return { cq: slots._cq || 0, mcq: slots._mcq || 0 };
+}
+
+window.changeCQ = function(delta) {
+  todayCQ = Math.max(0, todayCQ + delta);
+  completedSlots._cq = todayCQ;
+  updateCQMCQDisplay();
+  scheduleSave();
+};
+window.changeMCQ = function(delta) {
+  todayMCQ = Math.max(0, todayMCQ + delta);
+  completedSlots._mcq = todayMCQ;
+  updateCQMCQDisplay();
+  scheduleSave();
+};
+
+function updateCQMCQDisplay() {
+  const cqEl = document.getElementById('cq-count');
+  const mcqEl = document.getElementById('mcq-count');
+  if (cqEl) cqEl.textContent = todayCQ;
+  if (mcqEl) mcqEl.textContent = todayMCQ;
+}
+
+window.setCQFromInput = function() {
+  const inp = document.getElementById('cq-input');
+  const val = parseInt(inp.value);
+  if (isNaN(val) || val < 0) { inp.value = ''; return; }
+  todayCQ = val;
+  completedSlots._cq = todayCQ;
+  updateCQMCQDisplay();
+  inp.value = '';
+  scheduleSave();
+};
+
+window.setMCQFromInput = function() {
+  const inp = document.getElementById('mcq-input');
+  const val = parseInt(inp.value);
+  if (isNaN(val) || val < 0) { inp.value = ''; return; }
+  todayMCQ = val;
+  completedSlots._mcq = todayMCQ;
+  updateCQMCQDisplay();
+  inp.value = '';
+  scheduleSave();
+};
+
+// ════════════════════════════════════════════════════════════════
 // LEADERBOARD
 // ════════════════════════════════════════════════════════════════
 window.switchLBTab = function(tab) {
@@ -1936,21 +2076,35 @@ async function loadLeaderboard() {
 function renderLeaderboard() {
   const days7  = new Set(lastNDays(7));
   const today  = todayKey();
-  // Aggregate XP per user
+  // Aggregate XP per user + CQ/MCQ counts
   const agg = {};
   allLogs.forEach(l=>{
-    if (!agg[l.username]) agg[l.username]={username:l.username,total:0,weekly:0,today:0,todayMax:0};
+    if (!agg[l.username]) agg[l.username]={username:l.username,total:0,weekly:0,today:0,todayMax:0,totalCQ:0,totalMCQ:0,weeklyCQ:0,weeklyMCQ:0,todayCQ:0,todayMCQ:0};
     agg[l.username].total  += l.xp||0;
     if (days7.has(l.date)) agg[l.username].weekly += l.xp||0;
     if (l.date===today)    agg[l.username].today   = l.xp||0;
+
+    // Extract CQ/MCQ from completed_slots JSONB
+    const cm = getCQMCQFromSlots(l.completed_slots);
+    agg[l.username].totalCQ  += cm.cq;
+    agg[l.username].totalMCQ += cm.mcq;
+    if (days7.has(l.date)) { agg[l.username].weeklyCQ += cm.cq; agg[l.username].weeklyMCQ += cm.mcq; }
+    if (l.date===today)     { agg[l.username].todayCQ = cm.cq; agg[l.username].todayMCQ = cm.mcq; }
   });
 
   const todayMax = Math.max(1,...Object.values(agg).map(u=>u.today));
 
-  let sorted = Object.values(agg).sort((a,b)=>
-    currentLBTab==='weekly' ? b.weekly-a.weekly :
-    currentLBTab==='today'  ? b.today-a.today   : b.total-a.total
-  );
+  // Calculate hidden rank score: XP + (CQ * hidden_pts) + (MCQ * hidden_pts)
+  // This score is ONLY used for sorting, never displayed
+  let sorted = Object.values(agg).sort((a,b)=>{
+    const scoreA = (currentLBTab==='weekly' ? a.weekly : currentLBTab==='today' ? a.today : a.total)
+                 + (currentLBTab==='weekly' ? a.weeklyCQ : currentLBTab==='today' ? a.todayCQ : a.totalCQ) * CQ_HIDDEN_PTS
+                 + (currentLBTab==='weekly' ? a.weeklyMCQ : currentLBTab==='today' ? a.todayMCQ : a.totalMCQ) * MCQ_HIDDEN_PTS;
+    const scoreB = (currentLBTab==='weekly' ? b.weekly : currentLBTab==='today' ? b.today : b.total)
+                 + (currentLBTab==='weekly' ? b.weeklyCQ : currentLBTab==='today' ? b.todayCQ : b.totalCQ) * CQ_HIDDEN_PTS
+                 + (currentLBTab==='weekly' ? b.weeklyMCQ : currentLBTab==='today' ? b.todayMCQ : b.totalMCQ) * MCQ_HIDDEN_PTS;
+    return scoreB - scoreA;
+  });
   const scoreKey = currentLBTab==='weekly' ? 'weekly' : currentLBTab==='today' ? 'today' : 'total';
   const top5 = sorted.slice(0,5);
   const COLORS = ['#00e5a0','#7c6af7','#f7a06a','#3b82f6','#ec4899'];
@@ -1979,19 +2133,33 @@ function renderLeaderboard() {
     }
   });
 
-  // List
+  // List — show CQ/MCQ chips beside name, only display XP (not hidden score)
   const list = document.getElementById('lb-list');
   if (!sorted.length) { list.innerHTML='<div class="empty-state"><div class="empty-icon">🏆</div><p>এখনো কোনো ডেটা নেই</p></div>'; return; }
+
+  // Helper to pick CQ/MCQ counts based on tab
+  function cmCounts(u) {
+    if (currentLBTab==='today')  return { cq: u.todayCQ,  mcq: u.todayMCQ };
+    if (currentLBTab==='weekly') return { cq: u.weeklyCQ, mcq: u.weeklyMCQ };
+    return { cq: u.totalCQ, mcq: u.totalMCQ };
+  }
+
   list.innerHTML = sorted.slice(0,20).map((u,i)=>{
     const rankClass = i===0?'gold':i===1?'silver':i===2?'bronze':'';
     const isMe = u.username===currentUser?.username?.toLowerCase();
     const todayPct = Math.round((u.today/todayMax)*100);
+    const cm = cmCounts(u);
+    const cqChip = cm.cq > 0 ? `<span class="cqmcq-chip cqmcq-chip-cq">CQ ${cm.cq}</span>` : '';
+    const mcqChip = cm.mcq > 0 ? `<span class="cqmcq-chip cqmcq-chip-mcq">MCQ ${cm.mcq}</span>` : '';
     return `<div class="lb-row ${isMe?'me':''}" style="cursor:pointer" onclick="openUserProfile('${u.username}')">
       <span class="lb-rank ${rankClass}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</span>
       <div class="avatar" style="width:28px;height:28px;font-size:.78rem;background:${COLORS[i]||'#6b7b8a'}44">${u.username.charAt(0).toUpperCase()}</div>
       <div style="flex:1;min-width:0">
-        <div style="font-weight:700;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
-          ${u.username}${isMe?' <span style="font-size:.65rem;color:var(--accent)">(তুমি)</span>':''}
+        <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+          <span style="font-weight:700;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+            ${u.username}${isMe?' <span style="font-size:.65rem;color:var(--accent)">(তুমি)</span>':''}
+          </span>
+          ${cqChip}${mcqChip}
         </div>
         <div style="display:flex;align-items:center;gap:6px;margin-top:2px">
           <div class="lb-today-bar" style="flex:1;max-width:80px"><div class="lb-today-fill" style="width:${todayPct}%"></div></div>
@@ -2628,6 +2796,8 @@ window.openUserProfile = async function(username) {
   document.getElementById('up-username').textContent = username;
   document.getElementById('up-xp').textContent = 'লোড হচ্ছে...';
   document.getElementById('up-topic').textContent = '—';
+  document.getElementById('up-cq-count').textContent = '0';
+  document.getElementById('up-mcq-count').textContent = '0';
   document.getElementById('up-slots').innerHTML = '<div style="color:var(--muted);font-size:.8rem;text-align:center;padding:20px">লোড হচ্ছে...</div>';
   openModal('modal-user-profile');
   
@@ -2636,10 +2806,22 @@ window.openUserProfile = async function(username) {
     const {data: todayLog} = await sb.from('daily_logs').select('*').eq('username', username.toLowerCase()).eq('date', todayKey()).single();
     
     // Get user's total XP
-    const {data: allUserLogs} = await sb.from('daily_logs').select('xp').eq('username', username.toLowerCase());
+    const {data: allUserLogs} = await sb.from('daily_logs').select('xp,completed_slots').eq('username', username.toLowerCase());
     const totalXP = (allUserLogs || []).reduce((sum, l) => sum + (l.xp || 0), 0);
+
+    // Calculate total CQ/MCQ from all logs
+    let totalCQ = 0, totalMCQ = 0;
+    (allUserLogs || []).forEach(l => {
+      const cm = getCQMCQFromSlots(l.completed_slots);
+      totalCQ += cm.cq;
+      totalMCQ += cm.mcq;
+    });
     
     document.getElementById('up-xp').textContent = `${totalXP.toLocaleString()} XP সর্বমোট`;
+    
+    // Show total CQ/MCQ in spy mode
+    document.getElementById('up-cq-count').textContent = totalCQ;
+    document.getElementById('up-mcq-count').textContent = totalMCQ;
     
     // Get user's today topic
     const topic = await dbGetTodayTopic(username, todayKey());
