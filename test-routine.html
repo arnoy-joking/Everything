@@ -508,7 +508,7 @@
                 container.innerHTML += `<div class="cal-day-name">${d}</div>`;
             });
 
-            const firstDay = new Date(year, monthIndex, 7).getDay();
+            const firstDay = new Date(year, monthIndex, 1).getDay();
             const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
 
             for(let i=0; i<firstDay; i++) {
