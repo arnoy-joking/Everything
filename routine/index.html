@@ -1110,8 +1110,11 @@ function recalcToday() {
         xp += comp.xp || 0;
         coins += comp.coins || 0;
       } else {
-        // Regular slot
-        xp += Math.round((sl.xp || 0) * xpMult);
+        // Regular slot — cap non-study XP at 10
+        const rawXP = sl.xp || 0;
+        const isStudy = sl.category === 'study';
+        const slotXP = isStudy ? rawXP : Math.min(rawXP, 10);
+        xp += Math.round(slotXP * xpMult);
         if (sl.category === 'study') {
           const hrs = slotDurationHours(sl);
           coins += Math.round(hrs * 10 * coinMult);
@@ -1442,7 +1445,7 @@ window.importJSONRoutine = async function() {
       start: sl.start || '08:00 AM',
       end: sl.end || '09:00 AM',
       category: sl.category || 'other',
-      xp: sl.xp || 30
+      xp: sl.category === 'study' ? (sl.xp || 30) : Math.min(sl.xp || 5, 10)
     })),
     is_active: true
   };
@@ -1916,9 +1919,11 @@ window.saveRoutine = async function() {
     const cat   = inps[3].value;
     if (!title) return null;
     // XP based on category + duration
-    let xp = 30;
+    let xp = 5; // default 5 XP for non-study
     if (cat==='study') {
       try { const [sh,sm,sp]=parseT(start),[eh,em,ep]=parseT(end); const dur=(toMins(eh,em,ep)-toMins(sh,sm,sp)+1440)%1440; xp=Math.round(dur/60*100)||50; } catch(e){}
+    } else {
+      xp = Math.min(xp, 10); // cap non-study at 10
     }
     return { id: row.dataset.slotId, title, start, end, category:cat, xp, desc:'' };
   }).filter(Boolean);
@@ -2060,7 +2065,7 @@ window.importJSONRoutine = async function() {
       start: sl.start || '08:00 AM',
       end:   sl.end   || '09:00 AM',
       category: sl.category || 'other',
-      xp: sl.xp || 30
+      xp: sl.category === 'study' ? (sl.xp || 30) : Math.min(sl.xp || 5, 10)
     })),
     is_active: true
   };
