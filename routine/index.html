@@ -301,7 +301,7 @@ select.inp { cursor:pointer; }
 .cqmcq-btn:active { transform:scale(.9); }
 .cqmcq-btn.cq-color:hover { border-color:#f7a06a; background:#f7a06a15; color:#f7a06a; }
 .cqmcq-btn.mcq-color:hover { border-color:#3b82f6; background:#3b82f615; color:#3b82f6; }
-.cqmcq-chip { display:inline-flex; align-items:center; gap:3px; padding:2px 7px; border-radius:99px; font-size:.6rem; font-weight:700; }
+.cqmcq-chip { display:inline-flex; align-items:center; gap:4px; padding:5px 12px; border-radius:99px; font-size:.78rem; font-weight:700; }
 .cqmcq-chip-cq { background:#f7a06a22; color:#f7a06a; border:1px solid #f7a06a33; }
 .cqmcq-chip-mcq { background:#3b82f622; color:#3b82f6; border:1px solid #3b82f633; }
 .cqmcq-chip-ko { background:#10b98122; color:#10b981; border:1px solid #10b98133; }
@@ -309,7 +309,7 @@ select.inp { cursor:pointer; }
 .cqmcq-btn.ko-color:hover { border-color:#10b981; background:#10b98115; color:#10b981; }
 .cqmcq-btn.kho-color:hover { border-color:#ec4899; background:#ec489915; color:#ec4899; }
 .cp-display { display:inline-flex; align-items:center; gap:4px; background:#ec489912; border:1px solid #ec489928; border-radius:99px; padding:3px 10px; font-size:.8rem; font-weight:700; color:#ec4899; }
-.cp-badge { display:inline-flex; align-items:center; gap:3px; padding:2px 7px; border-radius:99px; font-size:.6rem; font-weight:700; background:#ec489922; color:#ec4899; border:1px solid #ec489933; }
+.cp-badge { display:inline-flex; align-items:center; gap:4px; padding:5px 12px; border-radius:99px; font-size:.78rem; font-weight:700; background:#ec489922; color:#ec4899; border:1px solid #ec489933; }
 .cqmcq-form-input { width:100%; background:#1a1a22; border:1px solid var(--border2); border-radius:8px; padding:.45rem .7rem; color:var(--text); font-family:inherit; font-size:.78rem; outline:none; transition:border-color .2s; -moz-appearance:textfield; }
 .cqmcq-form-input:focus { border-color:var(--accent2); }
 .cqmcq-form-input::placeholder { color:var(--muted); font-size:.72rem; }
@@ -933,9 +933,20 @@ select.inp { cursor:pointer; }
       <div style="font-size:.7rem;color:var(--accent);font-weight:700;margin-bottom:6px">📚 আজকের টপিক</div>
       <div id="up-topic" style="font-size:.85rem;color:var(--text)">—</div>
     </div>
-    <!-- CQ / MCQ / KO / KHO Stats in Spy Mode -->
+    <!-- XP Display in Spy Mode -->
+    <div id="up-xp-section" style="margin-bottom:16px;padding:12px;background:var(--bg);border-radius:10px;border:1px solid var(--border)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div style="font-size:.7rem;color:var(--muted);font-weight:700">⚡ XP</div>
+        <div id="up-period-label" class="badge badge-accent2" style="font-size:.58rem">আজ</div>
+      </div>
+      <div id="up-xp" style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--accent)">0</div>
+    </div>
+    <!-- CQ / MCQ / KO / KHO / CP Stats in Spy Mode -->
     <div id="up-cqmcq-section" style="margin-bottom:16px;padding:12px;background:var(--bg);border-radius:10px;border:1px solid var(--border)">
-      <div style="font-size:.7rem;color:var(--muted);font-weight:700;margin-bottom:8px">📝 CQ & MCQ & ক & খ ট্র্যাকার</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:.7rem;color:var(--muted);font-weight:700">📝 ট্র্যাকার</div>
+        <div id="up-period-label-2" class="badge badge-accent2" style="font-size:.58rem">আজ</div>
+      </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;align-items:center;text-align:center">
         <div>
           <div style="font-size:.6rem;color:#f7a06a;font-weight:700">CQ</div>
@@ -955,7 +966,7 @@ select.inp { cursor:pointer; }
         </div>
       </div>
       <div style="text-align:center;margin-top:10px;padding:6px;background:#ec489908;border:1px solid #ec489922;border-radius:8px">
-        <span style="font-size:.65rem;color:var(--muted)">মোট CP</span>
+        <span style="font-size:.65rem;color:var(--muted)">CP</span>
         <span id="up-cp-count" style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:#ec4899;margin-left:6px">0</span>
         <span style="font-size:.6rem;color:var(--muted)">💎</span>
       </div>
@@ -2981,7 +2992,7 @@ async function loadTodayTopic() {
 window.openUserProfile = async function(username) {
   document.getElementById('up-avatar').textContent = username.charAt(0).toUpperCase();
   document.getElementById('up-username').textContent = username;
-  document.getElementById('up-xp').textContent = 'লোড হচ্ছে...';
+  document.getElementById('up-xp').textContent = '...';
   document.getElementById('up-topic').textContent = '—';
   document.getElementById('up-cq-count').textContent = '0';
   document.getElementById('up-mcq-count').textContent = '0';
@@ -2989,34 +3000,49 @@ window.openUserProfile = async function(username) {
   document.getElementById('up-kho-count').textContent = '0';
   document.getElementById('up-cp-count').textContent = '0';
   document.getElementById('up-slots').innerHTML = '<div style="color:var(--muted);font-size:.8rem;text-align:center;padding:20px">লোড হচ্ছে...</div>';
+
+  // Set period labels based on current leaderboard tab
+  const tab = currentLBTab;
+  const periodLabel = tab === 'today' ? 'আজ' : tab === 'weekly' ? 'সাপ্তাহিক' : 'সর্বকালীন';
+  document.getElementById('up-period-label').textContent = periodLabel;
+  document.getElementById('up-period-label-2').textContent = periodLabel;
+
   openModal('modal-user-profile');
   
   try {
-    // Get user's today log
-    const {data: todayLog} = await sb.from('daily_logs').select('*').eq('username', username.toLowerCase()).eq('date', todayKey()).single();
-    
-    // Get user's total XP
-    const {data: allUserLogs} = await sb.from('daily_logs').select('xp,completed_slots').eq('username', username.toLowerCase());
-    const totalXP = (allUserLogs || []).reduce((sum, l) => sum + (l.xp || 0), 0);
+    const {data: allUserLogs} = await sb.from('daily_logs').select('date,xp,completed_slots').eq('username', username.toLowerCase());
+    const logs = allUserLogs || [];
 
-    // Calculate total CQ/MCQ/KO/KHO from all logs
-    let totalCQ = 0, totalMCQ = 0, totalKO = 0, totalKHO = 0;
-    (allUserLogs || []).forEach(l => {
+    // Determine date filter
+    const today = todayKey();
+    const days7 = new Set(lastNDays(7));
+
+    // Calculate XP based on tab
+    let xp = 0, cq = 0, mcq = 0, ko = 0, kho = 0;
+
+    logs.forEach(l => {
+      const isToday = l.date === today;
+      const isWeek = days7.has(l.date);
+      const include = tab === 'all' || (tab === 'today' && isToday) || (tab === 'weekly' && isWeek);
+      if (!include) return;
+
+      xp += l.xp || 0;
       const cm = getCQMCQFromSlots(l.completed_slots);
-      totalCQ += cm.cq;
-      totalMCQ += cm.mcq;
-      totalKO += cm.ko;
-      totalKHO += cm.kho;
+      cq += cm.cq;
+      mcq += cm.mcq;
+      ko += cm.ko;
+      kho += cm.kho;
     });
-    
-    document.getElementById('up-xp').textContent = `${totalXP.toLocaleString()} XP সর্বমোট`;
-    
-    // Show total CQ/MCQ/KO/KHO/CP in spy mode
-    document.getElementById('up-cq-count').textContent = totalCQ;
-    document.getElementById('up-mcq-count').textContent = totalMCQ;
-    document.getElementById('up-ko-count').textContent = totalKO;
-    document.getElementById('up-kho-count').textContent = totalKHO;
-    document.getElementById('up-cp-count').textContent = calcCP(totalCQ, totalMCQ, totalKO, totalKHO);
+
+    const cp = calcCP(cq, mcq, ko, kho);
+    const xpLabel = tab === 'today' ? `${xp.toLocaleString()} XP` : tab === 'weekly' ? `${xp.toLocaleString()} XP` : `${xp.toLocaleString()} XP সর্বমোট`;
+
+    document.getElementById('up-xp').textContent = xpLabel;
+    document.getElementById('up-cq-count').textContent = cq;
+    document.getElementById('up-mcq-count').textContent = mcq;
+    document.getElementById('up-ko-count').textContent = ko;
+    document.getElementById('up-kho-count').textContent = kho;
+    document.getElementById('up-cp-count').textContent = cp;
     
     // Get user's today topic
     const topic = await dbGetTodayTopic(username, todayKey());
@@ -3030,6 +3056,7 @@ window.openUserProfile = async function(username) {
       return;
     }
     
+    const todayLog = logs.find(l => l.date === todayKey());
     const completedToday = todayLog?.completed_slots || {};
     
     document.getElementById('up-slots').innerHTML = routineData.slots.map(sl => {
