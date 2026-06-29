@@ -2,39 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSC 2026 Revised Routine</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>HSC 2026 · PWA Routine</title>
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkhTQyBSb3V0aW5lIDIwMjYiLAogICJzaG9ydF9uYW1lIjogIlJvdXRpbmUiLAogICJkZXNjcmlwdGlvbiI6ICJZb3VyIG9mZmxpbmUgZXhhbSBzY2hlZHVsZSIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMGYxNzJhIiwKICAidGhlbWVfY29sb3IiOiAiIzEyMjIzMyIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDUxMiA1MTInPjxyZWN0IHdpZHRoPSc1MTInIGhlaWdodD0nNTEyJyB4PScwJyB5PScwJyBmaWxsPSclMjMzMzQxNTUnLz48dGV4dCB4PSc1MCUnIHk9JzUwJScgZG9taW5hbnQtYmFzZWxpbmU9J2NlbnRyYWwnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdTYW5zLVNlcmlmJyBmb250LXNpemU9JzE1MCcgZmlsbD0nJTIzZjhmYWZjJz5IU0M8L3RleHQ+PC9zdmc+IiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIiwKICAgICAgInB1cnBvc2UiOiAiYW55IG1hc2sgYW55c2l6ZSIKICAgIH0KICBdCn0=">
     <link rel="icon" type="image/png" href="https://img.icons8.com/?size=256w&id=mG5i2PHIrCWe&format=png">
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;600;800&family=Creepster&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Noto+Sans+Bengali:wght@400;600;700;800&family=Creepster&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* --- LIGHT THEME (Clean Slate) --- */
-            --primary: #334155;     /* Slate 700 */
-            --secondary: #64748b;   /* Slate 500 */
-            --accent: #0ea5e9;      /* Sky 500 */
-            --bg: #f8fafc;          /* Slate 50 */
+            --primary: #334155;
+            --secondary: #64748b;
+            --accent: #0ea5e9;
+            --bg: #f8fafc;
             --card-bg: #ffffff;
-            --text: #0f172a;        /* Slate 900 */
+            --text: #0f172a;
             --text-muted: #64748b;
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
             --border: #e2e8f0;
             --gap-bg: #f1f5f9;
-            --today-highlight: #e0f2fe; /* Light Blue tint */
+            --today-highlight: #e0f2fe;
             --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
             --font-main: 'Inter', sans-serif;
+            --font-bangla: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
             --header-gradient: linear-gradient(135deg, #1e293b 0%, #334155 100%);
         }
-
         [data-theme="dark"] {
-            /* --- DARK THEME (Midnight) --- */
-            --primary: #38bdf8;     /* Sky 400 */
+            --primary: #38bdf8;
             --secondary: #94a3b8;
             --accent: #0284c7;
-            --bg: #0f172a;          /* Slate 900 */
-            --card-bg: #1e293b;     /* Slate 800 */
+            --bg: #0f172a;
+            --card-bg: #1e293b;
             --text: #f1f5f9;
             --text-muted: #94a3b8;
             --border: #334155;
@@ -43,36 +42,40 @@
             --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
             --header-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         }
-
         [data-theme="cursed"] {
-            /* --- CURSED THEME (Void & Blood) --- */
-            --primary: #ff003c;     /* Neon Red */
-            --secondary: #7f1d1d;   /* Deep Blood */
+            --primary: #ff003c;
+            --secondary: #7f1d1d;
             --accent: #ff0000;
-            --bg: #000000;          /* Pure Void */
-            --card-bg: #0a0a0a;     /* Abyssal Grey */
+            --bg: #000000;
+            --card-bg: #0a0a0a;
             --text: #e5e5e5;
             --text-muted: #a1a1aa;
-            --success: #00ff00;     /* Hacker Green */
+            --success: #00ff00;
             --danger: #ff0000;
             --warning: #fbbf24;
-            --border: #330505;      /* Dried Blood */
+            --border: #330505;
             --gap-bg: #1a0505;
             --today-highlight: rgba(255, 0, 60, 0.1);
             --shadow: 0 0 20px rgba(255, 0, 0, 0.15);
-            --font-main: 'Inter', sans-serif; /* Keep readable, headers can change */
             --header-gradient: linear-gradient(180deg, #2a0a0a 0%, #000000 100%);
         }
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 50px;
+            font-family: var(--font-main);
+        }
+        .subject-name, .college-name, header h1, header p, .subject-code, .gap-badge, .cal-subject-text {
+            font-family: var(--font-bangla), var(--font-main);
+        }
+        .subject-code { font-family: var(--font-main), var(--font-bangla); }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-main), 'Hind Siliguri', sans-serif; transition: background 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s; }
-
-        body { background-color: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 50px; }
-
-        /* Header */
         header {
             background: var(--header-gradient);
             color: white;
-            padding: 2.5rem 1rem;
+            padding: 2rem 1rem 1.8rem;
             text-align: center;
             border-bottom-left-radius: 24px;
             border-bottom-right-radius: 24px;
@@ -80,29 +83,24 @@
             position: relative;
             overflow: hidden;
         }
-
-        /* Cursed specific header vibe */
         [data-theme="cursed"] header h1 {
             font-family: 'Creepster', cursive;
             letter-spacing: 2px;
             text-shadow: 2px 2px 0px #7f1d1d;
             color: var(--primary);
         }
-
-        header h1 { font-size: 2rem; margin-bottom: 0.5rem; letter-spacing: -0.5px; font-weight: 800; }
-        .college-name { font-weight: 500; font-size: 0.95rem; margin-bottom: 8px; display: block; opacity: 0.8; letter-spacing: 1px; text-transform: uppercase; }
-
-        /* Countdown */
+        header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; }
+        .college-name { font-weight: 600; font-size: 0.95rem; display: block; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; }
         .countdown-box {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255,0.1);
             backdrop-filter: blur(5px);
             padding: 10px 24px;
             border-radius: 50px;
             display: inline-block;
-            margin-top: 20px;
+            margin-top: 18px;
             font-weight: 600;
             border: 1px solid rgba(255,255,255,0.2);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         [data-theme="cursed"] .countdown-box {
@@ -112,16 +110,14 @@
             box-shadow: 0 0 10px var(--primary);
         }
 
-        /* Controls */
         .controls {
             max-width: 900px;
-            margin: 25px auto;
+            margin: 22px auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0 20px;
         }
-
         .toggle-group {
             display: flex;
             background: var(--card-bg);
@@ -130,7 +126,6 @@
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
         }
-
         .view-btn {
             background: transparent;
             border: none;
@@ -140,8 +135,8 @@
             color: var(--text-muted);
             font-weight: 600;
             font-size: 0.9rem;
+            font-family: var(--font-main);
         }
-
         .view-btn.active {
             background: var(--primary);
             color: #ffffff;
@@ -164,16 +159,7 @@
             font-size: 1.2rem;
             box-shadow: var(--shadow);
         }
-        .theme-toggle:hover { transform: translateY(-2px); }
-
-        /* Container */
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* List View */
+        .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
         .exam-list { display: flex; flex-direction: column; gap: 16px; }
 
         .exam-card {
@@ -188,21 +174,15 @@
             position: relative;
             overflow: hidden;
         }
-
         .exam-card.completed { border-left: 5px solid var(--success); opacity: 0.7; }
         .exam-card.completed .subject-name { text-decoration: line-through; color: var(--text-muted); }
-
         .exam-card.today {
             border: 2px solid var(--primary);
             transform: scale(1.02);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
             z-index: 10;
         }
-        [data-theme="cursed"] .exam-card.today {
-            box-shadow: 0 0 15px var(--primary);
-            border-color: var(--primary);
-        }
-
+        [data-theme="cursed"] .exam-card.today { box-shadow: 0 0 15px var(--primary); border-color: var(--primary); }
         .exam-card.upcoming { border-left: 5px solid var(--warning); }
 
         .date-box {
@@ -228,7 +208,6 @@
             border: 1px solid var(--border);
         }
 
-        /* Gap Indicator */
         .gap-indicator {
             margin: -8px 0;
             text-align: center;
@@ -251,6 +230,7 @@
             border: 1px solid var(--border);
             z-index: 1;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-family: var(--font-bangla), var(--font-main);
         }
         .gap-badge.danger {
             background: #fef2f2;
@@ -260,69 +240,43 @@
         [data-theme="dark"] .gap-badge.danger { background: #450a0a; color: #fca5a5; border-color: #7f1d1d; }
         [data-theme="cursed"] .gap-badge.danger { background: #000; color: #ff0000; border-color: #ff0000; box-shadow: 0 0 8px #ff0000; }
 
-        /* Calendar View */
         .calendar-view { display: none; background: var(--card-bg); border-radius: 16px; padding: 25px; border: 1px solid var(--border); box-shadow: var(--shadow); }
         .cal-header { text-align: center; margin-bottom: 20px; font-weight: 800; font-size: 1.25rem; color: var(--text); letter-spacing: -0.5px; }
-
         .cal-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 8px;
             text-align: center;
         }
-
-        .cal-day-name { font-weight: 700; font-size: 0.85rem; color: var(--text-muted); padding-bottom: 10px; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 1px; }
-
+        .cal-day-name { font-weight: 700; font-size: 0.7rem; color: var(--text-muted); padding-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
         .cal-date {
             background: var(--card-bg);
             border-radius: 8px;
             min-height: 90px;
-            padding: 6px;
+            padding: 6px 2px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
             border: 1px solid var(--border);
             position: relative;
-            transition: all 0.2s;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
         }
-
-        .cal-date.empty {
-            background: transparent;
-            border: none;
-            box-shadow: none;
-        }
-
-        .cal-num { font-weight: 600; font-size: 0.9rem; margin-bottom: 6px; color: var(--text-muted); width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
-
-        /* Current Day Highlight (Logic independent of exams) */
-        .cal-date.is-today {
-            background: var(--today-highlight);
-            border-color: var(--primary);
-        }
-        .cal-date.is-today .cal-num {
-            background: var(--primary);
-            color: white;
-            font-weight: bold;
-        }
+        .cal-date.empty { background: transparent; border: none; box-shadow: none; }
+        .cal-num { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; color: var(--text-muted); width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .cal-date.is-today { background: var(--today-highlight); border-color: var(--primary); }
+        .cal-date.is-today .cal-num { background: var(--primary); color: white; font-weight: bold; }
         [data-theme="dark"] .cal-date.is-today .cal-num { color: #0f172a; }
         [data-theme="cursed"] .cal-date.is-today .cal-num { background: var(--primary); color: #000; }
-
-        .cal-date.has-exam {
-            border-color: var(--secondary);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
+        .cal-date.has-exam { border-color: var(--secondary); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
         [data-theme="cursed"] .cal-date.has-exam { border-color: var(--primary); }
-
         .cal-date.has-exam .cal-num { color: var(--text); font-weight: 700; }
-
         .cal-subject-text {
-            font-size: 0.7rem;
-            line-height: 1.3;
+            font-size: 0.65rem;
+            line-height: 1.2;
             color: var(--text);
             background: var(--bg);
-            padding: 6px 4px;
+            padding: 4px 2px;
             border-radius: 6px;
             width: 100%;
             word-wrap: break-word;
@@ -332,9 +286,27 @@
             justify-content: center;
             font-weight: 600;
             border: 1px solid var(--border);
+            font-family: var(--font-bangla), var(--font-main);
         }
-
         .cal-date.completed { opacity: 0.5; filter: grayscale(1); }
+
+        /* Offline indicator */
+        .offline-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            box-shadow: var(--shadow);
+            display: none;
+            z-index: 999;
+            font-weight: 600;
+        }
+        .offline-badge.show { display: block; }
 
         @media (max-width: 600px) {
             header h1 { font-size: 1.5rem; }
@@ -343,151 +315,146 @@
             .date-box .day { font-size: 1.4rem; }
             .subject-name { font-size: 1rem; }
             .subject-box { padding-left: 15px; }
-
             .cal-grid { gap: 4px; }
             .cal-date { min-height: 65px; padding: 2px; border-radius: 6px; }
-            .cal-subject-text { font-size: 0.6rem; padding: 2px; line-height: 1.1; }
+            .cal-subject-text { font-size: 0.55rem; padding: 2px; line-height: 1.1; }
             .cal-num { font-size: 0.75rem; width: 20px; height: 20px; margin-bottom: 2px; }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <span class="college-name">Brahmanbaria Govt. College</span>
-        <h1>HSC Exam 2026</h1>
-        <p>Science Group</p>
-        <div class="countdown-box" id="countdown">Calculating...</div>
-    </header>
+<header>
+    <span class="college-name">Brahmanbaria Govt. College</span>
+    <h1>HSC Exam 2026</h1>
+    <p>Science Group</p>
+    <div class="countdown-box" id="countdown">⟳ Loading...</div>
+</header>
 
-    <div class="controls">
-        <div class="toggle-group">
-            <button class="view-btn active" onclick="switchView('list')">List View</button>
-            <button class="view-btn" onclick="switchView('calendar')">Calendar</button>
-        </div>
-        <button class="theme-toggle" onclick="toggleTheme()" title="Switch Theme">
-            ☀️
-        </button>
+<div class="controls">
+    <div class="toggle-group">
+        <button class="view-btn active" data-view="list">List View</button>
+        <button class="view-btn" data-view="calendar">Calendar</button>
     </div>
+    <button class="theme-toggle" id="themeToggle" title="Switch Theme">☀️</button>
+</div>
 
-    <div class="container">
-        <!-- List View -->
-        <div id="listView" class="exam-list"></div>
-
-        <!-- Calendar View -->
-        <div id="calendarView" class="calendar-view">
-            <div class="cal-header">July 2026</div>
-            <div class="cal-grid" id="calGridJan"></div>
-            <br>
-            <div class="cal-header">August 2026</div>
-            <div class="cal-grid" id="calGridFeb"></div>
-        </div>
+<div class="container">
+    <div id="listView" class="exam-list"></div>
+    <div id="calendarView" class="calendar-view">
+        <div id="calGridContainer"></div>
     </div>
+</div>
 
-    <script>
-        // DATA
+<div class="offline-badge" id="offlineBadge">📴 Offline Mode</div>
+
+<script>
+    (function() {
+        // ============================================================
+        //  DATA - Edit this array for your exam schedule
+        //  Works for any month/year - just add dates in YYYY-MM-DD format
+        // ============================================================
         const exams = [
-             
-    { "date": "2026-07-02", "subject": "বাংলা ১ম পত্র", "code": "১০১" },
-    { "date": "2026-07-04", "subject": "বাংলা ২য় পত্র", "code": "১০২" },
-    { "date": "2026-07-06", "subject": "ইংরেজি ১ম পত্র", "code": "১০৭" },
-    { "date": "2026-07-08", "subject": "ইংরেজি ২য় পত্র", "code": "১০৮" },
-    { "date": "2026-07-11", "subject": "তথ্য ও যোগাযোগ প্রযুক্তি", "code": "২৭৫" },
-    { "date": "2026-07-13", "subject": "পদার্থবিজ্ঞান ১ম পত্র", "code": "১৭৪" },
-    { "date": "2026-07-15", "subject": "পদার্থবিজ্ঞান ২য় পত্র", "code": "১৭৫" },
-    { "date": "2026-07-19", "subject": "রসায়ন ১ম পত্র", "code": "১৭৬" },
-    { "date": "2026-07-22", "subject": "রসায়ন ২য় পত্র", "code": "১৭৭" },
-    { "date": "2026-07-27", "subject": "জীববিজ্ঞান ১ম পত্র", "code": "১৭৮" },
-    { "date": "2026-07-29", "subject": "জীববিজ্ঞান ২য় পত্র", "code": "১৭৯" },
-    { "date": "2026-08-02", "subject": "উচ্চতর গণিত ১ম পত্র", "code": "২৬৫" },
-    { "date": "2026-08-04", "subject": "উচ্চতর গণিত ২য় পত্র", "code": "২৬৬" }
-
-
+            { "date": "2026-07-02", "subject": "বাংলা ১ম পত্র", "code": "১০১" },
+            { "date": "2026-07-04", "subject": "বাংলা ২য় পত্র", "code": "১০২" },
+            { "date": "2026-07-06", "subject": "ইংরেজি ১ম পত্র", "code": "১০৭" },
+            { "date": "2026-07-08", "subject": "ইংরেজি ২য় পত্র", "code": "১০৮" },
+            { "date": "2026-07-11", "subject": "তথ্য ও যোগাযোগ প্রযুক্তি", "code": "২৭৫" },
+            { "date": "2026-07-13", "subject": "পদার্থবিজ্ঞান ১ম পত্র", "code": "১৭৪" },
+            { "date": "2026-07-15", "subject": "পদার্থবিজ্ঞান ২য় পত্র", "code": "১৭৫" },
+            { "date": "2026-07-19", "subject": "রসায়ন ১ম পত্র", "code": "১৭৬" },
+            { "date": "2026-07-22", "subject": "রসায়ন ২য় পত্র", "code": "১৭৭" },
+            { "date": "2026-07-27", "subject": "জীববিজ্ঞান ১ম পত্র", "code": "১৭৮" },
+            { "date": "2026-07-29", "subject": "জীববিজ্ঞান ২য় পত্র", "code": "১৭৯" },
+            { "date": "2026-08-02", "subject": "উচ্চতর গণিত ১ম পত্র", "code": "২৬৫" },
+            { "date": "2026-08-04", "subject": "উচ্চতর গণিত ২য় পত্র", "code": "২৬৬" }
         ];
+        // ============================================================
 
         const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const shortMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-        // SETUP
+        function pad(n) { return String(n).padStart(2, '0'); }
+
+        // ----- THEME -----
         const themes = ['light', 'dark', 'cursed'];
-        const themeIcons = { 'light': '☀️', 'dark': '🌙', 'cursed': '👹' };
-        
+        const themeIcons = { light: '☀️', dark: '🌙', cursed: '👹' };
         let currentTheme = localStorage.getItem('theme') || 'light';
-        // Ensure valid theme
         if (!themes.includes(currentTheme)) currentTheme = 'light';
 
         function applyTheme(theme) {
             document.body.setAttribute('data-theme', theme);
-            document.querySelector('.theme-toggle').textContent = themeIcons[theme];
+            document.getElementById('themeToggle').textContent = themeIcons[theme];
             localStorage.setItem('theme', theme);
         }
-
-        // Initialize theme
         applyTheme(currentTheme);
-
-        function toggleTheme() {
-            let index = themes.indexOf(currentTheme);
-            let nextIndex = (index + 1) % themes.length;
-            currentTheme = themes[nextIndex];
+        document.getElementById('themeToggle').addEventListener('click', function() {
+            let idx = themes.indexOf(currentTheme);
+            let next = (idx + 1) % themes.length;
+            currentTheme = themes[next];
             applyTheme(currentTheme);
-        }
+        });
+
+        // ----- VIEW SWITCH -----
+        const viewBtns = document.querySelectorAll('.view-btn');
+        const listView = document.getElementById('listView');
+        const calendarView = document.getElementById('calendarView');
 
         function switchView(view) {
-            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector(`.view-btn[onclick="switchView('${view}')"]`).classList.add('active');
-            
-            document.getElementById('listView').style.display = view === 'list' ? 'flex' : 'none';
-            document.getElementById('calendarView').style.display = view === 'calendar' ? 'block' : 'none';
+            viewBtns.forEach(b => b.classList.remove('active'));
+            document.querySelector(`.view-btn[data-view="${view}"]`).classList.add('active');
+            if (view === 'list') {
+                listView.style.display = 'flex';
+                calendarView.style.display = 'none';
+            } else {
+                listView.style.display = 'none';
+                calendarView.style.display = 'block';
+                renderAllCalendars();
+            }
         }
+        viewBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                switchView(this.dataset.view);
+            });
+        });
 
+        // ----- RENDER LIST -----
         function renderList() {
             const container = document.getElementById('listView');
             container.innerHTML = '';
-            
             const now = new Date();
             const todayStr = now.toISOString().split('T')[0];
 
-            exams.forEach((exam, index) => {
+            exams.forEach((exam, idx) => {
                 const examDate = new Date(exam.date);
-                
-                // Gap Logic
-                if (index > 0) {
-                    const prevDate = new Date(exams[index-1].date);
-                    const diffTime = examDate - prevDate;
-                    const dayDiff = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-                    const gapDays = dayDiff - 1;
-
+                if (idx > 0) {
+                    const prev = new Date(exams[idx-1].date);
+                    const diffDays = Math.floor((examDate - prev) / (1000*60*60*24));
+                    const gap = diffDays - 1;
                     let gapHtml = '';
-                    if (gapDays === 0) {
-                         gapHtml = `
-                            <div class="gap-indicator">
-                                <span class="gap-badge danger">⚠️ 0 Days Gap!</span>
-                            </div>
-                        `;
-                    } else {
-                        gapHtml = `
-                            <div class="gap-indicator">
-                                <span class="gap-badge">☕ ${gapDays} Day${gapDays > 1 ? 's' : ''} Gap</span>
-                            </div>
-                        `;
+                    if (gap === 0) {
+                        gapHtml = `<div class="gap-indicator"><span class="gap-badge danger">⚠️ 0 Days Gap!</span></div>`;
+                    } else if (gap > 0) {
+                        gapHtml = `<div class="gap-indicator"><span class="gap-badge">☕ ${gap} Day${gap>1?'s':''} Gap</span></div>`;
                     }
-                    container.innerHTML += gapHtml;
+                    if (gap >= 0) container.innerHTML += gapHtml;
                 }
 
-                let statusClass = 'upcoming';
-                if (exam.date < todayStr) statusClass = 'completed';
-                if (exam.date === todayStr) statusClass = 'today';
+                let status = 'upcoming';
+                if (exam.date < todayStr) status = 'completed';
+                else if (exam.date === todayStr) status = 'today';
 
-                const dayName = days[examDate.getDay()];
-                const dateNum = examDate.getDate();
-                const monthName = months[examDate.getMonth()];
+                const d = examDate.getDate();
+                const m = shortMonths[examDate.getMonth()];
+                const wd = days[examDate.getDay()].substring(0,3);
 
-                const html = `
-                    <div class="exam-card ${statusClass}">
+                container.innerHTML += `
+                    <div class="exam-card ${status}">
                         <div class="date-box">
-                            <div class="day">${dateNum}</div>
-                            <div class="month">${monthName}</div>
-                            <div class="weekday">${dayName.substring(0,3)}</div>
+                            <div class="day">${d}</div>
+                            <div class="month">${m}</div>
+                            <div class="weekday">${wd}</div>
                         </div>
                         <div class="subject-box">
                             <div class="subject-name">${exam.subject}</div>
@@ -495,84 +462,255 @@
                         </div>
                     </div>
                 `;
-                container.innerHTML += html;
             });
         }
 
-        function renderCalendar(monthIndex, year, containerId) {
-            const container = document.getElementById(containerId);
+        // ----- RENDER CALENDAR (auto-detects months from data) -----
+        function renderAllCalendars() {
+            const container = document.getElementById('calGridContainer');
             container.innerHTML = '';
-            
-            const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            dayHeaders.forEach(d => {
-                container.innerHTML += `<div class="cal-day-name">${d}</div>`;
-            });
-
-            const firstDay = new Date(year, monthIndex, 1).getDay();
-            const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
-
-            for(let i=0; i<firstDay; i++) {
-                container.innerHTML += `<div class="cal-date empty"></div>`;
-            }
-
-            const now = new Date();
-            const todayStr = now.toISOString().split('T')[0];
-
-            for(let d=1; d<=daysInMonth; d++) {
-                const dateStr = `${year}-${String(monthIndex+1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                const exam = exams.find(e => e.date === dateStr);
-                
-                let classes = 'cal-date';
-                
-                // Highlight Logic
-                if (dateStr === todayStr) classes += ' is-today';
-                
-                let content = `<div class="cal-num">${d}</div>`;
-                
-                if (exam) {
-                    classes += ' has-exam';
-                    if (dateStr < todayStr) classes += ' completed';
-                    content += `<div class="cal-subject-text">${exam.subject}</div>`;
-                }
-
-                container.innerHTML += `
-                    <div class="${classes}">
-                        ${content}
-                    </div>
-                `;
-            }
-        }
-
-        function updateCountdown() {
-            const now = new Date();
-            // Find next exam that hasn't finished (assuming finished by 4PM or just check date)
-            // Simplified: check for exams today or future
-            const nextExam = exams.find(e => new Date(e.date + "T13:00:00") > now);
-            const el = document.getElementById('countdown');
-            
-            if (!nextExam) {
-                el.innerHTML = "All Exams Finished!";
+            if (!exams.length) {
+                container.innerHTML = '<p style="text-align:center;padding:2rem;">No exams added.</p>';
                 return;
             }
 
-            const examDate = new Date(nextExam.date + "T13:00:00");
-            const diff = examDate - now;
+            const monthSet = new Set();
+            exams.forEach(e => {
+                const d = new Date(e.date);
+                const key = `${d.getFullYear()}-${pad(d.getMonth()+1)}`;
+                monthSet.add(key);
+            });
+            const sortedMonths = Array.from(monthSet).sort();
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0];
 
-            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((diff % (1000 * 60)) / 1000);
+            sortedMonths.forEach(key => {
+                const [year, month] = key.split('-').map(Number);
+                const monthIdx = month - 1;
+                const headerText = `${months[monthIdx]} ${year}`;
+                container.innerHTML += `<div class="cal-header" style="margin-top:20px;">${headerText}</div>`;
+                const grid = document.createElement('div');
+                grid.className = 'cal-grid';
+                container.appendChild(grid);
 
-            el.innerHTML = `Next: ${nextExam.subject.split(' ')[0]} in ${d}d ${h}h ${m}m ${s}s`;
+                ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(day => {
+                    const d = document.createElement('div');
+                    d.className = 'cal-day-name';
+                    d.textContent = day;
+                    grid.appendChild(d);
+                });
+
+                const firstDay = new Date(year, monthIdx, 1).getDay();
+                const daysInMonth = new Date(year, monthIdx+1, 0).getDate();
+
+                for (let i=0; i<firstDay; i++) {
+                    const empty = document.createElement('div');
+                    empty.className = 'cal-date empty';
+                    grid.appendChild(empty);
+                }
+
+                for (let d=1; d<=daysInMonth; d++) {
+                    const dateStr = `${year}-${pad(month)}-${pad(d)}`;
+                    const exam = exams.find(e => e.date === dateStr);
+                    const cell = document.createElement('div');
+                    let cls = 'cal-date';
+                    if (dateStr === todayStr) cls += ' is-today';
+                    if (exam) {
+                        cls += ' has-exam';
+                        if (dateStr < todayStr) cls += ' completed';
+                    }
+                    cell.className = cls;
+
+                    const num = document.createElement('div');
+                    num.className = 'cal-num';
+                    num.textContent = d;
+                    cell.appendChild(num);
+
+                    if (exam) {
+                        const sub = document.createElement('div');
+                        sub.className = 'cal-subject-text';
+                        sub.textContent = exam.subject;
+                        cell.appendChild(sub);
+                    }
+                    grid.appendChild(cell);
+                }
+            });
         }
 
-        // Init
+        // ----- COUNTDOWN -----
+        function updateCountdown() {
+            const now = new Date();
+            const next = exams.find(e => new Date(e.date + "T13:00:00") > now);
+            const el = document.getElementById('countdown');
+            if (!next) {
+                el.innerHTML = "✅ All Exams Finished!";
+                return;
+            }
+            const target = new Date(next.date + "T13:00:00");
+            const diff = target - now;
+            if (diff <= 0) {
+                el.innerHTML = `▶️ ${next.subject} is ongoing!`;
+                return;
+            }
+            const d = Math.floor(diff / (1000*60*60*24));
+            const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+            const m = Math.floor((diff % (1000*60*60)) / (1000*60));
+            const s = Math.floor((diff % (1000*60)) / 1000);
+            el.innerHTML = `⏳ ${next.subject} in ${d}d ${h}h ${m}m ${s}s`;
+        }
+
+        // ----- INIT -----
         renderList();
-        renderCalendar(6, 2026, 'calGridJan'); 
-        renderCalendar(7, 2026, 'calGridFeb');
+        switchView('list');
         setInterval(updateCountdown, 1000);
         updateCountdown();
 
-    </script>
+        // ============================================================
+        //  SERVICE WORKER - Self-registering offline PWA
+        //  This creates a functional sw.js without needing a separate file
+        // ============================================================
+        if ('serviceWorker' in navigator) {
+            // Generate the service worker code as a blob
+            const swCode = `
+                const CACHE_NAME = 'hsc-routine-v1';
+                const urlsToCache = [
+                    '.',
+                    'index.html'
+                ];
+
+                self.addEventListener('install', event => {
+                    event.waitUntil(
+                        caches.open(CACHE_NAME)
+                            .then(cache => cache.addAll(urlsToCache))
+                            .then(() => self.skipWaiting())
+                    );
+                });
+
+                self.addEventListener('activate', event => {
+                    event.waitUntil(
+                        caches.keys().then(cacheNames => {
+                            return Promise.all(
+                                cacheNames.map(name => {
+                                    if (name !== CACHE_NAME) {
+                                        return caches.delete(name);
+                                    }
+                                })
+                            );
+                        }).then(() => self.clients.claim())
+                    );
+                });
+
+                self.addEventListener('fetch', event => {
+                    event.respondWith(
+                        caches.match(event.request)
+                            .then(response => response || fetch(event.request))
+                            .catch(() => {
+                                // Fallback for offline
+                                return new Response('Offline - please connect to internet', {
+                                    status: 503,
+                                    statusText: 'Service Unavailable'
+                                });
+                            })
+                    );
+                });
+            `;
+
+            // Create a blob URL for the service worker
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+
+            // Register the service worker from the blob URL
+            navigator.serviceWorker.register(swUrl)
+                .then(registration => {
+                    console.log('✅ Service Worker registered successfully!');
+                    
+                    // Show offline badge when offline
+                    window.addEventListener('online', () => {
+                        document.getElementById('offlineBadge').classList.remove('show');
+                    });
+                    window.addEventListener('offline', () => {
+                        document.getElementById('offlineBadge').classList.add('show');
+                    });
+                    
+                    // Check initial state
+                    if (!navigator.onLine) {
+                        document.getElementById('offlineBadge').classList.add('show');
+                    }
+                })
+                .catch(err => {
+                    console.warn('⚠️ Service Worker registration failed:', err);
+                    console.log('💡 To enable offline mode, create a file named "sw.js" in the same folder with the SW code.');
+                });
+        } else {
+            console.log('ℹ️ Service Workers not supported in this browser');
+        }
+
+        // Also try to register from a relative path if blob fails (fallback)
+        // Some browsers might not allow blob: URLs for SW
+        setTimeout(() => {
+            if ('serviceWorker' in navigator) {
+                // Try registering from the same directory as a fallback
+                navigator.serviceWorker.getRegistration().then(reg => {
+                    if (!reg) {
+                        // Try to register from the current path
+                        navigator.serviceWorker.register('sw.js')
+                            .then(() => console.log('✅ SW registered from sw.js'))
+                            .catch(() => console.log('ℹ️ No sw.js file found - using blob SW instead'));
+                    }
+                });
+            }
+        }, 1000);
+
+    })();
+</script>
+
+<!-- 
+  ============================================================
+  INSTRUCTIONS FOR OFFLINE PWA:
+  
+  Option 1 (Automatic): The page will try to register a service 
+  worker from a blob URL. This works in most modern browsers.
+  
+  Option 2 (Manual - More Reliable): Create a file named "sw.js"
+  in the same folder as this HTML file with the following content:
+  
+  ------------------------------------------------------------
+  const CACHE_NAME = 'hsc-routine-v1';
+  const urlsToCache = ['.', 'index.html'];
+  
+  self.addEventListener('install', event => {
+      event.waitUntil(
+          caches.open(CACHE_NAME)
+              .then(cache => cache.addAll(urlsToCache))
+              .then(() => self.skipWaiting())
+      );
+  });
+  
+  self.addEventListener('activate', event => {
+      event.waitUntil(
+          caches.keys().then(cacheNames => {
+              return Promise.all(
+                  cacheNames.map(name => {
+                      if (name !== CACHE_NAME) {
+                          return caches.delete(name);
+                      }
+                  })
+              );
+          }).then(() => self.clients.claim())
+      );
+  });
+  
+  self.addEventListener('fetch', event => {
+      event.respondWith(
+          caches.match(event.request)
+              .then(response => response || fetch(event.request))
+              .catch(() => new Response('Offline', { status: 503 }))
+      );
+  });
+  ------------------------------------------------------------
+  
+  That's it! Your app will work offline after the first visit.
+  ============================================================
+-->
 </body>
 </html>
