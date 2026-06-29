@@ -2,7 +2,7 @@
   "name": "HSC Exam 2026 Routine",
   "short_name": "HSC 2026",
   "description": "HSC Science Group Exam Schedule - Brahmanbaria Govt. College",
-  "start_url": "./index.html",
+  "start_url": "./test-routine.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0f172a",
