@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="HSC 2026">
+  <meta name="theme-color" content="#0f172a" id="themeColorMeta">
+  <title>HSC Exam 2026</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/png" href="https://img.icons8.com/?size=256w&id=mG5i2PHIrCWe&format=png">
+  <link rel="apple-touch-icon" href="https://img.icons8.com/?size=192&id=mG5i2PHIrCWe&format=png">
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;600;800&family=Creepster&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #38bdf8;
+      --accent: #0ea5e9;
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface2: #273449;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --success: #10b981;
+      --danger: #f87171;
+      --warning: #fbbf24;
+      --today-ring: #38bdf8;
+      --shadow: 0 8px 32px rgba(0,0,0,0.4);
+      --bottom-nav-h: 72px;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --radius: 16px;
+      --font: 'Inter', 'Hind Siliguri', sans-serif;
+    }
+    [data-theme="light"] {
+      --primary: #0284c7;
+      --accent: #0ea5e9;
+      --bg: #f0f6ff;
+      --surface: #ffffff;
+      --surface2: #e8f2fb;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #cbd5e1;
+      --shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    [data-theme="cursed"] {
+      --primary: #ff003c;
+      --accent: #ff0000;
+      --bg: #000000;
+      --surface: #0a0a0a;
+      --surface2: #1a0505;
+      --text: #e5e5e5;
+      --text-muted: #9f9f9f;
+      --border: #330505;
+      --success: #00ff00;
+      --danger: #ff0000;
+      --warning: #fbbf24;
+      --shadow: 0 0 20px rgba(255,0,0,0.1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      height: 100%;
+      overscroll-behavior: none;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* ── INSTALL BANNER ─────────────────────────── */
+    #installBanner {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: var(--primary);
+      color: #fff;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+    #installBanner.show { display: flex; }
+    #installBanner span { flex: 1; }
+    #installBanner button {
+      background: rgba(255,255,255,0.25);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    #installBanner .dismiss { background: transparent; border: none; font-size: 1.1rem; padding: 4px 8px; }
+
+    /* ── OFFLINE PILL ───────────────────────────── */
+    #offlinePill {
+      display: none;
+      position: fixed;
+      top: 16px; left: 50%; transform: translateX(-50%);
+      z-index: 999;
+      background: #1e293b;
+      color: var(--warning);
+      border: 1px solid var(--warning);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      align-items: center;
+      gap: 6px;
+      box-shadow: var(--shadow);
+      white-space: nowrap;
+    }
+    #offlinePill.show { display: flex; }
+
+    /* ── APP SHELL ──────────────────────────────── */
+    .app-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+    .app-header-info { flex: 1; }
+    .app-header-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.1;
+    }
+    .app-header-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-top: 1px;
+    }
+    [data-theme="cursed"] .app-header-title {
+      font-family: 'Creepster', cursive;
+      color: var(--primary);
+      letter-spacing: 1px;
+    }
+    .header-icon {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .theme-btn {
+      width: 38px; height: 38px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      cursor: pointer;
+      flex-shrink: 0;
+      color: var(--text);
+    }
+
+    /* ── COUNTDOWN STRIP ────────────────────────── */
+    .countdown-strip {
+      background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 0.3px;
+      flex-shrink: 0;
+    }
+    [data-theme="cursed"] .countdown-strip {
+      background: #000;
+      border-bottom: 1px solid var(--primary);
+      color: var(--primary);
+      text-shadow: 0 0 8px var(--primary);
+    }
+
+    /* ── SCROLLABLE CONTENT ─────────────────────── */
+    .content-area {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+      padding-bottom: calc(var(--bottom-nav-h) + var(--safe-bottom) + 16px);
+    }
+
+    /* ── BOTTOM NAV ─────────────────────────────── */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: calc(var(--bottom-nav-h) + var(--safe-bottom));
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      padding-top: 8px;
+      padding-bottom: var(--safe-bottom);
+      z-index: 100;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+    }
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 6px 4px;
+      border-radius: 12px;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .nav-icon {
+      font-size: 1.3rem;
+      line-height: 1;
+      transition: transform 0.2s;
+    }
+    .nav-label {
+      font-size: 0.67rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: color 0.2s;
+      letter-spacing: 0.2px;
+    }
+    .nav-item.active .nav-label { color: var(--primary); }
+    .nav-item.active .nav-icon { transform: scale(1.15); }
+    .nav-dot {
+      position: absolute;
+      top: 2px; right: 28%;
+      width: 6px; height: 6px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: none;
+    }
+    .nav-item.active .nav-dot { display: block; }
+
+    /* ── PAGE VIEWS ─────────────────────────────── */
+    .page { display: none; padding: 16px; }
+    .page.active { display: block; }
+
+    /* ── HOME PAGE ──────────────────────────────── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 10px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .stat-num {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .next-exam-card {
+      background: var(--surface);
+      border: 2px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .next-exam-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    [data-theme="cursed"] .next-exam-card::before {
+      box-shadow: 0 0 8px var(--primary);
+    }
+    .next-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .next-subject {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+    .next-date-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .next-date-chip {
+      background: var(--surface2);
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+    }
+    .next-gap-chip {
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 20px;
+    }
+    [data-theme="dark"] .next-gap-chip { color: #0f172a; }
+    [data-theme="cursed"] .next-gap-chip { color: #000; box-shadow: 0 0 8px var(--primary); }
+
+    .progress-section { margin-bottom: 16px; }
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .progress-bar-track {
+      background: var(--surface2);
+      border-radius: 8px;
+      height: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 8px;
+      transition: width 0.6s ease;
+    }
+    [data-theme="cursed"] .progress-bar-fill {
+      background: var(--primary);
+      box-shadow: 0 0 6px var(--primary);
+    }
+
+    .quick-list-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 10px;
+    }
+    .quick-exam-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .quick-exam-item.done { opacity: 0.45; }
+    .quick-exam-item.today { border-color: var(--primary); background: var(--surface2); }
+    .q-date-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      width: 44px;
+      text-align: center;
+      padding: 5px 4px;
+      flex-shrink: 0;
+    }
+    .q-date-box .q-day { font-size: 1.1rem; font-weight: 800; color: var(--primary); line-height: 1; }
+    .q-date-box .q-mon { font-size: 0.6rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .q-subject { font-size: 0.9rem; font-weight: 600; color: var(--text); flex: 1; }
+    .q-code { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+    .q-check { font-size: 1rem; color: var(--success); }
+
+    /* ── SCHEDULE PAGE ──────────────────────────── */
+    .exam-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 8px;
+      box-shadow: var(--shadow);
+      transition: transform 0.15s;
+    }
+    .exam-card.done { opacity: 0.5; border-left: 4px solid var(--success); }
+    .exam-card.today {
+      border: 2px solid var(--primary);
+      transform: scale(1.01);
+    }
+    [data-theme="cursed"] .exam-card.today { box-shadow: 0 0 12px var(--primary); }
+    .exam-card.upcoming { border-left: 4px solid var(--warning); }
+
+    .e-date-box {
+      text-align: center;
+      border-right: 1px solid var(--border);
+      padding-right: 14px;
+      min-width: 60px;
+    }
+    .e-day { font-size: 1.6rem; font-weight: 800; color: var(--primary); line-height: 1; }
+    .e-mon { font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+    .e-wday { font-size: 0.65rem; color: var(--text-muted); margin-top: 2px; }
+    .e-info { flex: 1; }
+    .e-subject { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .e-code {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      background: var(--surface2);
+      padding: 3px 9px;
+      border-radius: 6px;
+      display: inline-block;
+      font-weight: 600;
+      border: 1px solid var(--border);
+    }
+    .e-done-badge {
+      font-size: 1.3rem;
+    }
+
+    .gap-pill {
+      text-align: center;
+      margin: 2px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .gap-pill::before, .gap-pill::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+    .gap-text {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: var(--surface2);
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .gap-text.danger { color: var(--danger); border-color: var(--danger); }
+
+    /* ── CALENDAR PAGE ──────────────────────────── */
+    .cal-month-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 12px;
+      padding-left: 2px;
+    }
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 24px;
+    }
+    .cal-head {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-align: center;
+      text-transform: uppercase;
+      padding: 4px 0 8px;
+      letter-spacing: 0.5px;
+    }
+    .cal-cell {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      min-height: 54px;
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+    }
+    .cal-cell.empty { background: transparent; border: none; }
+    .cal-cell.is-today { background: var(--surface2); border-color: var(--primary); }
+    .cal-cell.has-exam { border-color: var(--primary); }
+    [data-theme="cursed"] .cal-cell.has-exam { box-shadow: 0 0 6px var(--primary); }
+    .cal-cell.done { opacity: 0.4; filter: grayscale(1); }
+    .cal-num {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      width: 20px; height: 20px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .cal-cell.is-today .cal-num {
+      background: var(--primary);
+      color: #fff;
+      font-weight: 800;
+    }
+    [data-theme="dark"] .cal-cell.is-today .cal-num { color: #0f172a; }
+    .cal-subject {
+      font-size: 0.58rem;
+      font-weight: 700;
+      color: var(--text);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 2px 3px;
+      width: 100%;
+      text-align: center;
+      margin-top: 3px;
+      line-height: 1.25;
+      word-break: break-word;
+    }
+
+    /* ── INFO PAGE ──────────────────────────────── */
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+    }
+    .info-card-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 10px;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.88rem;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-row-label { color: var(--text-muted); font-weight: 500; }
+    .info-row-val { color: var(--text); font-weight: 700; }
+    .theme-picker {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .theme-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 8px;
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: var(--surface2);
+    }
+    .theme-option.active { border-color: var(--primary); color: var(--primary); }
+    .theme-option .swatch { font-size: 1.6rem; }
+    .offline-info {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .offline-info strong { color: var(--success); }
+    #installAppBtn {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 4px;
+      display: none;
+    }
+    [data-theme="dark"] #installAppBtn { color: #0f172a; }
+    [data-theme="cursed"] #installAppBtn { color: #000; box-shadow: 0 0 10px var(--primary); }
+
+    @media (max-width: 380px) {
+      .stats-row { grid-template-columns: repeat(3, 1fr); }
+      .stat-num { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+
+  <!-- Install Banner -->
+  <div id="installBanner">
+    <span>📲 Install HSC 2026 for offline use</span>
+    <button id="installBtn">Install</button>
+    <button class="dismiss" id="dismissBanner">✕</button>
+  </div>
+
+  <!-- Offline Pill -->
+  <div id="offlinePill">⚡ Offline Mode</div>
+
+  <!-- App Header -->
+  <div class="app-header">
+    <div class="header-icon">📚</div>
+    <div class="app-header-info">
+      <div class="app-header-title">HSC Exam 2026</div>
+      <div class="app-header-sub">Brahmanbaria Govt. College · Science</div>
+    </div>
+    <button class="theme-btn" id="themeBtn" onclick="cycleTheme()">☀️</button>
+  </div>
+
+  <!-- Countdown Strip -->
+  <div class="countdown-strip" id="countdownStrip">Calculating...</div>
+
+  <!-- Scrollable Content -->
+  <div class="content-area">
+
+    <!-- HOME PAGE -->
+    <div class="page active" id="pageHome">
+      <div class="stats-row" id="statsRow"></div>
+
+      <div class="next-exam-card" id="nextExamCard"></div>
+
+      <div class="progress-section">
+        <div class="progress-header">
+          <span>PROGRESS</span>
+          <span id="progressText">0 / 13 done</span>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="quick-list-title">All Exams</div>
+      <div id="quickList"></div>
+    </div>
+
+    <!-- SCHEDULE PAGE -->
+    <div class="page" id="pageSchedule">
+      <div id="scheduleList"></div>
+    </div>
+
+    <!-- CALENDAR PAGE -->
+    <div class="page" id="pageCalendar">
+      <div class="cal-month-title">July 2026</div>
+      <div class="cal-grid" id="calJul"></div>
+      <div class="cal-month-title">August 2026</div>
+      <div class="cal-grid" id="calAug"></div>
+    </div>
+
+    <!-- INFO PAGE -->
+    <div class="page" id="pageInfo">
+      <div class="info-card">
+        <div class="info-card-title">Exam Details</div>
+        <div class="info-row">
+          <span class="info-row-label">Board</span>
+          <span class="info-row-val">Cumilla</span>
+        </div>
+        <div class="info-row">
+          <span class="info-row-label">Group</span>
+          <span class="info-row-val">Science</span>
+        </div>
+        <div class="info-row">
+          <span class="info-row-label">Start Date</span>
+          <span class="info-row-val">2 July 2026</span>
+        </div>
+        <div class="info-row">
+          <span class="info-row-label">End Date</span>
+          <span class="info-row-val">4 August 2026</span>
+        </div>
+        <div class="info-row">
+          <span class="info-row-label">Total Exams</span>
+          <span class="info-row-val">13</span>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-title">Theme</div>
+        <div class="theme-picker">
+          <div class="theme-option active" id="opt-dark" onclick="setTheme('dark')">
+            <span class="swatch">🌙</span>Dark
+          </div>
+          <div class="theme-option" id="opt-light" onclick="setTheme('light')">
+            <span class="swatch">☀️</span>Light
+          </div>
+          <div class="theme-option" id="opt-cursed" onclick="setTheme('cursed')">
+            <span class="swatch">👹</span>Cursed
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-title">App</div>
+        <div class="offline-info">
+          <strong>✅ Works Offline</strong> — This app is installed as a PWA and caches all content. Your exam schedule is always available, even without internet.
+        </div>
+        <button id="installAppBtn">📲 Install as App</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <div class="nav-item active" id="nav-home" onclick="showPage('home')">
+      <div class="nav-dot"></div>
+      <div class="nav-icon">🏠</div>
+      <div class="nav-label">Home</div>
+    </div>
+    <div class="nav-item" id="nav-schedule" onclick="showPage('schedule')">
+      <div class="nav-dot"></div>
+      <div class="nav-icon">📋</div>
+      <div class="nav-label">Schedule</div>
+    </div>
+    <div class="nav-item" id="nav-calendar" onclick="showPage('calendar')">
+      <div class="nav-dot"></div>
+      <div class="nav-icon">📅</div>
+      <div class="nav-label">Calendar</div>
+    </div>
+    <div class="nav-item" id="nav-info" onclick="showPage('info')">
+      <div class="nav-dot"></div>
+      <div class="nav-icon">ℹ️</div>
+      <div class="nav-label">Info</div>
+    </div>
+  </nav>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────
+const exams = [
+  { date: "2026-07-02", subject: "বাংলা ১ম পত্র",          code: "১০১" },
+  { date: "2026-07-04", subject: "বাংলা ২য় পত্র",          code: "১০২" },
+  { date: "2026-07-06", subject: "ইংরেজি ১ম পত্র",          code: "১০৭" },
+  { date: "2026-07-08", subject: "ইংরেজি ২য় পত্র",          code: "১০৮" },
+  { date: "2026-07-11", subject: "তথ্য ও যোগাযোগ প্রযুক্তি", code: "২৭৫" },
+  { date: "2026-07-13", subject: "পদার্থবিজ্ঞান ১ম পত্র",    code: "১৭৪" },
+  { date: "2026-07-15", subject: "পদার্থবিজ্ঞান ২য় পত্র",    code: "১৭৫" },
+  { date: "2026-07-19", subject: "রসায়ন ১ম পত্র",           code: "১৭৬" },
+  { date: "2026-07-22", subject: "রসায়ন ২য় পত্র",           code: "১৭৭" },
+  { date: "2026-07-27", subject: "জীববিজ্ঞান ১ম পত্র",      code: "১৭৮" },
+  { date: "2026-07-29", subject: "জীববিজ্ঞান ২য় পত্র",      code: "১৭৯" },
+  { date: "2026-08-02", subject: "উচ্চতর গণিত ১ম পত্র",     code: "২৬৫" },
+  { date: "2026-08-04", subject: "উচ্চতর গণিত ২য় পত্র",     code: "২৬৬" }
+];
+
+const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+
+// ─── THEME ───────────────────────────────────────────────────
+const themes = ['dark','light','cursed'];
+const themeIcons = { dark:'🌙', light:'☀️', cursed:'👹' };
+const themeColors = { dark:'#0f172a', light:'#f0f6ff', cursed:'#000000' };
+
+let currentTheme = localStorage.getItem('hsc-theme') || 'dark';
+applyTheme(currentTheme);
+
+function applyTheme(t) {
+  currentTheme = t;
+  document.body.setAttribute('data-theme', t);
+  document.getElementById('themeBtn').textContent = themeIcons[t];
+  document.getElementById('themeColorMeta').setAttribute('content', themeColors[t]);
+  document.querySelectorAll('.theme-option').forEach(el => el.classList.remove('active'));
+  const opt = document.getElementById('opt-' + t);
+  if (opt) opt.classList.add('active');
+  localStorage.setItem('hsc-theme', t);
+}
+function setTheme(t) { applyTheme(t); }
+function cycleTheme() {
+  const idx = themes.indexOf(currentTheme);
+  applyTheme(themes[(idx + 1) % themes.length]);
+}
+
+// ─── NAV ─────────────────────────────────────────────────────
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page' + name.charAt(0).toUpperCase() + name.slice(1)).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────
+function todayStr() {
+  const n = new Date();
+  return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
+}
+function parseDate(str) { return new Date(str + 'T00:00:00'); }
+function daysBetween(a, b) {
+  return Math.ceil((parseDate(b) - parseDate(a)) / 86400000);
+}
+function statusOf(dateStr) {
+  const t = todayStr();
+  if (dateStr < t) return 'done';
+  if (dateStr === t) return 'today';
+  return 'upcoming';
+}
+
+// ─── HOME ────────────────────────────────────────────────────
+function renderHome() {
+  const t = todayStr();
+  const done = exams.filter(e => e.date < t).length;
+  const remaining = exams.filter(e => e.date >= t).length;
+  const today = exams.filter(e => e.date === t).length;
+
+  // Stats
+  document.getElementById('statsRow').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-num">${done}</div>
+      <div class="stat-label">Done</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">${remaining}</div>
+      <div class="stat-label">Left</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">${exams.length}</div>
+      <div class="stat-label">Total</div>
+    </div>
+  `;
+
+  // Progress
+  const pct = Math.round((done / exams.length) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `${done} / ${exams.length} done`;
+
+  // Next exam card
+  const next = exams.find(e => e.date >= t);
+  const nextCard = document.getElementById('nextExamCard');
+  if (!next) {
+    nextCard.innerHTML = `<div class="next-label">🎉 All Done!</div><div class="next-subject">Exams Finished!</div>`;
+  } else {
+    const d = parseDate(next.date);
+    const daysUntil = daysBetween(t, next.date);
+    const isToday = next.date === t;
+    nextCard.innerHTML = `
+      <div class="next-label">${isToday ? '🔴 TODAY' : '⏭ NEXT EXAM'}</div>
+      <div class="next-subject">${next.subject}</div>
+      <div class="next-date-row">
+        <span class="next-date-chip">${d.getDate()} ${MONTHS[d.getMonth()]} · ${DAYS[d.getDay()]}</span>
+        ${isToday ? '<span class="next-gap-chip">Exam Day!</span>' : `<span class="next-gap-chip">${daysUntil === 1 ? 'Tomorrow' : daysUntil + ' days away'}</span>`}
+      </div>
+    `;
+  }
+
+  // Quick list
+  const ql = document.getElementById('quickList');
+  ql.innerHTML = '';
+  exams.forEach(e => {
+    const s = statusOf(e.date);
+    const d = parseDate(e.date);
+    ql.innerHTML += `
+      <div class="quick-exam-item ${s === 'done' ? 'done' : ''} ${s === 'today' ? 'today' : ''}">
+        <div class="q-date-box">
+          <div class="q-day">${d.getDate()}</div>
+          <div class="q-mon">${MONTHS[d.getMonth()]}</div>
+        </div>
+        <div>
+          <div class="q-subject">${e.subject}</div>
+          <div class="q-code">Code: ${e.code}</div>
+        </div>
+        <div class="q-check">${s === 'done' ? '✅' : s === 'today' ? '🔴' : ''}</div>
+      </div>
+    `;
+  });
+}
+
+// ─── SCHEDULE ────────────────────────────────────────────────
+function renderSchedule() {
+  const container = document.getElementById('scheduleList');
+  container.innerHTML = '';
+  const t = todayStr();
+  exams.forEach((exam, i) => {
+    if (i > 0) {
+      const gap = daysBetween(exams[i-1].date, exam.date) - 1;
+      container.innerHTML += `
+        <div class="gap-pill">
+          <span class="gap-text ${gap === 0 ? 'danger' : ''}">
+            ${gap === 0 ? '⚠️ No Gap!' : `☕ ${gap} day${gap > 1 ? 's' : ''} gap`}
+          </span>
+        </div>`;
+    }
+    const s = statusOf(exam.date);
+    const d = parseDate(exam.date);
+    container.innerHTML += `
+      <div class="exam-card ${s}">
+        <div class="e-date-box">
+          <div class="e-day">${d.getDate()}</div>
+          <div class="e-mon">${MONTHS[d.getMonth()]}</div>
+          <div class="e-wday">${DAYS[d.getDay()].substring(0,3)}</div>
+        </div>
+        <div class="e-info">
+          <div class="e-subject">${exam.subject}</div>
+          <span class="e-code">Code: ${exam.code}</span>
+        </div>
+        <div class="e-done-badge">${s === 'done' ? '✅' : s === 'today' ? '🔴' : ''}</div>
+      </div>
+    `;
+  });
+}
+
+// ─── CALENDAR ────────────────────────────────────────────────
+function renderCalendar(monthIndex, year, containerId) {
+  const c = document.getElementById(containerId);
+  c.innerHTML = '';
+  ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(d => {
+    c.innerHTML += `<div class="cal-head">${d}</div>`;
+  });
+  const firstDay = new Date(year, monthIndex, 1).getDay();
+  const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+  const t = todayStr();
+  for (let i = 0; i < firstDay; i++) c.innerHTML += `<div class="cal-cell empty"></div>`;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const ds = `${year}-${String(monthIndex+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const exam = exams.find(e => e.date === ds);
+    let cls = 'cal-cell';
+    if (ds === t) cls += ' is-today';
+    if (exam) { cls += ' has-exam'; if (ds < t) cls += ' done'; }
+    const subjectHtml = exam ? `<div class="cal-subject">${exam.subject.split(' ').slice(0,3).join(' ')}</div>` : '';
+    c.innerHTML += `<div class="${cls}"><div class="cal-num">${d}</div>${subjectHtml}</div>`;
+  }
+}
+
+// ─── COUNTDOWN ───────────────────────────────────────────────
+function updateCountdown() {
+  const now = new Date();
+  const next = exams.find(e => new Date(e.date + "T13:00:00") > now);
+  const el = document.getElementById('countdownStrip');
+  if (!next) { el.textContent = "🎉 All Exams Finished!"; return; }
+  const diff = new Date(next.date + "T13:00:00") - now;
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  el.textContent = `⏱ ${next.subject.split(' ')[0]} — ${d}d ${h}h ${m}m ${s}s`;
+}
+
+// ─── OFFLINE ─────────────────────────────────────────────────
+function updateOnlineStatus() {
+  const pill = document.getElementById('offlinePill');
+  if (!navigator.onLine) pill.classList.add('show');
+  else pill.classList.remove('show');
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+// ─── PWA INSTALL ─────────────────────────────────────────────
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBanner').classList.add('show');
+  document.getElementById('installAppBtn').style.display = 'block';
+});
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') {
+    document.getElementById('installBanner').classList.remove('show');
+  }
+  deferredPrompt = null;
+});
+document.getElementById('installAppBtn').addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt = null;
+});
+document.getElementById('dismissBanner').addEventListener('click', () => {
+  document.getElementById('installBanner').classList.remove('show');
+});
+
+// ─── SERVICE WORKER ──────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(console.warn);
+}
+
+// ─── INIT ────────────────────────────────────────────────────
+renderHome();
+renderSchedule();
+renderCalendar(6, 2026, 'calJul');
+renderCalendar(7, 2026, 'calAug');
+setInterval(updateCountdown, 1000);
+updateCountdown();
+</script>
+</body>
+</html>
