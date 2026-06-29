@@ -1,5 +1,28 @@
-        // API CONFIGURATION (Native YouTubeI)
-        const PROXY = null; // Extension handles CORS via declarativeNetRequest
+// API CONFIGURATION (Native YouTubeI)
+
+        // --- Environment Detection ---
+        // IS_EXTENSION = true  → running as chrome-extension:// popup/tab; DNR rules handle CORS
+        // IS_EXTENSION = false → running as file:// or https:// web page; must use CORS proxy
+        const IS_EXTENSION = (typeof chrome !== 'undefined' && chrome.runtime && !!chrome.runtime.id);
+
+        // Public CORS proxy used only in web (non-extension) mode.
+        // corsproxy.io forwards any URL and injects permissive CORS headers.
+        const CORS_PROXY = 'https://corsproxy.io/?url=';
+
+        // Wrap a YouTube URL so it works in both contexts.
+        function ytUrl(url) {
+            return IS_EXTENSION ? url : CORS_PROXY + encodeURIComponent(url);
+        }
+
+        // fetch() wrapper that adds the Android User-Agent for player requests
+        // when running outside the extension (DNR can't inject it for us).
+        async function ytFetch(url, options = {}) {
+            const proxiedUrl = IS_EXTENSION ? url : CORS_PROXY + encodeURIComponent(url);
+            // In web mode we cannot set forbidden headers (User-Agent is blocked by browsers),
+            // but corsproxy.io forwards the request server-side so it doesn't need it.
+            return fetch(proxiedUrl, options);
+        }
+
         const API_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
         const CLIENT_WEB = '2.20260130.01.00';
         const CLIENT_ANDROID = '21.04.223';
@@ -81,8 +104,9 @@
             async search(query) {
                 try {
                     const url = `https://www.youtube.com/youtubei/v1/search?key=${API_KEY}`;
-                    const res = await fetch(url, {
+                    const res = await ytFetch(url, {
                         method: "POST",
+                        headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ context: { client: { clientName: "WEB", clientVersion: CLIENT_WEB } }, query: query })
                     });
                     const data = await res.json();
@@ -105,8 +129,9 @@
             async getNext(videoId) {
                 try {
                     const url = `https://www.youtube.com/youtubei/v1/next?key=${API_KEY}`;
-                    const res = await fetch(url, {
+                    const res = await ytFetch(url, {
                         method: 'POST',
+                        headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
                             context: { client: { clientName: 'WEB', clientVersion: CLIENT_WEB, hl: 'en', gl: 'US' } },
                             videoId: videoId, playlistId: `RD${videoId}`
@@ -136,9 +161,13 @@
             async getStreamData(videoId) {
                 try {
                     const url = `https://www.youtube.com/youtubei/v1/player?key=${API_KEY}`;
-                    const res = await fetch(url, {
+                    // In web mode, User-Agent is a forbidden header for browser fetch —
+                    // corsproxy.io handles the Android UA server-side via the proxied request.
+                    const headers = { "Content-Type": "application/json" };
+                    if (IS_EXTENSION) headers["User-Agent"] = `com.google.android.youtube/${CLIENT_ANDROID} (Linux; U; Android 15)`;
+                    const res = await ytFetch(url, {
                         method: "POST",
-                        headers: { "User-Agent": `com.google.android.youtube/${CLIENT_ANDROID} (Linux; U; Android 15)` },
+                        headers,
                         body: JSON.stringify({
                             context: { client: { clientName: "ANDROID", clientVersion: CLIENT_ANDROID, androidSdkVersion: 35, hl: "en", gl: "US" } },
                             videoId: videoId, contentCheckOk: true, racyCheckOk: true
@@ -153,9 +182,15 @@
                     const captions = data.captions?.playerCaptionsTracklistRenderer?.captionTracks;
                     if(captions && captions.length > 0) {
                         const enTrack = captions.find(t => t.languageCode === 'en');
-                        captionUrl = enTrack ? enTrack.baseUrl : captions[0].baseUrl;
+                        const rawCaptionUrl = enTrack ? enTrack.baseUrl : captions[0].baseUrl;
+                        // Proxy caption URL in web mode so the timedtext fetch doesn't hit CORS
+                        captionUrl = IS_EXTENSION ? rawCaptionUrl : CORS_PROXY + encodeURIComponent(rawCaptionUrl);
                     }
 
+                    // Stream URLs from YouTube are signed and tied to the request; they work
+                    // directly in the <video> element in extension mode.  In web mode the
+                    // browser won't pass the right headers, so we don't proxy the stream URL
+                    // (it usually works directly because it's a media resource, not XHR).
                     return { streamUrl: stream ? stream.url : null, captionUrl: captionUrl };
                 } catch(e) { console.error(e); return { streamUrl: null, captionUrl: null }; }
             },
@@ -772,7 +807,11 @@
 
             // Open as full tab for background play
             document.getElementById('open-tab-btn').onclick = () => {
-                chrome.tabs.create({ url: chrome.runtime.getURL('app.html') });
+                if (IS_EXTENSION) {
+                    chrome.tabs.create({ url: chrome.runtime.getURL('app.html') });
+                } else {
+                    window.open(window.location.href, '_blank');
+                }
             };
 
             renderHomeFeed();
