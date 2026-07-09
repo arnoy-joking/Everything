@@ -538,26 +538,26 @@
         }
 
         // ----- COUNTDOWN -----
-        function updateCountdown() {
-            const now = new Date();
-            const next = exams.find(e => new Date(e.date + "T10:00:00") > now);
-            const el = document.getElementById('countdown');
-            if (!next) {
-                el.innerHTML = "✅ All Exams Finished!";
-                return;
-            }
-            const target = new Date(next.date + "T13:00:00");
-            const diff = target - now;
-            if (diff <= 0) {
-                el.innerHTML = `▶️ ${next.subject} is ongoing!`;
-                return;
-            }
-            const d = Math.floor(diff / (1000*60*60*24));
-            const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
-            const m = Math.floor((diff % (1000*60*60)) / (1000*60));
-            const s = Math.floor((diff % (1000*60)) / 1000);
-            el.innerHTML = `⏳ ${next.subject} in ${d}d ${h}h ${m}m ${s}s`;
-        }
+       function updateCountdown() {
+    const now = new Date();
+    const next = exams.find(e => new Date(e.date + "T10:00:00") > now);
+    const el = document.getElementById('countdown');
+    if (!next) {
+        el.innerHTML = "✅ All Exams Finished!";
+        return;
+    }
+    const target = new Date(next.date + "T10:00:00");
+    const diff = target - now;
+    if (diff <= 0) {
+        el.innerHTML = `▶️ ${next.subject} is ongoing!`;
+        return;
+    }
+    const d = Math.floor(diff / (1000*60*60*24));
+    const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+    const m = Math.floor((diff % (1000*60*60)) / (1000*60));
+    const s = Math.floor((diff % (1000*60)) / 1000);
+    el.innerHTML = `⏳ ${next.subject} in ${d}d ${h}h ${m}m ${s}s`;
+}
 
         // ----- INIT -----
         renderList();
