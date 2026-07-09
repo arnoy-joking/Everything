@@ -540,7 +540,7 @@
         // ----- COUNTDOWN -----
         function updateCountdown() {
             const now = new Date();
-            const next = exams.find(e => new Date(e.date + "T13:00:00") > now);
+            const next = exams.find(e => new Date(e.date + "T10:00:00") > now);
             const el = document.getElementById('countdown');
             if (!next) {
                 el.innerHTML = "✅ All Exams Finished!";
