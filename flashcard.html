@@ -622,23 +622,17 @@
   /* ============================================================
      STORAGE HELPERS (personal, non-shared)
   ============================================================ */
-  const memoryFallback = {};
-  let storageWarned = false;
   async function sGet(key){
-    try{ const r = await window.storage.get(key, false); return r ? r.value : null; }
-    catch(e){ return Object.prototype.hasOwnProperty.call(memoryFallback,key) ? memoryFallback[key] : null; }
+    try{ const v = localStorage.getItem('fc_'+key); return v; }
+    catch(e){ return null; }
   }
   async function sSet(key, value){
-    try{ await window.storage.set(key, value, false); return true; }
-    catch(e){
-      memoryFallback[key] = value;
-      if(!storageWarned){ storageWarned = true; showToast('Saving to this session only — persistent storage unavailable.'); }
-      return false;
-    }
+    try{ localStorage.setItem('fc_'+key, value); return true; }
+    catch(e){ showToast('Storage full — could not save.'); return false; }
   }
   async function sDelete(key){
-    try{ await window.storage.delete(key, false); }
-    catch(e){ delete memoryFallback[key]; }
+    try{ localStorage.removeItem('fc_'+key); }
+    catch(e){}
   }
 
   /* ============================================================
