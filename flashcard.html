@@ -13,7 +13,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/mhchem.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
 
 <style>
   :root{
@@ -245,8 +245,24 @@
   .card-content strong{ font-weight:700; }
   .card-content code{ font-family:var(--font-mono); background:rgba(42,38,32,.07); padding:1px 5px; border-radius:4px; font-size:.82em; }
 
-  .card-visual{ position:relative; height:130px; margin-top:10px; border-radius:9px; background:rgba(255,255,255,.3); border:1px solid var(--paper-shadow); overflow:hidden; }
+  .card-visual{ position:relative; height:150px; margin-top:10px; border-radius:9px; background:rgba(255,255,255,.3); border:1px solid var(--paper-shadow); overflow:hidden; }
   .card-visual canvas{ width:100%; height:100%; display:block; }
+  .card-svg{ margin-top:10px; border-radius:9px; background:rgba(255,255,255,.25); border:1px solid var(--paper-shadow); overflow:hidden; display:flex; align-items:center; justify-content:center; padding:8px; }
+  .card-svg svg{ max-width:100%; max-height:200px; width:auto; height:auto; display:block; }
+  /* Chemistry compound display */
+  .chem-compound{
+    margin:8px 0; padding:10px 14px; border-radius:8px;
+    background:rgba(255,255,255,.25); border:1px solid var(--paper-shadow);
+    font-family:var(--font-display); font-size:18px; line-height:1.6;
+    color:var(--paper-ink); text-align:center;
+  }
+  .chem-compound .katex{ font-size:1.15em; }
+  .chem-equation{
+    margin:8px 0; padding:10px 14px; border-radius:8px;
+    background:rgba(255,255,255,.2); border:1px dashed var(--paper-shadow);
+    font-size:16px; text-align:center; color:var(--paper-ink);
+  }
+  .chem-equation .katex{ font-size:1.1em; }
 
   .flip-hint{ margin-top:auto; padding-top:10px; font-family:var(--font-mono); font-size:9px; letter-spacing:.06em; color:var(--paper-ink-soft); text-transform:uppercase; display:flex; align-items:center; gap:5px; opacity:.65; }
 
@@ -373,6 +389,14 @@
 
   .toast{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--ink-bright); color:var(--ink); padding:10px 18px; border-radius:24px; font-size:12px; font-weight:600; box-shadow:0 12px 30px -8px rgba(0,0,0,.5); opacity:0; pointer-events:none; transition:opacity .25s var(--ease), transform .25s var(--ease); z-index:60; max-width:90vw; text-align:center; }
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* Details/Summary for template */
+  details{ border:1px solid var(--ink-line); border-radius:8px; padding:0; }
+  details summary{ padding:8px 12px; list-style:none; display:flex; align-items:center; gap:6px; }
+  details summary::-webkit-details-marker{ display:none; }
+  details summary::before{ content:""; width:0; height:0; border-left:6px solid var(--ink-muted); border-top:4px solid transparent; border-bottom:4px solid transparent; transition:transform .15s var(--ease); }
+  details[open] summary::before{ transform:rotate(90deg); }
+  details > div, details > p, details > textarea{ padding:0 12px 12px; }
 
   /* ========== MOBILE: <= 640px ========== */
   @media (max-width:640px){
@@ -502,13 +526,68 @@
       <div class="modal-body">
         <span class="field-label">Folder (optional)</span>
         <input type="text" id="folderInput" placeholder="e.g. MCAT Prep, Semester 2…">
-        <p>Paste JSON, upload a <code class="schema">.json</code> file, or load the sample deck. Cards are <code class="schema">"type":"basic"</code> or <code class="schema">"type":"mcq"</code>. Wrap math in <code class="schema">$...$</code>, chemistry in <code class="schema">$\ce{...}$</code>. Add <code class="schema">"plot"</code> or <code class="schema">"chart"</code> for graphs.</p>
-        <textarea id="jsonInput" placeholder='{
+        <p>Cards are <code class="schema">"type":"basic"</code> or <code class="schema">"type":"mcq"</code>. Wrap math in <code class="schema">$...$</code>, chemistry in <code class="schema">$\ce{...}$</code>. Add <code class="schema">"plot"</code>, <code class="schema">"chart"</code>, or <code class="schema">"svg"</code> for visuals.</p>
+        <details style="margin-bottom:12px;">
+          <summary style="cursor:pointer;font-family:var(--font-mono);font-size:11px;color:var(--amber);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">Copy JSON template</summary>
+          <div style="position:relative;">
+            <textarea id="templateBox" readonly style="width:100%;min-height:280px;background:var(--ink);border:1px solid var(--ink-line);border-radius:10px;color:var(--ink-bright);font-family:var(--font-mono);font-size:10.5px;padding:12px;resize:vertical;line-height:1.55;">{
   "title": "My Deck",
+  "folder": "Folder Name",
   "cards": [
-    { "type": "basic", "tag": "Calculus", "front": "What is $\\frac{d}{dx} x^2$?", "back": "$2x$" }
+    {
+      "type": "basic",
+      "tag": "Tag",
+      "front": "Question with $math$",
+      "back": "Answer with $\\frac{1}{2}$"
+    },
+    {
+      "type": "mcq",
+      "tag": "Tag",
+      "question": "Which is correct?",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "answer": 0,
+      "explanation": "Why the answer is correct."
+    },
+    {
+      "type": "basic",
+      "tag": "Chemistry",
+      "front": "Balance: $\\ce{H2 + O2 -> H2O}$",
+      "back": "$$\\ce{2H2 + O2 -> 2H2O}$$"
+    },
+    {
+      "type": "basic",
+      "tag": "Graph",
+      "front": "Graph of y = sin(x)?",
+      "back": "A wave from -1 to 1.",
+      "plot": { "expr": "sin(x)", "xMin": -6.283, "xMax": 6.283 }
+    },
+    {
+      "type": "mcq",
+      "tag": "Data",
+      "question": "When does pH spike?",
+      "chart": {
+        "kind": "line",
+        "labels": [0, 5, 10, 15, 20, 25, 30],
+        "series": [{ "name": "pH", "data": [2, 2.5, 3.2, 4.5, 8.9, 11, 11.5] }]
+      },
+      "options": ["5 mL", "15 mL", "20 mL", "30 mL"],
+      "answer": 2,
+      "explanation": "The steep jump marks the equivalence point."
+    },
+    {
+      "type": "basic",
+      "tag": "Structure",
+      "front": "Draw the Lewis structure of water.",
+      "back": "Two bonds, two lone pairs on O.",
+      "svg": "&lt;svg viewBox=\"0 0 200 140\" xmlns=\"http://www.w3.org/2000/svg\"&gt;&lt;line x1=\"60\" y1=\"70\" x2=\"100\" y2=\"40\" stroke=\"#2A2620\" stroke-width=\"2.5\"/&gt;&lt;line x1=\"140\" y1=\"70\" x2=\"100\" y2=\"40\" stroke=\"#2A2620\" stroke-width=\"2.5\"/&gt;&lt;circle cx=\"100\" cy=\"40\" r=\"16\" fill=\"none\" stroke=\"#B24C4C\" stroke-width=\"2\"/&gt;&lt;text x=\"100\" y=\"45\" text-anchor=\"middle\" fill=\"#B24C4C\" font-size=\"16\" font-weight=\"bold\" font-family=\"serif\"&gt;O&lt;/text&gt;&lt;circle cx=\"60\" cy=\"70\" r=\"14\" fill=\"none\" stroke=\"#3D7EA6\" stroke-width=\"2\"/&gt;&lt;text x=\"60\" y=\"75\" text-anchor=\"middle\" fill=\"#3D7EA6\" font-size=\"16\" font-weight=\"bold\" font-family=\"serif\"&gt;H&lt;/text&gt;&lt;circle cx=\"140\" cy=\"70\" r=\"14\" fill=\"none\" stroke=\"#3D7EA6\" stroke-width=\"2\"/&gt;&lt;text x=\"140\" y=\"75\" text-anchor=\"middle\" fill=\"#3D7EA6\" font-size=\"16\" font-weight=\"bold\" font-family=\"serif\"&gt;H&lt;/text&gt;&lt;/svg&gt;"
+    }
   ]
-}'></textarea>
+}</textarea>
+            <button class="btn" id="copyTemplateBtn" style="position:absolute;top:8px;right:8px;padding:5px 10px;font-size:10px;min-height:28px;">Copy</button>
+          </div>
+        </details>
+        <span class="field-label">Paste or upload JSON</span>
+        <textarea id="jsonInput" placeholder='Paste your deck JSON here...'></textarea>
         <div class="modal-error" id="modalError"></div>
       </div>
       <div class="modal-foot">
@@ -642,11 +721,21 @@
   ============================================================ */
   function isLightTheme(){ return document.documentElement.getAttribute('data-theme') === 'light'; }
 
-  function renderPlot(canvas, spec){
+  function renderPlot(canvas, spec, _retries){
     if(!canvas) return;
+    _retries = _retries || 0;
+    // Wait for parent to have real dimensions (absolute-positioned face may not yet)
+    const parent = canvas.parentElement;
+    if(!parent) return;
+    let cssW = parent.clientWidth, cssH = parent.clientHeight;
+    if((cssW < 10 || cssH < 10) && _retries < 10){
+      // Retry after layout settles
+      requestAnimationFrame(()=> renderPlot(canvas, spec, _retries + 1));
+      return;
+    }
     const dpr = window.devicePixelRatio || 1;
-    const cssW = canvas.parentElement.clientWidth, cssH = canvas.parentElement.clientHeight;
     canvas.width = Math.max(1,cssW*dpr); canvas.height = Math.max(1,cssH*dpr);
+    canvas.style.width = cssW+'px'; canvas.style.height = cssH+'px';
     const ctx = canvas.getContext('2d');
     ctx.setTransform(1,0,0,1,0,0); ctx.scale(dpr,dpr);
     ctx.clearRect(0,0,cssW,cssH);
@@ -700,6 +789,13 @@
     if(typeof Chart === 'undefined'){
       const ctx = canvas.getContext('2d'); ctx.fillStyle='#8A93A3'; ctx.font='11px monospace'; ctx.fillText('Chart library unavailable', 8, 18); return;
     }
+    const parent = canvas.parentElement;
+    if(parent && (parent.clientWidth < 10 || parent.clientHeight < 10)){
+      const retries = canvas._chartRetries = (canvas._chartRetries || 0) + 1;
+      if(retries < 10) requestAnimationFrame(()=> renderChartVisual(canvas, spec));
+      return;
+    }
+    canvas._chartRetries = 0;
     const light = isLightTheme();
     const gridColor = light ? 'rgba(20,25,35,0.1)' : 'rgba(255,255,255,0.09)';
     const textColor = light ? '#5B6270' : '#8A93A3';
@@ -729,9 +825,9 @@
      TEXT FORMATTING + KATEX
   ============================================================ */
   function escapeHtml(str){ return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-  function formatText(raw){
+  function formatText(raw, allowHtml){
     if(raw===undefined||raw===null) return '';
-    let s = escapeHtml(String(raw));
+    let s = allowHtml ? String(raw) : escapeHtml(String(raw));
     s = s.replace(/\n/g,'<br>');
     s = s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
     s = s.replace(/(^|[^*])\*(?!\*)([^*]+)\*(?!\*)/g,'$1<em>$2</em>');
@@ -744,10 +840,18 @@
         renderMathInElement(el, {
           delimiters:[ {left:'$$',right:'$$',display:true}, {left:'\\[',right:'\\]',display:true},
                        {left:'$',right:'$',display:false}, {left:'\\(',right:'\\)',display:false} ],
-          throwOnError:false
+          throwOnError:false,
+          strict:false
         });
       }catch(e){ console.warn('KaTeX render issue', e); }
     }
+  }
+  function formatChemCompound(formula){
+    // Wrap in a styled div with KaTeX mhchem support
+    return '<div class="chem-compound">' + formula + '</div>';
+  }
+  function formatChemEquation(equation){
+    return '<div class="chem-equation">' + equation + '</div>';
   }
 
   function showToast(msg){
@@ -784,19 +888,25 @@
         explanation:"Add 7 to both sides: $3x = 15$, then divide by 3: $x = 5$." },
       { type:"basic", tag:"Physics", front:"State the formula for kinetic energy.",
         back:"$$KE = \\frac{1}{2}mv^2$$\nwhere $m$ is mass and $v$ is velocity." },
-      { type:"basic", tag:"Chemistry", front:"Balance this combustion-style equation: $\\ce{H2 + O2 ->[?] H2O}$",
+      { type:"basic", tag:"Chemistry", front:"Balance the combustion equation: $\\ce{H2 + O2 -> H2O}$",
         back:"$$\\ce{2H2 + O2 -> 2H2O}$$" },
-      { type:"mcq", tag:"Chemistry", question:"What is the pH of a neutral aqueous solution at 25°C?",
-        options:["0","7","10","14"], answer:1, explanation:"Pure water at 25°C has $[H^+] = 10^{-7}$ M, giving pH $= 7$." },
+      { type:"basic", tag:"Chemistry", front:"Draw the Lewis structure of water.",
+        back:"Water has two lone pairs on oxygen:",
+        svg:'<svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg"><line x1="50" y1="65" x2="100" y2="35" stroke="#2A2620" stroke-width="2.5"/><line x1="150" y1="65" x2="100" y2="35" stroke="#2A2620" stroke-width="2.5"/><circle cx="100" cy="35" r="16" fill="none" stroke="#B24C4C" stroke-width="2"/><text x="100" y="40" text-anchor="middle" fill="#B24C4C" font-size="16" font-weight="bold" font-family="serif">O</text><circle cx="50" cy="65" r="14" fill="none" stroke="#3D7EA6" stroke-width="2"/><text x="50" y="70" text-anchor="middle" fill="#3D7EA6" font-size="16" font-weight="bold" font-family="serif">H</text><circle cx="150" cy="65" r="14" fill="none" stroke="#3D7EA6" stroke-width="2"/><text x="150" y="70" text-anchor="middle" fill="#3D7EA6" font-size="16" font-weight="bold" font-family="serif">H</text><text x="125" y="28" fill="#6B6250" font-size="13" font-family="monospace">:</text><text x="125" y="52" fill="#6B6250" font-size="13" font-family="monospace">:</text></svg>' },
+      { type:"mcq", tag:"Chemistry", question:"What is the pH of a neutral aqueous solution at 25\\u00B0C?",
+        options:["0","7","10","14"], answer:1, explanation:"Pure water at 25\\u00B0C has $[H^+] = 10^{-7}$ M, giving pH $= 7$." },
+      { type:"basic", tag:"Chemistry", front:"What is the structural formula of ethanol?",
+        back:"$$\\ce{CH3-CH2-OH}$$\nEthanol: 2 carbons with a hydroxyl group.",
+        svg:'<svg viewBox="0 0 240 60" xmlns="http://www.w3.org/2000/svg"><text x="10" y="40" fill="#2A2620" font-size="20" font-weight="bold" font-family="serif">H</text><line x1="26" y1="35" x2="40" y2="35" stroke="#2A2620" stroke-width="2"/><line x1="40" y1="35" x2="40" y2="18" stroke="#2A2620" stroke-width="2"/><text x="33" y="16" fill="#2A2620" font-size="14" font-family="serif">H</text><line x1="40" y1="35" x2="40" y2="52" stroke="#2A2620" stroke-width="2"/><text x="33" y="56" fill="#2A2620" font-size="14" font-family="serif">H</text><text x="40" y="40" fill="#2A2620" font-size="20" font-weight="bold" font-family="serif">C</text><line x1="56" y1="35" x2="76" y2="35" stroke="#2A2620" stroke-width="2"/><line x1="76" y1="35" x2="76" y2="18" stroke="#2A2620" stroke-width="2"/><text x="69" y="16" fill="#2A2620" font-size="14" font-family="serif">H</text><line x1="76" y1="35" x2="76" y2="52" stroke="#2A2620" stroke-width="2"/><text x="69" y="56" fill="#2A2620" font-size="14" font-family="serif">H</text><text x="76" y="40" fill="#2A2620" font-size="20" font-weight="bold" font-family="serif">C</text><line x1="92" y1="35" x2="112" y2="35" stroke="#2A2620" stroke-width="2"/><text x="112" y="40" fill="#B24C4C" font-size="20" font-weight="bold" font-family="serif">O</text><line x1="128" y1="35" x2="146" y2="35" stroke="#2A2620" stroke-width="2"/><text x="146" y="40" fill="#3D7EA6" font-size="20" font-weight="bold" font-family="serif">H</text></svg>' },
       { type:"basic", tag:"Calculus", front:"Evaluate $\\displaystyle\\int_0^1 x^2\\,dx$.",
         back:"$$\\int_0^1 x^2\\,dx = \\left[\\frac{x^3}{3}\\right]_0^1 = \\frac{1}{3}$$" },
       { type:"basic", tag:"Precalculus", front:"What does the graph of $y=\\sin(x)$ look like over $[-2\\pi, 2\\pi]$?",
         back:"A smooth wave oscillating between $-1$ and $1$ with period $2\\pi$.",
         plot:{ expr:"sin(x)", xMin:-6.283, xMax:6.283, yMin:-1.4, yMax:1.4 } },
-      { type:"mcq", tag:"Chemistry", question:"This titration curve shows pH vs. volume of titrant added. Roughly where is the equivalence point?",
+      { type:"mcq", tag:"Chemistry", question:"This titration curve shows pH vs. volume of titrant added. Where is the equivalence point?",
         chart:{ kind:"line", labels:[0,5,10,15,20,25,30], series:[{name:"pH", data:[2,2.5,3.2,4.5,8.9,11,11.5]}] },
         options:["5 mL","15 mL","20 mL","30 mL"], answer:2,
-        explanation:"The steep jump in pH between 15–20 mL marks the equivalence point, around 20 mL." },
+        explanation:"The steep jump in pH between 15\\u201320 mL marks the equivalence point." },
       { type:"mcq", tag:"Number Theory", question:"Which of the following is a prime number?",
         options:["21","27","31","33"], answer:2,
         explanation:"31 has no divisors other than 1 and itself; the others factor as $3\\times7$, $3^3$, $3\\times11$." },
@@ -1126,6 +1236,8 @@
     const tagHtml = c.tag ? `<span class="card-tag" style="background:${tagColor(c.tag)}">${escapeHtml(c.tag)}</span>` : '<span></span>';
     const indexHtml = `<span class="card-index">CARD ${String(session.pos+1).padStart(3,'0')} / ${String(session.order.length).padStart(3,'0')}</span>`;
     const visualHTML = (c.chart || c.plot) ? `<div class="card-visual"><canvas class="visual-canvas"></canvas></div>` : '';
+    const svgHTML = c.svg ? `<div class="card-svg">${c.svg}</div>` : '';
+    const visualBlock = visualHTML + svgHTML;
 
     if(c.type === 'mcq'){
       const alreadyAnswered = session.mcqAnswers[idx] !== undefined;
@@ -1135,7 +1247,7 @@
         <div class="card-head">${tagHtml}${indexHtml}</div>
         <div class="card-label">Multiple choice</div>
         <div class="card-content small">${formatText(c.question)}</div>
-        ${visualHTML}
+        ${visualBlock}
         <div class="mcq-options" id="mcqOptions"></div>
         <div id="mcqResultBanner"></div>
         <div class="flip-hint">${alreadyAnswered ? 'Tap card or press space to see explanation \u21BB' : 'Choose an answer'}</div>
@@ -1161,13 +1273,14 @@
         <div class="card-head">${tagHtml}${indexHtml}</div>
         <div class="card-label">Question</div>
         <div class="card-content">${formatText(c.front)}</div>
-        ${visualHTML}
+        ${visualBlock}
         <div class="flip-hint">Tap card or press space ↻</div>
       `;
       faceBack.innerHTML = `
         <div class="card-head">${tagHtml}${indexHtml}</div>
         <div class="card-label">Answer</div>
         <div class="card-content">${formatText(c.back)}</div>
+        ${c.svg ? `<div class="card-svg">${c.svg}</div>` : ''}
         <div class="flip-hint">Tap card to flip back ↻</div>
       `;
       renderMath(faceFront); renderMath(faceBack);
@@ -1509,6 +1622,11 @@
   $('modalClose').addEventListener('click', closeImportModal);
   $('modalBackdrop').addEventListener('click', (e) => { if(e.target === $('modalBackdrop')) closeImportModal(); });
   $('sampleBtn').addEventListener('click', () => { $('jsonInput').value = JSON.stringify(SAMPLE_DECK, null, 2); });
+  $('copyTemplateBtn').addEventListener('click', () => {
+    const box = $('templateBox');
+    box.select(); box.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(box.value).then(() => showToast('Template copied!')).catch(() => { document.execCommand('copy'); showToast('Template copied!'); });
+  });
   $('fileInput').addEventListener('change', (e) => {
     const file = e.target.files[0]; if(!file) return;
     const reader = new FileReader();
