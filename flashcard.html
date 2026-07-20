@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
@@ -62,11 +63,12 @@
   body{
     margin:0;
     background:
-      radial-gradient(ellipse 900px 500px at 50% -10%, var(--ink-softer) 0%, transparent 60%),
+      radial-gradient(ellipse min(900px,120vw) min(500px,60vw) at 50% -10%, var(--ink-softer) 0%, transparent 60%),
       var(--ink);
     color:var(--ink-bright);
     font-family:var(--font-body);
     min-height:100vh;
+    min-height:100dvh;
     display:flex;
     flex-direction:column;
     overflow-x:hidden;
@@ -107,9 +109,10 @@
   }
   .brand-text{ min-width:0; overflow:hidden; }
   .brand h1{
-    font-family:var(--font-display); font-weight:600; font-size:17px; margin:0;
+    font-family:var(--font-display); font-weight:600; font-size:clamp(13px,3.2vw,17px); margin:0;
     letter-spacing:.01em; color:var(--ink-bright);
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    max-width:40vw;
   }
   .brand .sub{ font-family:var(--font-mono); font-size:10px; color:var(--ink-muted); letter-spacing:.02em; }
 
@@ -153,7 +156,7 @@
   }
   .folder-title::after{ content:""; flex:1; height:1px; background:var(--ink-line); }
 
-  .deck-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:14px; }
+  .deck-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(min(240px,100%),1fr)); gap:14px; }
   .deck-card{
     background:var(--ink-soft); border:1px solid var(--ink-line); border-radius:14px;
     padding:16px; display:flex; flex-direction:column; gap:10px;
@@ -196,18 +199,18 @@
   .empty-actions{ display:flex; gap:8px; margin-top:4px; flex-wrap:wrap; justify-content:center; }
 
   /* ---------- Session stage (study + quiz) ---------- */
-  .stage{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:16px 12px 8px; position:relative; }
+  .stage{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:clamp(8px,2vw,16px) clamp(6px,2vw,12px) 8px; position:relative; }
 
-  .progress-rail{ width:min(600px, 92vw); height:3px; background:var(--ink-line); border-radius:3px; overflow:hidden; margin-bottom:16px; }
+  .progress-rail{ width:min(600px, 92vw); height:3px; background:var(--ink-line); border-radius:3px; overflow:hidden; margin-bottom:clamp(8px,2vw,16px); }
   .progress-fill{ height:100%; background:linear-gradient(90deg, var(--amber), var(--emerald-bright)); width:0%; transition:width .4s var(--ease); }
 
-  .card-zone{ width:min(620px, 94vw); perspective:1800px; position:relative; min-height:360px; }
+  .card-zone{ width:min(620px, 94vw); perspective:1800px; position:relative; min-height:clamp(260px,55dvh,420px); }
   .card-outer{ position:relative; width:100%; transform-style:preserve-3d; }
   @keyframes slideIn{ from{ opacity:0; transform:translateX(var(--slide-from,24px)) scale(.985);} to{ opacity:1; transform:translateX(0) scale(1);} }
   .card-outer.entering{ animation:slideIn .38s var(--ease); }
 
   .card-inner{
-    position:relative; width:100%; min-height:360px; transform-style:preserve-3d;
+    position:relative; width:100%; min-height:clamp(260px,55dvh,420px); transform-style:preserve-3d;
     transition:transform .55s cubic-bezier(.4,.2,.2,1); transform:rotate(-0.6deg);
   }
   .card-inner.flipped{ transform:rotate(-0.6deg) rotateY(180deg); }
@@ -216,14 +219,14 @@
     position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden;
     background:var(--paper); border-radius:var(--radius-card);
     box-shadow:0 1px 0 var(--paper-shadow) inset, 0 18px 40px -12px var(--shadow-strong), 0 4px 10px -4px var(--shadow-soft);
-    color:var(--paper-ink); padding:24px 28px 22px 46px; display:flex; flex-direction:column; overflow:auto;
+    color:var(--paper-ink); padding:clamp(14px,2.5vw,24px) clamp(14px,3vw,28px) clamp(12px,2vw,22px) clamp(28px,5vw,46px); display:flex; flex-direction:column; overflow:auto;
     background-image:repeating-linear-gradient(180deg, transparent 0px, transparent 35px, var(--paper-line) 35px, var(--paper-line) 36px);
     background-position:0 88px;
     overscroll-behavior:contain;
   }
   .face.back{ transform:rotateY(180deg); }
   .face::before{
-    content:""; position:absolute; left:14px; top:0; bottom:0; width:10px;
+    content:""; position:absolute; left:clamp(8px,1.5vw,14px); top:0; bottom:0; width:clamp(6px,1vw,10px);
     background-image:
       radial-gradient(circle at 5px 46px, var(--ink) 4px, transparent 4.5px),
       radial-gradient(circle at 5px 46px, rgba(0,0,0,.18) 5.5px, transparent 6px),
@@ -237,8 +240,8 @@
   .card-index{ font-family:var(--font-mono); font-size:10px; color:var(--paper-ink-soft); letter-spacing:.04em; }
   .card-label{ font-family:var(--font-mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--paper-ink-soft); margin-bottom:6px; }
 
-  .card-content{ font-family:var(--font-display); font-size:20px; line-height:1.5; font-weight:500; }
-  .card-content.small{ font-size:16px; }
+  .card-content{ font-family:var(--font-display); font-size:clamp(15px,3.5vw,20px); line-height:1.5; font-weight:500; }
+  .card-content.small{ font-size:clamp(13px,3vw,16px); }
   .card-content strong{ font-weight:700; }
   .card-content code{ font-family:var(--font-mono); background:rgba(42,38,32,.07); padding:1px 5px; border-radius:4px; font-size:.82em; }
 
@@ -250,10 +253,10 @@
   /* MCQ */
   .mcq-options{ display:flex; flex-direction:column; gap:8px; margin-top:10px; }
   .mcq-option{
-    display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border-radius:9px;
+    display:flex; align-items:flex-start; gap:clamp(6px,1.5vw,10px); padding:clamp(7px,1.5vw,10px) clamp(8px,1.5vw,12px); border-radius:9px;
     border:1.5px solid var(--paper-shadow); background:rgba(255,255,255,.35); cursor:pointer;
     transition:border-color .16s var(--ease), background .16s var(--ease), transform .1s var(--ease);
-    font-size:14px; line-height:1.45; color:var(--paper-ink); text-align:left;
+    font-size:clamp(12px,2.8vw,14px); line-height:1.45; color:var(--paper-ink); text-align:left;
     min-height:42px;
   }
   .mcq-option:hover:not(.locked){ border-color:var(--paper-ink-soft); background:rgba(255,255,255,.6); }
@@ -286,9 +289,9 @@
   .mcq-result-banner svg{ width:16px; height:16px; flex:none; }
 
   /* Grade buttons */
-  .grade-row{ display:flex; gap:8px; margin:4px 0 8px; opacity:0; max-height:0; overflow:hidden; transition:opacity .25s var(--ease), max-height .25s var(--ease); flex-wrap:wrap; justify-content:center; }
-  .grade-row.show{ opacity:1; max-height:80px; }
-  .grade-btn{ padding:8px 16px; border-radius:20px; font-size:12px; font-weight:600; border:1.5px solid; cursor:pointer; background:transparent; transition:transform .1s var(--ease), background .15s var(--ease); min-height:38px; }
+  .grade-row{ display:flex; gap:6px; margin:4px 0 8px; opacity:0; max-height:0; overflow:hidden; transition:opacity .25s var(--ease), max-height .35s var(--ease); flex-wrap:wrap; justify-content:center; }
+  .grade-row.show{ opacity:1; max-height:100px; }
+  .grade-btn{ padding:clamp(6px,1.5vw,8px) clamp(10px,2.5vw,16px); border-radius:20px; font-size:clamp(10px,2vw,12px); font-weight:600; border:1.5px solid; cursor:pointer; background:transparent; transition:transform .1s var(--ease), background .15s var(--ease); min-height:38px; }
   .grade-btn:active{ transform:scale(.96); }
   .grade-btn.good{ color:var(--emerald-bright); border-color:var(--emerald); }
   .grade-btn.good:hover{ background:rgba(47,111,82,.15); }
@@ -298,9 +301,9 @@
   .grade-btn.forgot:hover{ background:rgba(178,76,76,.15); }
 
   /* Controls */
-  .controls{ display:flex; align-items:center; gap:10px; margin:16px 0 6px; }
+  .controls{ display:flex; align-items:center; gap:clamp(6px,1.5vw,10px); margin:clamp(8px,2vw,16px) 0 6px; }
   .nav-btn{
-    width:44px; height:44px; border-radius:50%; background:var(--ink-soft); border:1px solid var(--ink-line);
+    width:clamp(36px,8vw,44px); height:clamp(36px,8vw,44px); border-radius:50%; background:var(--ink-soft); border:1px solid var(--ink-line);
     color:var(--ink-bright); display:flex; align-items:center; justify-content:center; cursor:pointer;
     transition:background .16s var(--ease), transform .12s var(--ease), opacity .16s var(--ease);
     flex-shrink:0;
@@ -310,8 +313,8 @@
   .nav-btn:disabled{ opacity:.3; cursor:not-allowed; }
   .nav-btn svg{ width:18px; height:18px; }
   .flip-btn{
-    padding:10px 20px; border-radius:24px; background:var(--ink-bright); color:var(--ink); border:none;
-    font-weight:600; font-size:13px; cursor:pointer; letter-spacing:.01em; min-width:140px;
+    padding:clamp(8px,2vw,10px) clamp(12px,3vw,20px); border-radius:24px; background:var(--ink-bright); color:var(--ink); border:none;
+    font-weight:600; font-size:clamp(11px,2.5vw,13px); cursor:pointer; letter-spacing:.01em; min-width:clamp(100px,25vw,140px);
     transition:transform .12s var(--ease), opacity .16s var(--ease);
     min-height:42px;
   }
@@ -377,81 +380,24 @@
       padding:10px 12px;
       gap:6px;
     }
-    .brand h1{
-      font-size:14px;
-      max-width:35vw;
-    }
-    .brand-mark{
-      font-size:8px;
-      padding:2px 5px;
-    }
-    .brand .sub{
-      font-size:9px;
-    }
+    .brand h1{ max-width:35vw; }
+    .brand-mark{ font-size:8px; padding:2px 5px; }
+    .brand .sub{ font-size:9px; }
     .stats{ gap:10px; font-size:10px; }
-    .icon-btn{
-      width:34px; height:34px;
-    }
-    .btn{
-      padding:7px 11px;
-      font-size:12px;
-      min-height:36px;
-    }
+    .icon-btn{ width:34px; height:34px; }
+    .btn{ padding:7px 11px; font-size:12px; min-height:36px; }
 
-    .face{
-      padding:18px 16px 18px 36px;
-      border-radius:12px;
-    }
-    .face::before{
-      left:10px; width:8px;
-    }
-    .card-content{ font-size:17px; }
-    .card-content.small{ font-size:14px; }
+    .face{ border-radius:12px; }
     .card-tag{ font-size:8.5px; padding:2px 7px; }
     .card-index{ font-size:9px; }
     .card-label{ font-size:9px; margin-bottom:4px; }
-
-    .card-zone{ min-height:300px; }
-    .card-inner{ min-height:300px; }
-
-    .mcq-option{
-      padding:8px 10px;
-      font-size:13px;
-      gap:8px;
-      min-height:40px;
-    }
-    .mcq-option .tab{
-      font-size:10px;
-      width:20px; height:20px;
-    }
-
+    .mcq-option .tab{ font-size:10px; width:20px; height:20px; }
     .flip-hint{ font-size:8px; }
 
-    .library-wrap{
-      padding:16px 12px 40px;
-    }
-    .deck-grid{
-      grid-template-columns:1fr;
-      gap:10px;
-    }
-    .deck-card{
-      padding:14px;
-    }
+    .library-wrap{ padding:16px 12px 40px; }
+    .deck-grid{ grid-template-columns:1fr; gap:10px; }
+    .deck-card{ padding:14px; }
     .deck-card h3{ font-size:15px; }
-
-    .controls{
-      gap:8px;
-    }
-    .nav-btn{ width:40px; height:40px; }
-    .flip-btn{
-      padding:9px 16px;
-      font-size:12px;
-      min-width:120px;
-    }
-    .grade-btn{
-      padding:7px 12px;
-      font-size:11px;
-    }
 
     .kbd-hint{ display:none; }
 
@@ -469,45 +415,12 @@
 
   /* ========== MOBILE: <= 380px (very small) ========== */
   @media (max-width:380px){
-    .topbar{
-      padding:8px 10px;
-    }
-    .brand h1{
-      font-size:13px;
-      max-width:30vw;
-    }
+    .topbar{ padding:8px 10px; }
+    .brand h1{ max-width:28vw; }
     .brand-mark{ display:none; }
-
-    .face{
-      padding:14px 12px 14px 30px;
-    }
-    .face::before{
-      left:8px; width:6px;
-    }
-    .card-content{ font-size:15px; }
-    .card-content.small{ font-size:13px; }
-
-    .card-zone{ min-height:280px; }
-    .card-inner{ min-height:280px; }
-
-    .mcq-option{
-      padding:7px 8px;
-      font-size:12px;
-      gap:6px;
-    }
-
-    .flip-btn{
-      min-width:100px;
-      padding:8px 12px;
-      font-size:11px;
-    }
 
     .deck-card-actions{ gap:4px; }
     .deck-card-actions .btn{ padding:6px 8px; font-size:11px; }
-
-    .controls{ gap:6px; margin:10px 0 4px; }
-    .nav-btn{ width:36px; height:36px; }
-    .nav-btn svg{ width:16px; height:16px; }
   }
 
   /* ========== Touch: show larger tap targets ========== */
@@ -1295,19 +1208,50 @@
 
   function buildGradeRow(idx, type){
     const gradeRow = $('gradeRow');
-    if(type !== 'basic'){ gradeRow.innerHTML=''; gradeRow.classList.remove('show'); return; }
-    if(session.kind === 'study'){
-      gradeRow.innerHTML = `
-        <button class="grade-btn forgot" data-g="forgot">✗ Forgot</button>
-        <button class="grade-btn hard" data-g="hard">◐ Hard</button>
-        <button class="grade-btn good" data-g="good">✓ Good</button>`;
+    if(type === 'basic'){
+      if(session.kind === 'study'){
+        gradeRow.innerHTML = `
+          <button class="grade-btn forgot" data-g="forgot">\u2717 Forgot</button>
+          <button class="grade-btn hard" data-g="hard">\u25D0 Hard</button>
+          <button class="grade-btn good" data-g="good">\u2713 Good</button>`;
+      } else {
+        gradeRow.innerHTML = `
+          <button class="grade-btn forgot" data-g="forgot">\u2717 Incorrect</button>
+          <button class="grade-btn good" data-g="good">\u2713 Correct</button>`;
+      }
+      gradeRow.querySelectorAll('.grade-btn').forEach(b => b.addEventListener('click', () => gradeCard(idx, b.dataset.g)));
+      if(session.grades[idx]) gradeRow.classList.add('show');
+    } else if(type === 'mcq'){
+      // MCQ grade row: show after answering, allow overriding auto-grade
+      const alreadyAnswered = session.mcqAnswers[idx] !== undefined;
+      if(!alreadyAnswered){ gradeRow.innerHTML=''; gradeRow.classList.remove('show'); return; }
+      const c = activeDeck.cards[idx];
+      const autoGrade = session.mcqAnswers[idx] === c.answer ? 'good' : 'forgot';
+      if(session.kind === 'study'){
+        gradeRow.innerHTML = `
+          <button class="grade-btn forgot" data-g="forgot">\u2717 Forgot</button>
+          <button class="grade-btn hard" data-g="hard">\u25D0 Hard</button>
+          <button class="grade-btn good" data-g="good">\u2713 Good</button>`;
+      } else {
+        gradeRow.innerHTML = `
+          <button class="grade-btn forgot" data-g="forgot">\u2717 Incorrect</button>
+          <button class="grade-btn good" data-g="good">\u2713 Correct</button>`;
+      }
+      gradeRow.querySelectorAll('.grade-btn').forEach(b => b.addEventListener('click', () => gradeMcq(idx, b.dataset.g)));
+      // Highlight the auto-assigned grade
+      const autoBtn = gradeRow.querySelector(`[data-g="${autoGrade}"]`);
+      if(autoBtn){
+        autoBtn.style.opacity = '1';
+        autoBtn.style.fontWeight = '700';
+      }
+      // Dim other buttons slightly to show auto-grade was pre-selected
+      gradeRow.querySelectorAll('.grade-btn').forEach(b => {
+        if(b !== autoBtn) b.style.opacity = '0.55';
+      });
+      gradeRow.classList.add('show');
     } else {
-      gradeRow.innerHTML = `
-        <button class="grade-btn forgot" data-g="forgot">✗ Incorrect</button>
-        <button class="grade-btn good" data-g="good">✓ Correct</button>`;
+      gradeRow.innerHTML=''; gradeRow.classList.remove('show');
     }
-    gradeRow.querySelectorAll('.grade-btn').forEach(b => b.addEventListener('click', () => gradeCard(idx, b.dataset.g)));
-    if(session.grades[idx]) gradeRow.classList.add('show');
   }
 
   function gradeCard(idx, grade){
@@ -1325,7 +1269,26 @@
     const c = activeDeck.cards[cardIdx];
     session.grades[cardIdx] = (optionIdx === c.answer) ? 'good' : 'forgot';
     applyMcqState(cardIdx, optionIdx);
+    // Show grade row after answering
+    buildGradeRow(cardIdx, 'mcq');
     renderTopbar();
+  }
+
+  function gradeMcq(idx, grade){
+    session.grades[idx] = grade;
+    // Update grade row visual
+    const gradeRow = $('gradeRow');
+    gradeRow.querySelectorAll('.grade-btn').forEach(b => {
+      if(b.dataset.g === grade){
+        b.style.opacity = '1'; b.style.fontWeight = '700';
+      } else {
+        b.style.opacity = '0.55'; b.style.fontWeight = '600';
+      }
+    });
+    if(session.kind === 'study'){
+      showToast(grade === 'good' ? 'Marked as good' : grade === 'hard' ? 'Marked as hard' : 'Marked as forgot');
+      setTimeout(goNext, 400);
+    }
   }
 
   function applyMcqState(cardIdx, chosenIdx){
