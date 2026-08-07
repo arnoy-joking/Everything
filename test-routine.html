@@ -67,10 +67,10 @@
             padding-bottom: 50px;
             font-family: var(--font-main);
         }
-        .subject-name, .college-name, header h1, header p, .subject-code, .gap-badge, .cal-subject-text {
+        .subject-name, .college-name, header h1, header p, .subject-code, .gap-badge, .cal-subject-text, .exam-time {
             font-family: var(--font-bangla), var(--font-main);
         }
-        .subject-code { font-family: var(--font-main), var(--font-bangla); }
+        .subject-code, .exam-time { font-family: var(--font-main), var(--font-bangla); }
 
         header {
             background: var(--header-gradient);
@@ -189,7 +189,7 @@
             text-align: center;
             padding-right: 20px;
             border-right: 1px solid var(--border);
-            min-width: 90px;
+            min-width: 70px;
         }
         .date-box .day { font-size: 1.8rem; font-weight: 800; color: var(--primary); line-height: 1; margin-bottom: 2px; }
         .date-box .month { font-size: 0.85rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); letter-spacing: 1px; }
@@ -197,11 +197,17 @@
 
         .subject-box { padding-left: 20px; flex-grow: 1; }
         .subject-name { font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
-        .subject-code {
-            font-size: 0.8rem;
+        .exam-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .subject-code, .exam-time {
+            font-size: 0.78rem;
             color: var(--text-muted);
             background: var(--bg);
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 6px;
             display: inline-block;
             font-weight: 600;
@@ -288,6 +294,12 @@
             border: 1px solid var(--border);
             font-family: var(--font-bangla), var(--font-main);
         }
+        .cal-time-text {
+            font-size: 0.5rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-top: 2px;
+        }
         .cal-date.completed { opacity: 0.5; filter: grayscale(1); }
 
         /* Offline indicator */
@@ -311,13 +323,16 @@
         @media (max-width: 600px) {
             header h1 { font-size: 1.5rem; }
             .exam-card { flex-direction: row; padding: 15px; }
-            .date-box { min-width: 70px; padding-right: 15px; }
+            .date-box { min-width: 60px; padding-right: 12px; }
             .date-box .day { font-size: 1.4rem; }
             .subject-name { font-size: 1rem; }
-            .subject-box { padding-left: 15px; }
+            .subject-box { padding-left: 12px; }
+            .exam-meta { gap: 4px; }
+            .subject-code, .exam-time { font-size: 0.7rem; padding: 2px 6px; }
             .cal-grid { gap: 4px; }
             .cal-date { min-height: 65px; padding: 2px; border-radius: 6px; }
             .cal-subject-text { font-size: 0.55rem; padding: 2px; line-height: 1.1; }
+            .cal-time-text { font-size: 0.45rem; }
             .cal-num { font-size: 0.75rem; width: 20px; height: 20px; margin-bottom: 2px; }
         }
     </style>
@@ -351,24 +366,40 @@
 <script>
     (function() {
         // ============================================================
-        //  DATA - Edit this array for your exam schedule
-        //  Works for any month/year - just add dates in YYYY-MM-DD format
+        //  CONFIGURATION - Edit these settings for your exam schedule
         // ============================================================
-        const exams = [
-            { "date": "2026-07-02", "subject": "বাংলা ১ম পত্র", "code": "১০১" },
-            { "date": "2026-07-04", "subject": "বাংলা ২য় পত্র", "code": "১০২" },
-            { "date": "2026-07-06", "subject": "ইংরেজি ১ম পত্র", "code": "১০৭" },
-            { "date": "2026-07-08", "subject": "ইংরেজি ২য় পত্র", "code": "১০৮" },
-            { "date": "2026-07-11", "subject": "তথ্য ও যোগাযোগ প্রযুক্তি", "code": "২৭৫" },
-            { "date": "2026-07-13", "subject": "পদার্থবিজ্ঞান ১ম পত্র", "code": "১৭৪" },
-            { "date": "2026-07-15", "subject": "পদার্থবিজ্ঞান ২য় পত্র", "code": "১৭৫" },
-            { "date": "2026-07-19", "subject": "রসায়ন ১ম পত্র", "code": "১৭৬" },
-            { "date": "2026-07-22", "subject": "রসায়ন ২য় পত্র", "code": "১৭৭" },
-            { "date": "2026-07-27", "subject": "জীববিজ্ঞান ১ম পত্র", "code": "১৭৮" },
-            { "date": "2026-07-29", "subject": "জীববিজ্ঞান ২য় পত্র", "code": "১৭৯" },
-            { "date": "2026-08-02", "subject": "উচ্চতর গণিত ১ম পত্র", "code": "২৬৫" },
-            { "date": "2026-08-04", "subject": "উচ্চতর গণিত ২য় পত্র", "code": "২৬৬" }
-        ];
+        const examConfig = {
+            // Default exam timing (used for countdown and display)
+            startTime: "10:00",
+            endTime: "13:00",
+            
+            // Exam schedule - add dates in YYYY-MM-DD format
+            // You can override start/end time for specific exams
+            exams: [
+                { "date": "2026-07-02", "subject": "বাংলা ১ম পত্র", "code": "১০১" },
+                { "date": "2026-07-04", "subject": "বাংলা ২য় পত্র", "code": "১০২" },
+                { "date": "2026-07-06", "subject": "ইংরেজি ১ম পত্র", "code": "১০৭" },
+                { "date": "2026-07-08", "subject": "ইংরেজি ২য় পত্র", "code": "১০৮" },
+                { "date": "2026-07-11", "subject": "তথ্য ও যোগাযোগ প্রযুক্তি", "code": "২৭৫" },
+                { "date": "2026-07-13", "subject": "পদার্থবিজ্ঞান ১ম পত্র", "code": "১৭৪" },
+                { "date": "2026-07-15", "subject": "পদার্থবিজ্ঞান ২য় পত্র", "code": "১৭৫" },
+                { "date": "2026-07-19", "subject": "রসায়ন ১ম পত্র", "code": "১৭৬" },
+                { "date": "2026-07-22", "subject": "রসায়ন ২য় পত্র", "code": "১৭৭" },
+                { "date": "2026-07-27", "subject": "জীববিজ্ঞান ১ম পত্র", "code": "১৭৮" },
+                { "date": "2026-07-29", "subject": "জীববিজ্ঞান ২য় পত্র", "code": "১৭৯" },
+                { "date": "2026-08-02", "subject": "উচ্চতর গণিত ১ম পত্র", "code": "২৬৫" },
+                { "date": "2026-08-04", "subject": "উচ্চতর গণিত ২য় পত্র", "code": "২৬৬" },
+                // ব্যবহারিক (Practical) exams - afternoon sessions
+                { "date": "2026-08-09", "subject": "জীববিজ্ঞান ১ম পত্র ব্যবহারিক", "startTime": "14:00", "endTime": "16:00" },
+                { "date": "2026-08-10", "subject": "উচ্চতর গণিত ১ম পত্র ব্যবহারিক", "startTime": "14:00", "endTime": "16:00" },
+                { "date": "2026-08-11", "subject": "রসায়নবিজ্ঞান ১ম পত্র ব্যবহারিক", "startTime": "14:00", "endTime": "16:00" },
+                { "date": "2026-08-12", "subject": "পদার্থবিজ্ঞান ১ম পত্র ব্যবহারিক", "startTime": "14:00", "endTime": "16:00" },
+                { "date": "2026-08-13", "subject": "জীববিজ্ঞান ২য় পত্র ব্যবহারিক", "startTime": "14:00", "endTime": "16:00" },
+                { "date": "2026-08-15", "subject": "উচ্চতর গণিত ২য় পত্র ব্যবহারিক", "startTime": "14:00", "endTime": "16:00" },
+                { "date": "2026-08-16", "subject": "রসায়নবিজ্ঞান ২য় পত্র ব্যবহারিক", "startTime": "14:00", "endTime": "16:00" },
+                { "date": "2026-08-17", "subject": "পদার্থবিজ্ঞান ২য় পত্র ব্যবহারিক", "startTime": "14:00", "endTime": "16:00" }
+            ]
+        };
         // ============================================================
 
         const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -376,6 +407,26 @@
         const shortMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
         function pad(n) { return String(n).padStart(2, '0'); }
+
+        // Helper to format time (12-hour format)
+        function formatTime(timeStr) {
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            const displayHours = hours % 12 || 12;
+            return `${displayHours}:${pad(minutes)} ${ampm}`;
+        }
+
+        // Helper to create Date object for exam end time
+        function getExamEndDate(exam) {
+            const endTime = exam.endTime || examConfig.endTime;
+            return new Date(`${exam.date}T${endTime}:00`);
+        }
+
+        // Helper to create Date object for exam start time
+        function getExamStartDate(exam) {
+            const startTime = exam.startTime || examConfig.startTime;
+            return new Date(`${exam.date}T${startTime}:00`);
+        }
 
         // ----- THEME -----
         const themes = ['light', 'dark', 'cursed'];
@@ -425,6 +476,7 @@
             container.innerHTML = '';
             const now = new Date();
             const todayStr = now.toISOString().split('T')[0];
+            const exams = examConfig.exams;
 
             exams.forEach((exam, idx) => {
                 const examDate = new Date(exam.date);
@@ -449,6 +501,17 @@
                 const m = shortMonths[examDate.getMonth()];
                 const wd = days[examDate.getDay()].substring(0,3);
 
+                const startTime = exam.startTime || examConfig.startTime;
+                const endTime = exam.endTime || examConfig.endTime;
+                const timeDisplay = `${formatTime(startTime)} - ${formatTime(endTime)}`;
+
+                // Build meta info: code only if exists, time always
+                let metaHTML = '';
+                if (exam.code) {
+                    metaHTML += `<span class="subject-code">Code: ${exam.code}</span>`;
+                }
+                metaHTML += `<span class="exam-time">${timeDisplay}</span>`;
+
                 container.innerHTML += `
                     <div class="exam-card ${status}">
                         <div class="date-box">
@@ -458,7 +521,9 @@
                         </div>
                         <div class="subject-box">
                             <div class="subject-name">${exam.subject}</div>
-                            <div class="subject-code">Code: ${exam.code}</div>
+                            <div class="exam-meta">
+                                ${metaHTML}
+                            </div>
                         </div>
                     </div>
                 `;
@@ -469,6 +534,7 @@
         function renderAllCalendars() {
             const container = document.getElementById('calGridContainer');
             container.innerHTML = '';
+            const exams = examConfig.exams;
             if (!exams.length) {
                 container.innerHTML = '<p style="text-align:center;padding:2rem;">No exams added.</p>';
                 return;
@@ -531,6 +597,12 @@
                         sub.className = 'cal-subject-text';
                         sub.textContent = exam.subject;
                         cell.appendChild(sub);
+                        
+                        const startTime = exam.startTime || examConfig.startTime;
+                        const timeEl = document.createElement('div');
+                        timeEl.className = 'cal-time-text';
+                        timeEl.textContent = formatTime(startTime);
+                        cell.appendChild(timeEl);
                     }
                     grid.appendChild(cell);
                 }
@@ -538,26 +610,39 @@
         }
 
         // ----- COUNTDOWN -----
-       function updateCountdown() {
-    const now = new Date();
-    const next = exams.find(e => new Date(e.date + "T10:00:00") > now);
-    const el = document.getElementById('countdown');
-    if (!next) {
-        el.innerHTML = "✅ All Exams Finished!";
-        return;
-    }
-    const target = new Date(next.date + "T10:00:00");
-    const diff = target - now;
-    if (diff <= 0) {
-        el.innerHTML = `▶️ ${next.subject} is ongoing!`;
-        return;
-    }
-    const d = Math.floor(diff / (1000*60*60*24));
-    const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
-    const m = Math.floor((diff % (1000*60*60)) / (1000*60));
-    const s = Math.floor((diff % (1000*60)) / 1000);
-    el.innerHTML = `⏳ ${next.subject} in ${d}d ${h}h ${m}m ${s}s`;
-}
+        function updateCountdown() {
+            const now = new Date();
+            const exams = examConfig.exams;
+            const next = exams.find(e => getExamEndDate(e) > now);
+            const el = document.getElementById('countdown');
+            if (!next) {
+                el.innerHTML = "✅ All Exams Finished!";
+                return;
+            }
+            
+            const startDate = getExamStartDate(next);
+            const endDate = getExamEndDate(next);
+            
+            if (now >= startDate && now <= endDate) {
+                const remaining = endDate - now;
+                const h = Math.floor((remaining % (1000*60*60*24)) / (1000*60*60));
+                const m = Math.floor((remaining % (1000*60*60)) / (1000*60));
+                const s = Math.floor((remaining % (1000*60)) / 1000);
+                el.innerHTML = `▶️ ${next.subject} · ${h}h ${m}m ${s}s remaining`;
+                return;
+            }
+            
+            const diff = startDate - now;
+            if (diff <= 0) {
+                el.innerHTML = `▶️ ${next.subject} is starting!`;
+                return;
+            }
+            const d = Math.floor(diff / (1000*60*60*24));
+            const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+            const m = Math.floor((diff % (1000*60*60)) / (1000*60));
+            const s = Math.floor((diff % (1000*60)) / 1000);
+            el.innerHTML = `⏳ ${next.subject} in ${d}d ${h}h ${m}m ${s}s`;
+        }
 
         // ----- INIT -----
         renderList();
@@ -567,16 +652,11 @@
 
         // ============================================================
         //  SERVICE WORKER - Self-registering offline PWA
-        //  This creates a functional sw.js without needing a separate file
         // ============================================================
         if ('serviceWorker' in navigator) {
-            // Generate the service worker code as a blob
             const swCode = `
-                const CACHE_NAME = 'hsc-routine-v1';
-                const urlsToCache = [
-                    '.',
-                    'index.html'
-                ];
+                const CACHE_NAME = 'hsc-routine-v2';
+                const urlsToCache = ['.', 'index.html'];
 
                 self.addEventListener('install', event => {
                     event.waitUntil(
@@ -591,9 +671,7 @@
                         caches.keys().then(cacheNames => {
                             return Promise.all(
                                 cacheNames.map(name => {
-                                    if (name !== CACHE_NAME) {
-                                        return caches.delete(name);
-                                    }
+                                    if (name !== CACHE_NAME) return caches.delete(name);
                                 })
                             );
                         }).then(() => self.clients.claim())
@@ -604,113 +682,32 @@
                     event.respondWith(
                         caches.match(event.request)
                             .then(response => response || fetch(event.request))
-                            .catch(() => {
-                                // Fallback for offline
-                                return new Response('Offline - please connect to internet', {
-                                    status: 503,
-                                    statusText: 'Service Unavailable'
-                                });
-                            })
+                            .catch(() => new Response('Offline - please connect to internet', { status: 503 }))
                     );
                 });
             `;
 
-            // Create a blob URL for the service worker
             const blob = new Blob([swCode], { type: 'application/javascript' });
             const swUrl = URL.createObjectURL(blob);
 
-            // Register the service worker from the blob URL
             navigator.serviceWorker.register(swUrl)
                 .then(registration => {
                     console.log('✅ Service Worker registered successfully!');
-                    
-                    // Show offline badge when offline
-                    window.addEventListener('online', () => {
-                        document.getElementById('offlineBadge').classList.remove('show');
-                    });
-                    window.addEventListener('offline', () => {
-                        document.getElementById('offlineBadge').classList.add('show');
-                    });
-                    
-                    // Check initial state
-                    if (!navigator.onLine) {
-                        document.getElementById('offlineBadge').classList.add('show');
-                    }
+                    window.addEventListener('online', () => document.getElementById('offlineBadge').classList.remove('show'));
+                    window.addEventListener('offline', () => document.getElementById('offlineBadge').classList.add('show'));
+                    if (!navigator.onLine) document.getElementById('offlineBadge').classList.add('show');
                 })
-                .catch(err => {
-                    console.warn('⚠️ Service Worker registration failed:', err);
-                    console.log('💡 To enable offline mode, create a file named "sw.js" in the same folder with the SW code.');
-                });
-        } else {
-            console.log('ℹ️ Service Workers not supported in this browser');
+                .catch(err => console.warn('⚠️ Service Worker registration failed:', err));
         }
 
-        // Also try to register from a relative path if blob fails (fallback)
-        // Some browsers might not allow blob: URLs for SW
         setTimeout(() => {
-            if ('serviceWorker' in navigator) {
-                // Try registering from the same directory as a fallback
-                navigator.serviceWorker.getRegistration().then(reg => {
-                    if (!reg) {
-                        // Try to register from the current path
-                        navigator.serviceWorker.register('sw.js')
-                            .then(() => console.log('✅ SW registered from sw.js'))
-                            .catch(() => console.log('ℹ️ No sw.js file found - using blob SW instead'));
-                    }
-                });
+            if ('serviceWorker' in navigator && !navigator.serviceWorker.controller) {
+                navigator.serviceWorker.register('sw.js')
+                    .then(() => console.log('✅ SW registered from sw.js'))
+                    .catch(() => console.log('ℹ️ No sw.js file found'));
             }
         }, 1000);
-
     })();
 </script>
-
-<!-- 
-  ============================================================
-  INSTRUCTIONS FOR OFFLINE PWA:
-  
-  Option 1 (Automatic): The page will try to register a service 
-  worker from a blob URL. This works in most modern browsers.
-  
-  Option 2 (Manual - More Reliable): Create a file named "sw.js"
-  in the same folder as this HTML file with the following content:
-  
-  ------------------------------------------------------------
-  const CACHE_NAME = 'hsc-routine-v1';
-  const urlsToCache = ['.', 'index.html'];
-  
-  self.addEventListener('install', event => {
-      event.waitUntil(
-          caches.open(CACHE_NAME)
-              .then(cache => cache.addAll(urlsToCache))
-              .then(() => self.skipWaiting())
-      );
-  });
-  
-  self.addEventListener('activate', event => {
-      event.waitUntil(
-          caches.keys().then(cacheNames => {
-              return Promise.all(
-                  cacheNames.map(name => {
-                      if (name !== CACHE_NAME) {
-                          return caches.delete(name);
-                      }
-                  })
-              );
-          }).then(() => self.clients.claim())
-      );
-  });
-  
-  self.addEventListener('fetch', event => {
-      event.respondWith(
-          caches.match(event.request)
-              .then(response => response || fetch(event.request))
-              .catch(() => new Response('Offline', { status: 503 }))
-      );
-  });
-  ------------------------------------------------------------
-  
-  That's it! Your app will work offline after the first visit.
-  ============================================================
--->
 </body>
 </html>
