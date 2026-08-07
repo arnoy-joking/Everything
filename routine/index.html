@@ -1,713 +1,3136 @@
+
+
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>HSC 2026 · PWA Routine</title>
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkhTQyBSb3V0aW5lIDIwMjYiLAogICJzaG9ydF9uYW1lIjogIlJvdXRpbmUiLAogICJkZXNjcmlwdGlvbiI6ICJZb3VyIG9mZmxpbmUgZXhhbSBzY2hlZHVsZSIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMGYxNzJhIiwKICAidGhlbWVfY29sb3IiOiAiIzEyMjIzMyIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDUxMiA1MTInPjxyZWN0IHdpZHRoPSc1MTInIGhlaWdodD0nNTEyJyB4PScwJyB5PScwJyBmaWxsPSclMjMzMzQxNTUnLz48dGV4dCB4PSc1MCUnIHk9JzUwJScgZG9taW5hbnQtYmFzZWxpbmU9J2NlbnRyYWwnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdTYW5zLVNlcmlmJyBmb250LXNpemU9JzE1MCcgZmlsbD0nJTIzZjhmYWZjJz5IU0M8L3RleHQ+PC9zdmc+IiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIiwKICAgICAgInB1cnBvc2UiOiAiYW55IG1hc2sgYW55c2l6ZSIKICAgIH0KICBdCn0=">
-    <link rel="icon" type="image/png" href="https://img.icons8.com/?size=256w&id=mG5i2PHIrCWe&format=png">
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Noto+Sans+Bengali:wght@400;600;700;800&family=Creepster&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #334155;
-            --secondary: #64748b;
-            --accent: #0ea5e9;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text: #0f172a;
-            --text-muted: #64748b;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --border: #e2e8f0;
-            --gap-bg: #f1f5f9;
-            --today-highlight: #e0f2fe;
-            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-            --font-main: 'Inter', sans-serif;
-            --font-bangla: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
-            --header-gradient: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-        }
-        [data-theme="dark"] {
-            --primary: #38bdf8;
-            --secondary: #94a3b8;
-            --accent: #0284c7;
-            --bg: #0f172a;
-            --card-bg: #1e293b;
-            --text: #f1f5f9;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --gap-bg: #0f172a;
-            --today-highlight: rgba(56, 189, 248, 0.15);
-            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-            --header-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-        }
-        [data-theme="cursed"] {
-            --primary: #ff003c;
-            --secondary: #7f1d1d;
-            --accent: #ff0000;
-            --bg: #000000;
-            --card-bg: #0a0a0a;
-            --text: #e5e5e5;
-            --text-muted: #a1a1aa;
-            --success: #00ff00;
-            --danger: #ff0000;
-            --warning: #fbbf24;
-            --border: #330505;
-            --gap-bg: #1a0505;
-            --today-highlight: rgba(255, 0, 60, 0.1);
-            --shadow: 0 0 20px rgba(255, 0, 0, 0.15);
-            --header-gradient: linear-gradient(180deg, #2a0a0a 0%, #000000 100%);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s; }
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            padding-bottom: 50px;
-            font-family: var(--font-main);
-        }
-        .subject-name, .college-name, header h1, header p, .subject-code, .gap-badge, .cal-subject-text, .exam-time {
-            font-family: var(--font-bangla), var(--font-main);
-        }
-        .subject-code, .exam-time { font-family: var(--font-main), var(--font-bangla); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RoutineX • Life OS</title>
+<link rel="icon" href="https://cdn-icons-png.flaticon.com/512/14991/14991808.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #070709;
+  --surface:  #0f0f12;
+  --card:     #16161c;
+  --border:   #ffffff0f;
+  --border2:  #ffffff1a;
+  --text:     #f0f0f5;
+  --muted:    #6b6b7e;
+  --accent:   #00e5a0;
+  --accent2:  #7c6af7;
+  --accent3:  #f7a06a;
+  --danger:   #f76a6a;
+  --coin:     #fbbf24;
+}
 
-        header {
-            background: var(--header-gradient);
-            color: white;
-            padding: 2rem 1rem 1.8rem;
-            text-align: center;
-            border-bottom-left-radius: 24px;
-            border-bottom-right-radius: 24px;
-            box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
-        }
-        [data-theme="cursed"] header h1 {
-            font-family: 'Creepster', cursive;
-            letter-spacing: 2px;
-            text-shadow: 2px 2px 0px #7f1d1d;
-            color: var(--primary);
-        }
-        header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; }
-        .college-name { font-weight: 600; font-size: 0.95rem; display: block; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; }
-        .countdown-box {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(5px);
-            padding: 10px 24px;
-            border-radius: 50px;
-            display: inline-block;
-            margin-top: 18px;
-            font-weight: 600;
-            border: 1px solid rgba(255,255,255,0.2);
-            font-size: 0.9rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        [data-theme="cursed"] .countdown-box {
-            border-color: var(--primary);
-            color: var(--primary);
-            background: rgba(0,0,0,0.8);
-            box-shadow: 0 0 10px var(--primary);
-        }
+* { box-sizing:border-box; margin:0; padding:0; }
+html,body { height:100%; }
 
-        .controls {
-            max-width: 900px;
-            margin: 22px auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-        }
-        .toggle-group {
-            display: flex;
-            background: var(--card-bg);
-            padding: 5px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-        }
-        .view-btn {
-            background: transparent;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            color: var(--text-muted);
-            font-weight: 600;
-            font-size: 0.9rem;
-            font-family: var(--font-main);
-        }
-        .view-btn.active {
-            background: var(--primary);
-            color: #ffffff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        [data-theme="dark"] .view-btn.active { color: #0f172a; }
-        [data-theme="cursed"] .view-btn.active { background: var(--primary); color: #000; box-shadow: 0 0 10px var(--primary); }
+body {
+  font-family:'Inter','Noto Sans Bengali',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+}
 
-        .theme-toggle {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            color: var(--text);
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.2rem;
-            box-shadow: var(--shadow);
-        }
-        .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
-        .exam-list { display: flex; flex-direction: column; gap: 16px; }
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width:4px; height:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border2); border-radius:99px; }
 
-        .exam-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
-        }
-        .exam-card.completed { border-left: 5px solid var(--success); opacity: 0.7; }
-        .exam-card.completed .subject-name { text-decoration: line-through; color: var(--text-muted); }
-        .exam-card.today {
-            border: 2px solid var(--primary);
-            transform: scale(1.02);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-            z-index: 10;
-        }
-        [data-theme="cursed"] .exam-card.today { box-shadow: 0 0 15px var(--primary); border-color: var(--primary); }
-        .exam-card.upcoming { border-left: 5px solid var(--warning); }
+/* ── TYPOGRAPHY ── */
+.font-display { font-family:'Inter',sans-serif; font-weight:800; }
 
-        .date-box {
-            text-align: center;
-            padding-right: 20px;
-            border-right: 1px solid var(--border);
-            min-width: 70px;
-        }
-        .date-box .day { font-size: 1.8rem; font-weight: 800; color: var(--primary); line-height: 1; margin-bottom: 2px; }
-        .date-box .month { font-size: 0.85rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); letter-spacing: 1px; }
-        .date-box .weekday { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; font-weight: 500; }
+/* ── CARDS ── */
+.card { background:var(--card); border:1px solid var(--border); border-radius:16px; }
+.card-hover { transition:border-color .2s, transform .15s; cursor:pointer; }
+.card-hover:hover { border-color:var(--border2); transform:translateY(-1px); }
 
-        .subject-box { padding-left: 20px; flex-grow: 1; }
-        .subject-name { font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
-        .exam-meta {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .subject-code, .exam-time {
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            background: var(--bg);
-            padding: 3px 8px;
-            border-radius: 6px;
-            display: inline-block;
-            font-weight: 600;
-            border: 1px solid var(--border);
-        }
+/* ── INPUTS ── */
+.inp {
+  width:100%; background:#1a1a22; border:1px solid var(--border2);
+  border-radius:10px; padding:.65rem 1rem; color:var(--text);
+  font-family:inherit; font-size:.9rem; outline:none; transition:border-color .2s;
+}
+.inp:focus { border-color:var(--accent); }
+.inp::placeholder { color:var(--muted); }
+select.inp { cursor:pointer; }
 
-        .gap-indicator {
-            margin: -8px 0;
-            text-align: center;
-            font-size: 0.8rem;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 0;
-        }
-        .gap-indicator::before, .gap-indicator::after {
-            content: ''; height: 1px; background: var(--border); flex-grow: 1;
-        }
-        .gap-badge {
-            background: var(--gap-bg);
-            color: var(--text-muted);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            border: 1px solid var(--border);
-            z-index: 1;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            font-family: var(--font-bangla), var(--font-main);
-        }
-        .gap-badge.danger {
-            background: #fef2f2;
-            color: #dc2626;
-            border-color: #fecaca;
-        }
-        [data-theme="dark"] .gap-badge.danger { background: #450a0a; color: #fca5a5; border-color: #7f1d1d; }
-        [data-theme="cursed"] .gap-badge.danger { background: #000; color: #ff0000; border-color: #ff0000; box-shadow: 0 0 8px #ff0000; }
+/* ── BUTTONS ── */
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:.4rem;
+  padding:.6rem 1.2rem; border-radius:10px; font-family:inherit; font-size:.85rem;
+  font-weight:600; cursor:pointer; border:none; transition:all .15s; white-space:nowrap; }
+.btn:disabled { opacity:.4; cursor:not-allowed; }
+.btn-accent  { background:var(--accent);  color:#000; }
+.btn-accent:hover:not(:disabled)  { filter:brightness(1.1); }
+.btn-accent2 { background:var(--accent2); color:#fff; }
+.btn-accent2:hover:not(:disabled) { filter:brightness(1.15); }
+.btn-ghost   { background:transparent; color:var(--text); border:1px solid var(--border2); }
+.btn-ghost:hover:not(:disabled)   { border-color:var(--border2); background:#ffffff08; }
+.btn-danger  { background:#f76a6a22; color:var(--danger); border:1px solid #f76a6a33; }
+.btn-danger:hover:not(:disabled)  { background:#f76a6a33; }
+.btn-sm { padding:.4rem .85rem; font-size:.78rem; border-radius:8px; }
+.btn-xs { padding:.28rem .6rem;  font-size:.72rem; border-radius:6px; }
+.btn-full { width:100%; }
 
-        .calendar-view { display: none; background: var(--card-bg); border-radius: 16px; padding: 25px; border: 1px solid var(--border); box-shadow: var(--shadow); }
-        .cal-header { text-align: center; margin-bottom: 20px; font-weight: 800; font-size: 1.25rem; color: var(--text); letter-spacing: -0.5px; }
-        .cal-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-            text-align: center;
-        }
-        .cal-day-name { font-weight: 700; font-size: 0.7rem; color: var(--text-muted); padding-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
-        .cal-date {
-            background: var(--card-bg);
-            border-radius: 8px;
-            min-height: 90px;
-            padding: 6px 2px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            border: 1px solid var(--border);
-            position: relative;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-        }
-        .cal-date.empty { background: transparent; border: none; box-shadow: none; }
-        .cal-num { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; color: var(--text-muted); width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
-        .cal-date.is-today { background: var(--today-highlight); border-color: var(--primary); }
-        .cal-date.is-today .cal-num { background: var(--primary); color: white; font-weight: bold; }
-        [data-theme="dark"] .cal-date.is-today .cal-num { color: #0f172a; }
-        [data-theme="cursed"] .cal-date.is-today .cal-num { background: var(--primary); color: #000; }
-        .cal-date.has-exam { border-color: var(--secondary); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-        [data-theme="cursed"] .cal-date.has-exam { border-color: var(--primary); }
-        .cal-date.has-exam .cal-num { color: var(--text); font-weight: 700; }
-        .cal-subject-text {
-            font-size: 0.65rem;
-            line-height: 1.2;
-            color: var(--text);
-            background: var(--bg);
-            padding: 4px 2px;
-            border-radius: 6px;
-            width: 100%;
-            word-wrap: break-word;
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            border: 1px solid var(--border);
-            font-family: var(--font-bangla), var(--font-main);
-        }
-        .cal-time-text {
-            font-size: 0.5rem;
-            color: var(--text-muted);
-            font-weight: 600;
-            margin-top: 2px;
-        }
-        .cal-date.completed { opacity: 0.5; filter: grayscale(1); }
+/* ── BADGE ── */
+.badge { display:inline-flex; align-items:center; padding:2px 8px; border-radius:99px; font-size:.65rem; font-weight:700; letter-spacing:.04em; }
+.badge-accent  { background:#00e5a022; color:var(--accent);  border:1px solid #00e5a033; }
+.badge-accent2 { background:#7c6af722; color:var(--accent2); border:1px solid #7c6af733; }
+.badge-coin    { background:#fbbf2422; color:var(--coin);    border:1px solid #fbbf2433; }
+.badge-muted   { background:#ffffff0a; color:var(--muted);   border:1px solid var(--border); }
 
-        /* Offline indicator */
-        .offline-badge {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            box-shadow: var(--shadow);
-            display: none;
-            z-index: 999;
-            font-weight: 600;
-        }
-        .offline-badge.show { display: block; }
+/* ── PILL AVATAR ── */
+.avatar { width:32px; height:32px; border-radius:50%; background:var(--accent2);
+  display:flex; align-items:center; justify-content:center;
+  font-weight:800; font-size:.85rem; color:#fff; flex-shrink:0; }
 
-        @media (max-width: 600px) {
-            header h1 { font-size: 1.5rem; }
-            .exam-card { flex-direction: row; padding: 15px; }
-            .date-box { min-width: 60px; padding-right: 12px; }
-            .date-box .day { font-size: 1.4rem; }
-            .subject-name { font-size: 1rem; }
-            .subject-box { padding-left: 12px; }
-            .exam-meta { gap: 4px; }
-            .subject-code, .exam-time { font-size: 0.7rem; padding: 2px 6px; }
-            .cal-grid { gap: 4px; }
-            .cal-date { min-height: 65px; padding: 2px; border-radius: 6px; }
-            .cal-subject-text { font-size: 0.55rem; padding: 2px; line-height: 1.1; }
-            .cal-time-text { font-size: 0.45rem; }
-            .cal-num { font-size: 0.75rem; width: 20px; height: 20px; margin-bottom: 2px; }
-        }
-    </style>
+/* ── TOP HEADER BAR ── */
+#top-header {
+  position:fixed; top:0; left:0; right:0; height:56px;
+  background:var(--surface); border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 20px; z-index:50;
+}
+#top-header .brand { font-family:'Inter',sans-serif; font-weight:800; font-size:1.1rem; letter-spacing:-.02em; }
+
+/* ── BOTTOM NAV — always visible ── */
+#bottom-nav {
+  display:flex;
+  position:fixed; bottom:0; left:0; right:0;
+  background:var(--surface); border-top:1px solid var(--border);
+  z-index:50;
+  padding:6px 0 max(6px, env(safe-area-inset-bottom));
+}
+.bnav-item {
+  flex:1; display:flex; flex-direction:column; align-items:center;
+  gap:3px; padding:4px 0; cursor:pointer;
+  font-size:.6rem; font-weight:600; color:var(--muted); transition:color .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.bnav-item.active { color:var(--accent); }
+.bnav-item i { font-size:1.15rem; }
+
+/* ── MAIN CONTENT ── */
+#main-content {
+  margin-left:0;
+  min-height:100vh;
+  /* top header 56px + bottom nav ~64px */
+  padding: 72px 20px 80px;
+}
+
+/* ── DESKTOP tweaks — wider padding, constrain width ── */
+@media (min-width:768px) {
+  #main-content { padding: 76px 32px 88px; max-width:720px; margin:0 auto; }
+  #bottom-nav { justify-content:center; gap:0; }
+  .bnav-item { max-width:120px; }
+}
+
+/* ── VIEWS ── */
+.view { display:none; }
+.view.active { display:block; }
+
+/* ── LOGIN SCREEN ── */
+#auth-screen {
+  position:fixed; inset:0; z-index:200;
+  background:var(--bg); display:flex; align-items:center; justify-content:center;
+  padding:1.5rem;
+}
+.auth-card { width:100%; max-width:400px; }
+.auth-divider { display:flex; align-items:center; gap:.75rem; color:var(--muted); font-size:.8rem; }
+.auth-divider::before,.auth-divider::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* ── TIMELINE ── */
+.timeline-wrap { position:relative; }
+.timeline-wrap::before {
+  content:''; position:absolute; left:19px; top:8px; bottom:8px;
+  width:2px; background:linear-gradient(to bottom,var(--accent),var(--accent2),#8b5cf6);
+  opacity:.2; border-radius:99px;
+}
+.slot-row { position:relative; padding-left:52px; padding-bottom:20px; }
+.slot-check {
+  position:absolute; left:0; top:2px;
+  width:40px; height:40px; border-radius:50%;
+  border:2px solid var(--border2); background:var(--card);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; z-index:2; transition:all .2s; flex-shrink:0;
+}
+.slot-check:hover { border-color:var(--accent); }
+.slot-check.done  { background:var(--accent); border-color:var(--accent); color:#000; }
+.slot-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:12px; padding:12px 14px; cursor:pointer; transition:all .15s;
+}
+.slot-card:hover  { border-color:var(--border2); }
+.slot-card.active { border-color:var(--accent); background:#00e5a008; }
+
+/* ── STAT CARDS ── */
+.stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media(min-width:1024px) { .stat-grid { grid-template-columns:repeat(4,1fr); } }
+
+/* ── XP BAR ── */
+.xp-bar-bg { height:6px; background:#ffffff0a; border-radius:99px; overflow:hidden; }
+.xp-bar-fill { height:100%; border-radius:99px; transition:width .7s cubic-bezier(.4,0,.2,1); }
+
+/* ── ANIMATIONS ── */
+@keyframes floatUp { 0%{opacity:1;transform:translateY(0) scale(1)} 100%{opacity:0;transform:translateY(-80px) scale(1.2)} }
+.xp-pop { position:fixed; pointer-events:none; font-weight:800; font-size:1.3rem; z-index:9999; animation:floatUp 1.4s ease-out forwards; }
+@keyframes slideUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+.slide-up { animation:slideUp .3s ease-out; }
+@keyframes pulse-ring { 0%{transform:scale(1);opacity:.7} 100%{transform:scale(1.6);opacity:0} }
+.live-dot span:first-child { animation:pulse-ring 1.4s ease-out infinite; }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position:fixed; inset:0; background:#000000cc; backdrop-filter:blur(4px);
+  z-index:100; display:flex; align-items:center; justify-content:center;
+  padding:16px; opacity:0; pointer-events:none; transition:opacity .2s;
+}
+.modal-overlay.open { opacity:1; pointer-events:all; }
+.modal-box { background:var(--surface); border:1px solid var(--border2); border-radius:20px; width:100%; max-width:520px; max-height:90vh; overflow-y:auto; }
+
+/* ── POMODORO TIMER ── */
+#pomo-timer-display { font-family:'Syne',sans-serif; font-size:5rem; font-weight:800; letter-spacing:-.04em; }
+
+/* ── HEATMAP ── */
+.heatmap-grid { display:flex; gap:3px; flex-wrap:nowrap; overflow-x:auto; padding-bottom:4px; }
+.heatmap-col  { display:flex; flex-direction:column; gap:3px; }
+.heatmap-cell { width:11px; height:11px; border-radius:2px; background:#ffffff08; flex-shrink:0; }
+.heatmap-cell[data-level="1"] { background:#00e5a033; }
+.heatmap-cell[data-level="2"] { background:#00e5a066; }
+.heatmap-cell[data-level="3"] { background:#00e5a099; }
+.heatmap-cell[data-level="4"] { background:var(--accent); }
+
+/* ── LEADERBOARD ── */
+.lb-row { display:flex; align-items:center; gap:12px; padding:10px 14px; border-radius:12px; border:1px solid var(--border); background:var(--card); transition:border-color .15s; }
+.lb-row:hover { border-color:var(--border2); }
+.lb-row.me { border-color:var(--accent2); background:#7c6af708; }
+.lb-rank { font-family:'Syne',sans-serif; font-size:1.1rem; font-weight:800; width:28px; text-align:center; color:var(--muted); }
+.lb-rank.gold   { color:#fbbf24; }
+.lb-rank.silver { color:#a0a0b0; }
+.lb-rank.bronze { color:#cd7f32; }
+
+/* ── ROUTINE BUILDER ── */
+.slot-builder-row { display:grid; grid-template-columns:1fr 1fr 1fr auto auto; gap:8px; align-items:end; }
+@media(max-width:640px) { .slot-builder-row { grid-template-columns:1fr 1fr; } }
+
+/* ── ONBOARDING ── */
+#onboarding { position:fixed; inset:0; z-index:150; background:var(--bg); display:flex; align-items:center; justify-content:center; padding:1.5rem; }
+
+/* ── SYNC ── */
+#sync-badge { position:fixed; top:16px; right:16px; z-index:99; font-size:.7rem; font-weight:700; padding:4px 12px; border-radius:99px; transition:all .3s; display:none; }
+.sync-ok   { background:#064e3b; color:var(--accent); border:1px solid #00e5a033; }
+.sync-busy { background:#1c1917; color:var(--coin);   border:1px solid #fbbf2433; }
+.sync-err  { background:#450a0a; color:var(--danger); border:1px solid #f76a6a33; }
+
+/* ── CLOCK ── */
+#clock-display { font-family:'Inter',sans-serif; font-size:2.2rem; font-weight:800; letter-spacing:-.02em; line-height:1; display:inline; }
+#date-display { display:inline; margin-left:12px; }
+
+/* ── SECTION HEADERS ── */
+.section-title { font-family:'Inter',sans-serif; font-size:1.3rem; font-weight:800; margin-bottom:16px; }
+
+/* ── COIN DISPLAY ── */
+.coin-display { display:inline-flex; align-items:center; gap:5px; background:#fbbf2412; border:1px solid #fbbf2428; border-radius:99px; padding:3px 10px; font-size:.8rem; font-weight:700; color:var(--coin); }
+
+/* ── TOGGLE ── */
+.toggle { position:relative; width:40px; height:22px; }
+.toggle input { opacity:0; width:0; height:0; }
+.toggle-slider { position:absolute; inset:0; background:#ffffff18; border-radius:99px; cursor:pointer; transition:.2s; }
+.toggle-slider::before { content:''; position:absolute; height:16px; width:16px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:.2s; }
+.toggle input:checked + .toggle-slider { background:var(--accent); }
+.toggle input:checked + .toggle-slider::before { transform:translateX(18px); }
+
+/* ── PROGRESS RING ── */
+.prog-ring { transform:rotate(-90deg); }
+.prog-ring-bg   { fill:none; stroke:#ffffff0a; }
+.prog-ring-fill { fill:none; stroke:var(--accent); stroke-linecap:round; transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1); }
+
+/* ── EMPTY STATE ── */
+.empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 24px; text-align:center; gap:12px; color:var(--muted); }
+.empty-state .empty-icon { font-size:3rem; opacity:.4; }
+
+/* ── TOAST ── */
+#toast { position:fixed; bottom:72px; left:50%; transform:translateX(-50%); z-index:999; background:var(--card); border:1px solid var(--border2); border-radius:10px; padding:10px 20px; font-size:.85rem; font-weight:600; display:none; white-space:nowrap; box-shadow:0 8px 32px #00000060; }
+
+/* ── MOBILE RESPONSIVE ── */
+@media (max-width: 768px) {
+  .hide-on-mobile { display: none !important; }
+  .show-on-mobile { display: block !important; }
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 769px) {
+  .hide-on-mobile { display: block !important; }
+  .show-on-mobile { display: none !important; }
+}
+
+/* ── SHOP ── */
+.shop-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media(min-width:600px){ .shop-grid { grid-template-columns:repeat(3,1fr); } }
+.shop-item { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:8px; transition:border-color .2s; }
+.shop-item:hover { border-color:var(--border2); }
+.shop-item.owned { border-color:var(--accent); background:#00e5a008; }
+.shop-item.active-theme { border-color:var(--accent2); background:#7c6af710; }
+.shop-preview { height:40px; border-radius:8px; margin-bottom:4px; }
+.shop-price { display:inline-flex; align-items:center; gap:4px; font-size:.75rem; font-weight:800; color:var(--coin); }
+.shop-owned-badge { font-size:.65rem; font-weight:700; color:var(--accent); }
+
+/* ── COMPARE (history) ── */
+.compare-chip { display:inline-flex; align-items:center; gap:6px; padding:4px 10px 4px 8px; border-radius:99px; border:1px solid var(--border2); background:var(--card); font-size:.75rem; font-weight:700; cursor:pointer; transition:all .15s; }
+.compare-chip:hover { border-color:var(--border2); background:#ffffff0a; }
+.compare-chip.selected { border-color:var(--accent2); background:#7c6af718; color:var(--accent2); }
+.compare-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+
+/* ── LB TODAY BAR ── */
+.lb-today-bar { height:4px; border-radius:99px; background:#ffffff0a; overflow:hidden; margin-top:3px; }
+.lb-today-fill { height:100%; border-radius:99px; background:var(--accent); transition:width .6s; }
+
+/* ── CQ / MCQ TRACKER ── */
+.cqmcq-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px; }
+.cqmcq-row { display:flex; align-items:center; gap:10px; justify-content:space-between; }
+.cqmcq-item { display:flex; align-items:center; gap:10px; flex:1; }
+.cqmcq-label { font-size:.7rem; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:.06em; }
+.cqmcq-count { font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; line-height:1; min-width:40px; text-align:center; }
+.cqmcq-btn { width:32px; height:32px; border-radius:50%; border:1px solid var(--border2); background:transparent; color:var(--text); font-size:1rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+.cqmcq-btn:hover { border-color:var(--accent); background:#00e5a015; color:var(--accent); }
+.cqmcq-btn:active { transform:scale(.9); }
+.cqmcq-btn.cq-color:hover { border-color:#f7a06a; background:#f7a06a15; color:#f7a06a; }
+.cqmcq-btn.mcq-color:hover { border-color:#3b82f6; background:#3b82f615; color:#3b82f6; }
+.cqmcq-chip { display:inline-flex; align-items:center; gap:4px; padding:5px 12px; border-radius:99px; font-size:.78rem; font-weight:700; }
+.cqmcq-chip-cq { background:#f7a06a22; color:#f7a06a; border:1px solid #f7a06a33; }
+.cqmcq-chip-mcq { background:#3b82f622; color:#3b82f6; border:1px solid #3b82f633; }
+.cqmcq-chip-ko { background:#10b98122; color:#10b981; border:1px solid #10b98133; }
+.cqmcq-chip-kho { background:#ec489922; color:#ec4899; border:1px solid #ec489933; }
+.cqmcq-btn.ko-color:hover { border-color:#10b981; background:#10b98115; color:#10b981; }
+.cqmcq-btn.kho-color:hover { border-color:#ec4899; background:#ec489915; color:#ec4899; }
+.cp-display { display:inline-flex; align-items:center; gap:4px; background:#ec489912; border:1px solid #ec489928; border-radius:99px; padding:3px 10px; font-size:.8rem; font-weight:700; color:#ec4899; }
+.cp-badge { display:inline-flex; align-items:center; gap:4px; padding:5px 12px; border-radius:99px; font-size:.78rem; font-weight:700; background:#ec489922; color:#ec4899; border:1px solid #ec489933; }
+.cqmcq-form-input { width:100%; background:#1a1a22; border:1px solid var(--border2); border-radius:8px; padding:.45rem .7rem; color:var(--text); font-family:inherit; font-size:.78rem; outline:none; transition:border-color .2s; -moz-appearance:textfield; }
+.cqmcq-form-input:focus { border-color:var(--accent2); }
+.cqmcq-form-input::placeholder { color:var(--muted); font-size:.72rem; }
+.cqmcq-form-input::-webkit-outer-spin-button,
+.cqmcq-form-input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+</style>
 </head>
 <body>
 
-<header>
-    <span class="college-name">Brahmanbaria Govt. College</span>
-    <h1>HSC Exam 2026</h1>
-    <p>Science Group</p>
-    <div class="countdown-box" id="countdown">⟳ Loading...</div>
-</header>
+<!-- ══ SYNC BADGE ══ -->
+<div id="sync-badge"></div>
 
-<div class="controls">
-    <div class="toggle-group">
-        <button class="view-btn active" data-view="list">List View</button>
-        <button class="view-btn" data-view="calendar">Calendar</button>
+<!-- ══ TOAST ══ -->
+<div id="toast"></div>
+
+<!-- ══════════════════════════════════════
+     AUTH SCREEN
+══════════════════════════════════════ -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div style="text-align:center;margin-bottom:2rem">
+      <div style="font-size:3rem;margin-bottom:.5rem">🚀</div>
+      <h1 class="font-display" style="font-size:2rem;font-weight:800;letter-spacing:-.03em">RoutineX</h1>
+      <p style="color:var(--muted);font-size:.85rem;margin-top:4px">Your Life OS — Build the day. Own the year.</p>
     </div>
-    <button class="theme-toggle" id="themeToggle" title="Switch Theme">☀️</button>
+
+    <!-- LOGIN -->
+    <div id="auth-login" class="slide-up">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <input id="li-user" class="inp" type="text" placeholder="ইউজারনেম" autocomplete="username">
+        <input id="li-pass" class="inp" type="password" placeholder="পাসওয়ার্ড" autocomplete="current-password">
+        <p id="li-err" style="color:var(--danger);font-size:.8rem;display:none;text-align:center"></p>
+        <button class="btn btn-accent btn-full" onclick="doLogin()" id="li-btn" style="margin-top:4px">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> লগইন করো
+        </button>
+        <div class="auth-divider">অথবা</div>
+        <button class="btn btn-ghost btn-full" onclick="showAuthTab('register')">নতুন অ্যাকাউন্ট তৈরি করো →</button>
+      </div>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="auth-register" style="display:none">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <input id="rg-user"  class="inp" type="text"     placeholder="ইউজারনেম (৩+ অক্ষর)">
+        <input id="rg-pass"  class="inp" type="password" placeholder="পাসওয়ার্ড (৪+ অক্ষর)">
+        <input id="rg-pass2" class="inp" type="password" placeholder="পাসওয়ার্ড নিশ্চিত করো">
+        <p id="rg-err" style="color:var(--danger);font-size:.8rem;display:none;text-align:center"></p>
+        <button class="btn btn-accent btn-full" onclick="doRegister()" id="rg-btn" style="margin-top:4px">
+          <i class="fa-solid fa-user-plus"></i> অ্যাকাউন্ট তৈরি করো
+        </button>
+        <div class="auth-divider">অথবা</div>
+        <button class="btn btn-ghost btn-full" onclick="showAuthTab('login')">← লগইনে ফিরে যাও</button>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="container">
-    <div id="listView" class="exam-list"></div>
-    <div id="calendarView" class="calendar-view">
-        <div id="calGridContainer"></div>
+<!-- ══════════════════════════════════════
+     ONBOARDING (first time, no routine)
+══════════════════════════════════════ -->
+<div id="onboarding" style="display:none">
+  <div style="width:100%;max-width:480px;text-align:center">
+    <div style="font-size:4rem;margin-bottom:1rem">🗓️</div>
+    <h2 class="font-display" style="font-size:1.8rem;font-weight:800;margin-bottom:.5rem">রুটিন নেই এখনো!</h2>
+    <p style="color:var(--muted);font-size:.9rem;margin-bottom:2rem;line-height:1.6">তোমার প্রথম রুটিন তৈরি করো।<br>নিজে বানাও, অথবা AI কে বলো।</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-accent" style="padding:.75rem 1.5rem" onclick="closeOnboarding();openRoutineEditor(null);switchRoutineMode('manual')">
+        <i class="fa-solid fa-pencil"></i> নিজে বানাই
+      </button>
+      <button class="btn btn-accent2" style="padding:.75rem 1.5rem" onclick="closeOnboarding();openRoutineEditor(null);switchRoutineMode('ai')">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> AI দিয়ে বানাই
+      </button>
     </div>
+  </div>
 </div>
 
-<div class="offline-badge" id="offlineBadge">📴 Offline Mode</div>
+<!-- ══════════════════════════════════════
+     TOP HEADER BAR
+══════════════════════════════════════ -->
+<nav id="top-header">
+  <div class="brand">🚀 RoutineX</div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="text-align:right;display:none" id="hdr-xp-wrap">
+      <div style="font-size:.68rem;color:var(--muted);margin-bottom:2px" id="hdr-level">Lv 1</div>
+      <div style="width:80px" class="xp-bar-bg"><div id="hdr-xp-bar" class="xp-bar-fill" style="background:var(--accent2);width:0%"></div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;cursor:pointer" onclick="doLogout()" title="লগআউট">
+      <div id="hdr-avatar" class="avatar" style="width:34px;height:34px;font-size:.85rem">?</div>
+      <div style="display:none" id="hdr-info">
+        <div id="hdr-username" style="font-weight:700;font-size:.82rem;line-height:1.2">—</div>
+        <div style="display:flex;align-items:center;gap:5px;margin-top:1px">
+          <span id="hdr-coins" class="coin-display" style="font-size:.7rem;padding:1px 7px">🟡 0</span>
+          <span id="hdr-cp" class="cp-display" style="font-size:.7rem;padding:1px 7px">💎 0</span>
+        </div>
+      </div>
+      <i class="fa-solid fa-right-from-bracket" style="font-size:.8rem;color:var(--muted)"></i>
+    </div>
+  </div>
+</nav>
 
-<script>
-    (function() {
-        // ============================================================
-        //  CONFIGURATION - Edit these settings for your exam schedule
-        // ============================================================
-        const examConfig = {
-            // Default exam timing (used for countdown and display)
-            startTime: "10:00",
-            endTime: "13:00",
-            
-            // Exam schedule - add dates in YYYY-MM-DD format
-            // You can override start/end time for specific exams
-            exams: [
-                { "date": "2026-07-02", "subject": "বাংলা ১ম পত্র", "code": "১০১" },
-                { "date": "2026-07-04", "subject": "বাংলা ২য় পত্র", "code": "১০২" },
-                { "date": "2026-07-06", "subject": "ইংরেজি ১ম পত্র", "code": "১০৭" },
-                { "date": "2026-07-08", "subject": "ইংরেজি ২য় পত্র", "code": "১০৮" },
-                { "date": "2026-07-11", "subject": "তথ্য ও যোগাযোগ প্রযুক্তি", "code": "২৭৫" },
-                { "date": "2026-07-13", "subject": "পদার্থবিজ্ঞান ১ম পত্র", "code": "১৭৪" },
-                { "date": "2026-07-15", "subject": "পদার্থবিজ্ঞান ২য় পত্র", "code": "১৭৫" },
-                { "date": "2026-07-19", "subject": "রসায়ন ১ম পত্র", "code": "১৭৬" },
-                { "date": "2026-07-22", "subject": "রসায়ন ২য় পত্র", "code": "১৭৭" },
-                { "date": "2026-07-27", "subject": "জীববিজ্ঞান ১ম পত্র", "code": "১৭৮" },
-                { "date": "2026-07-29", "subject": "জীববিজ্ঞান ২য় পত্র", "code": "১৭৯" },
-                { "date": "2026-08-02", "subject": "উচ্চতর গণিত ১ম পত্র", "code": "২৬৫" },
-                { "date": "2026-08-04", "subject": "উচ্চতর গণিত ২য় পত্র", "code": "২৬৬" },
-                // ব্যবহারিক (Practical) exams - afternoon sessions
-                { "date": "2026-08-09", "subject": "জীববিজ্ঞান ১ম পত্র ব্যবহারিক", "startTime": "14:00", "endTime": "16:00" },
-                { "date": "2026-08-10", "subject": "উচ্চতর গণিত ১ম পত্র ব্যবহারিক", "startTime": "14:00", "endTime": "16:00" },
-                { "date": "2026-08-11", "subject": "রসায়নবিজ্ঞান ১ম পত্র ব্যবহারিক", "startTime": "14:00", "endTime": "16:00" },
-                { "date": "2026-08-12", "subject": "পদার্থবিজ্ঞান ১ম পত্র ব্যবহারিক", "startTime": "14:00", "endTime": "16:00" },
-                { "date": "2026-08-13", "subject": "জীববিজ্ঞান ২য় পত্র ব্যবহারিক", "startTime": "14:00", "endTime": "16:00" },
-                { "date": "2026-08-15", "subject": "উচ্চতর গণিত ২য় পত্র ব্যবহারিক", "startTime": "14:00", "endTime": "16:00" },
-                { "date": "2026-08-16", "subject": "রসায়নবিজ্ঞান ২য় পত্র ব্যবহারিক", "startTime": "14:00", "endTime": "16:00" },
-                { "date": "2026-08-17", "subject": "পদার্থবিজ্ঞান ২য় পত্র ব্যবহারিক", "startTime": "14:00", "endTime": "16:00" }
-            ]
-        };
-        // ============================================================
+<!-- ══════════════════════════════════════
+     BOTTOM NAV (mobile)
+══════════════════════════════════════ -->
+<div id="bottom-nav">
+  <div class="bnav-item active" data-view="dashboard" onclick="goTo('dashboard')">
+    <i class="fa-solid fa-house"></i><span>হোম</span>
+  </div>
+  <div class="bnav-item" data-view="routines" onclick="goTo('routines')">
+    <i class="fa-solid fa-list-check"></i><span>রুটিন</span>
+  </div>
+  <div class="bnav-item" data-view="tasks" onclick="goTo('tasks')">
+    <i class="fa-solid fa-check-double"></i><span>টাস্ক</span>
+  </div>
+  <div class="bnav-item" data-view="leaderboard" onclick="goTo('leaderboard')">
+    <i class="fa-solid fa-trophy"></i><span>র‍্যাংক</span>
+  </div>
+  <div class="bnav-item" data-view="shop" onclick="goTo('shop')">
+    <i class="fa-solid fa-store"></i><span>শপ</span>
+  </div>
+  <div class="bnav-item" data-view="history" onclick="goTo('history')">
+    <i class="fa-solid fa-chart-line"></i><span>ইতিহাস</span>
+  </div>
+</div>
 
-        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        const shortMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+<!-- ══════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════ -->
+<div id="main-content" style="display:none">
 
-        function pad(n) { return String(n).padStart(2, '0'); }
+  <!-- ── DASHBOARD ── -->
+  <div id="view-dashboard" class="view active">
+    <!-- Clock + date -->
+    <div style="margin-bottom:20px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+      <span id="clock-display">00:00</span>
+      <span id="date-display" style="color:var(--accent);font-size:.8rem;font-weight:600;letter-spacing:.02em">—</span>
+    </div>
 
-        // Helper to format time (12-hour format)
-        function formatTime(timeStr) {
-            const [hours, minutes] = timeStr.split(':').map(Number);
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            const displayHours = hours % 12 || 12;
-            return `${displayHours}:${pad(minutes)} ${ampm}`;
-        }
+    <!-- Stat cards -->
+    <div class="stat-grid" style="margin-bottom:20px">
+      <div class="card" style="padding:16px">
+        <div style="font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">আজকের XP</div>
+        <div id="stat-xp" style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--accent)">0</div>
+        <div id="stat-level-badge" class="badge badge-accent2" style="margin-top:6px">লেভেল ১</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">আজকের CP 💎</div>
+        <div id="stat-cp" style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:#ec4899">0</div>
+        <div style="font-size:.7rem;color:var(--muted);margin-top:6px">CQ & MCQ & ক & খ থেকে</div>
+      </div>
+      <div class="card hide-on-mobile" style="padding:16px">
+        <div style="font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">কয়েন 🟡</div>
+        <div id="stat-coins" style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--coin)">0</div>
+        <div style="font-size:.7rem;color:var(--muted);margin-top:6px">study slots থেকে</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">সম্পন্ন স্লট</div>
+        <div id="stat-done" style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--accent2)">0/0</div>
+        <div style="margin-top:8px" class="xp-bar-bg"><div id="stat-prog-bar" class="xp-bar-fill" style="background:var(--accent2);width:0%"></div></div>
+      </div>
+      <div class="card hide-on-mobile" style="padding:16px">
+        <div style="font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">দিনের অগ্রগতি</div>
+        <div id="stat-day-pct" style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--accent3)">0%</div>
+        <div style="margin-top:8px" class="xp-bar-bg"><div id="stat-day-bar" class="xp-bar-fill" style="background:var(--accent3);width:0%"></div></div>
+      </div>
+    </div>
+    
+    <!-- Today's Topic (Mobile visible) -->
+    <div class="card show-on-mobile" style="padding:14px;margin-bottom:20px;border-color:var(--accent2)44">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="font-size:1rem">📚</span>
+        <span style="font-size:.75rem;font-weight:700;color:var(--accent2)">আজকের টপিক</span>
+      </div>
+      <input id="today-topic-input" class="inp" style="font-size:.85rem" placeholder="আজ কী পড়ছো? লিখে রাখো..." oninput="saveTodayTopic('today-topic-input')">
+    </div>
+    <!-- Desktop Today's Topic -->
+    <div class="card hide-on-mobile" style="padding:14px;margin-bottom:20px;border-color:var(--accent2)44">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="font-size:1rem">📚</span>
+        <span style="font-size:.75rem;font-weight:700;color:var(--accent2)">আজকের টপিক</span>
+      </div>
+      <input id="today-topic-input-desktop" class="inp" style="font-size:.85rem" placeholder="আজ কী পড়ছো? লিখে রাখো..." oninput="saveTodayTopic('today-topic-input-desktop')">
+    </div>
 
-        // Helper to create Date object for exam end time
-        function getExamEndDate(exam) {
-            const endTime = exam.endTime || examConfig.endTime;
-            return new Date(`${exam.date}T${endTime}:00`);
-        }
+    <!-- CQ / MCQ / KO / KHO Tracker (Compact) -->
+    <div class="cqmcq-card" style="margin-bottom:20px;border-color:#f7a06a33;padding:14px 16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;color:var(--accent3)">
+          <span>📝</span> ট্র্যাকার
+        </div>
+        <button class="btn btn-ghost btn-xs" onclick="openCQMCQEditor()" style="font-size:.68rem;padding:3px 10px">
+          <i class="fa-solid fa-pen" style="font-size:.6rem"></i> এডিট
+        </button>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span class="cqmcq-chip cqmcq-chip-cq" id="cq-chip">CQ 0</span>
+        <span class="cqmcq-chip cqmcq-chip-mcq" id="mcq-chip">MCQ 0</span>
+        <span class="cqmcq-chip cqmcq-chip-ko" id="ko-chip">ক 0</span>
+        <span class="cqmcq-chip cqmcq-chip-kho" id="kho-chip">খ 0</span>
+        <span class="cp-badge" id="cp-chip" style="margin-left:auto">💎 0 CP</span>
+      </div>
+      <div style="margin-top:6px;font-size:.58rem;color:var(--muted);text-align:center">র‍্যাংকিং এ গোপন পয়েন্ট যোগ হবে ✨</div>
+    </div>
 
-        // Helper to create Date object for exam start time
-        function getExamStartDate(exam) {
-            const startTime = exam.startTime || examConfig.startTime;
-            return new Date(`${exam.date}T${startTime}:00`);
-        }
+    <!-- Current slot -->
+    <div id="current-slot-card" class="card" style="padding:16px;margin-bottom:20px;border-color:#00e5a033">
+      <div style="display:flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;color:var(--accent);margin-bottom:8px">
+        <span class="live-dot" style="display:flex;align-items:center;gap:4px">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block;position:relative">
+            <span style="position:absolute;inset:-3px;border-radius:50%;border:2px solid var(--accent);animation:pulse-ring 1.5s ease-out infinite"></span>
+          </span>
+          এখন চলছে
+        </span>
+      </div>
+      <div id="cur-slot-title" class="font-display" style="font-size:1.2rem;font-weight:800">—</div>
+      <div id="cur-slot-desc"  style="color:var(--muted);font-size:.85rem;margin-top:2px">—</div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn btn-ghost btn-sm" onclick="openPomodoro()"><i class="fa-solid fa-clock"></i> ফোকাস</button>
+        <button class="btn btn-ghost btn-sm" onclick="speakCurrent()"><i class="fa-solid fa-volume-high"></i></button>
+      </div>
+    </div>
 
-        // ----- THEME -----
-        const themes = ['light', 'dark', 'cursed'];
-        const themeIcons = { light: '☀️', dark: '🌙', cursed: '👹' };
-        let currentTheme = localStorage.getItem('theme') || 'light';
-        if (!themes.includes(currentTheme)) currentTheme = 'light';
+    <!-- Timeline -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <h2 class="section-title" style="margin:0">আজকের রুটিন</h2>
+      <div id="active-routine-name" class="badge badge-muted">—</div>
+    </div>
+    <div id="timeline" class="timeline-wrap"></div>
+  </div>
 
-        function applyTheme(theme) {
-            document.body.setAttribute('data-theme', theme);
-            document.getElementById('themeToggle').textContent = themeIcons[theme];
-            localStorage.setItem('theme', theme);
-        }
-        applyTheme(currentTheme);
-        document.getElementById('themeToggle').addEventListener('click', function() {
-            let idx = themes.indexOf(currentTheme);
-            let next = (idx + 1) % themes.length;
-            currentTheme = themes[next];
-            applyTheme(currentTheme);
-        });
+  <!-- ── ROUTINES ── -->
+  <div id="view-routines" class="view">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+      <h2 class="section-title" style="margin:0">আমার রুটিন</h2>
+      <button class="btn btn-accent" onclick="openRoutineEditor(null)">
+        <i class="fa-solid fa-plus"></i> নতুন রুটিন
+      </button>
+    </div>
+    <div id="routines-list" style="display:flex;flex-direction:column;gap:12px"></div>
+  </div>
 
-        // ----- VIEW SWITCH -----
-        const viewBtns = document.querySelectorAll('.view-btn');
-        const listView = document.getElementById('listView');
-        const calendarView = document.getElementById('calendarView');
+  <!-- ── TASKS ── -->
+  <div id="view-tasks" class="view">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+      <h2 class="section-title" style="margin:0">আমার টাস্ক ✅</h2>
+      <button class="btn btn-accent" onclick="openTaskEditor()">
+        <i class="fa-solid fa-plus"></i> নতুন টাস্ক
+      </button>
+    </div>
+    <div style="margin-bottom:16px;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <span style="font-size:.8rem;color:var(--muted)">আজকের টাস্ক:</span>
+        <span id="tasks-progress" style="font-weight:800;color:var(--accent);margin-left:6px">0/0</span>
+      </div>
+      <div style="width:100px;height:6px;background:var(--border);border-radius:99px;overflow:hidden">
+        <div id="tasks-progress-bar" style="height:100%;background:var(--accent);width:0%;transition:width .3s"></div>
+      </div>
+    </div>
+    <div id="tasks-list" style="display:flex;flex-direction:column;gap:10px"></div>
+  </div>
 
-        function switchView(view) {
-            viewBtns.forEach(b => b.classList.remove('active'));
-            document.querySelector(`.view-btn[data-view="${view}"]`).classList.add('active');
-            if (view === 'list') {
-                listView.style.display = 'flex';
-                calendarView.style.display = 'none';
-            } else {
-                listView.style.display = 'none';
-                calendarView.style.display = 'block';
-                renderAllCalendars();
-            }
-        }
-        viewBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                switchView(this.dataset.view);
-            });
-        });
+  <!-- ── LEADERBOARD ── -->
+  <div id="view-leaderboard" class="view">
+    <h2 class="section-title">লিডারবোর্ড 🏆</h2>
 
-        // ----- RENDER LIST -----
-        function renderList() {
-            const container = document.getElementById('listView');
-            container.innerHTML = '';
-            const now = new Date();
-            const todayStr = now.toISOString().split('T')[0];
-            const exams = examConfig.exams;
+    <!-- Tabs -->
+    <div style="display:flex;gap:6px;margin-bottom:20px">
+      <button class="btn btn-accent btn-sm"  id="lb-tab-today"  onclick="switchLBTab('today')">আজ</button>
+      <button class="btn btn-ghost btn-sm"   id="lb-tab-weekly" onclick="switchLBTab('weekly')">সাপ্তাহিক</button>
+      <button class="btn btn-ghost btn-sm"   id="lb-tab-all"    onclick="switchLBTab('all')">সর্বকালীন</button>
+    </div>
 
-            exams.forEach((exam, idx) => {
-                const examDate = new Date(exam.date);
-                if (idx > 0) {
-                    const prev = new Date(exams[idx-1].date);
-                    const diffDays = Math.floor((examDate - prev) / (1000*60*60*24));
-                    const gap = diffDays - 1;
-                    let gapHtml = '';
-                    if (gap === 0) {
-                        gapHtml = `<div class="gap-indicator"><span class="gap-badge danger">⚠️ 0 Days Gap!</span></div>`;
-                    } else if (gap > 0) {
-                        gapHtml = `<div class="gap-indicator"><span class="gap-badge">☕ ${gap} Day${gap>1?'s':''} Gap</span></div>`;
-                    }
-                    if (gap >= 0) container.innerHTML += gapHtml;
-                }
+    <!-- Chart -->
+    <div class="card" style="padding:16px;margin-bottom:20px">
+      <canvas id="lb-chart" height="180"></canvas>
+    </div>
 
-                let status = 'upcoming';
-                if (exam.date < todayStr) status = 'completed';
-                else if (exam.date === todayStr) status = 'today';
+    <!-- Today's live snapshot banner -->
+    <div id="lb-today-banner" style="display:block;margin-bottom:12px;padding:10px 14px;background:#00e5a010;border:1px solid #00e5a033;border-radius:12px;font-size:.78rem;color:var(--accent);font-weight:700">
+      ⚡ আজকের লাইভ XP — এখন পর্যন্ত সবার অর্জন
+    </div>
 
-                const d = examDate.getDate();
-                const m = shortMonths[examDate.getMonth()];
-                const wd = days[examDate.getDay()].substring(0,3);
+    <!-- List -->
+    <div id="lb-list" style="display:flex;flex-direction:column;gap:8px"></div>
+  </div>
 
-                const startTime = exam.startTime || examConfig.startTime;
-                const endTime = exam.endTime || examConfig.endTime;
-                const timeDisplay = `${formatTime(startTime)} - ${formatTime(endTime)}`;
+  <!-- ── HISTORY ── -->
+  <div id="view-history" class="view">
+    <h2 class="section-title">XP ইতিহাস 📈</h2>
 
-                // Build meta info: code only if exists, time always
-                let metaHTML = '';
-                if (exam.code) {
-                    metaHTML += `<span class="subject-code">Code: ${exam.code}</span>`;
-                }
-                metaHTML += `<span class="exam-time">${timeDisplay}</span>`;
+    <!-- Streak + summary -->
+    <div class="stat-grid" style="margin-bottom:20px">
+      <div class="card" style="padding:16px">
+        <div style="font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">🔥 স্ট্রিক</div>
+        <div id="hist-streak" style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--accent3)">0</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:2px">দিন ধারাবাহিক</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">🏆 সেরা দিন</div>
+        <div id="hist-best" style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--accent)">0</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:2px">XP</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">📅 এই সপ্তাহ</div>
+        <div id="hist-week" style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--accent2)">0</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:2px">XP</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">∑ মোট XP</div>
+        <div id="hist-total" style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--coin)">0</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:2px">সব সময়</div>
+      </div>
+    </div>
 
-                container.innerHTML += `
-                    <div class="exam-card ${status}">
-                        <div class="date-box">
-                            <div class="day">${d}</div>
-                            <div class="month">${m}</div>
-                            <div class="weekday">${wd}</div>
-                        </div>
-                        <div class="subject-box">
-                            <div class="subject-name">${exam.subject}</div>
-                            <div class="exam-meta">
-                                ${metaHTML}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
+    <!-- Heatmap -->
+    <div class="card" style="padding:16px;margin-bottom:20px">
+      <div style="font-size:.78rem;font-weight:700;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em">গত ৩ মাস — প্রতিদিনের XP</div>
+      <div id="heatmap-container" style="overflow-x:auto"></div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:10px;font-size:.7rem;color:var(--muted)">
+        কম <div class="heatmap-cell"></div><div class="heatmap-cell" data-level="1"></div><div class="heatmap-cell" data-level="2"></div><div class="heatmap-cell" data-level="3"></div><div class="heatmap-cell" data-level="4"></div> বেশি
+      </div>
+    </div>
 
-        // ----- RENDER CALENDAR (auto-detects months from data) -----
-        function renderAllCalendars() {
-            const container = document.getElementById('calGridContainer');
-            container.innerHTML = '';
-            const exams = examConfig.exams;
-            if (!exams.length) {
-                container.innerHTML = '<p style="text-align:center;padding:2rem;">No exams added.</p>';
-                return;
-            }
+    <!-- Study Time Chart -->
+    <div class="card" style="padding:16px;margin-bottom:20px;border-color:var(--accent2)44">
+      <div style="font-size:.78rem;font-weight:700;color:var(--accent2);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em">📚 সাপ্তাহিক পড়ার সময় (ঘণ্টা)</div>
+      <canvas id="study-time-chart" height="140"></canvas>
+      <div style="display:flex;justify-content:center;gap:20px;margin-top:12px">
+        <div style="text-align:center">
+          <div style="font-size:.65rem;color:var(--muted)">এই সপ্তাহ</div>
+          <div id="study-hours-week" style="font-family:'Inter',sans-serif;font-size:1.4rem;font-weight:800;color:var(--accent2)">0h</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:.65rem;color:var(--muted)">গড়/দিন</div>
+          <div id="study-hours-avg" style="font-family:'Inter',sans-serif;font-size:1.4rem;font-weight:800;color:var(--accent)">0h</div>
+        </div>
+      </div>
+    </div>
 
-            const monthSet = new Set();
-            exams.forEach(e => {
-                const d = new Date(e.date);
-                const key = `${d.getFullYear()}-${pad(d.getMonth()+1)}`;
-                monthSet.add(key);
-            });
-            const sortedMonths = Array.from(monthSet).sort();
-            const now = new Date();
-            const todayStr = now.toISOString().split('T')[0];
+    <!-- USER COMPARISON -->
+    <div class="card" style="padding:18px;margin-bottom:20px;border-color:var(--accent2)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+        <div style="font-size:.78rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.06em">⚔️ তুলনা করো</div>
+        <div style="font-size:.72rem;color:var(--muted)">সর্বোচ্চ ২ জন বেছে নাও</div>
+      </div>
+      <!-- user chips -->
+      <div id="compare-user-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
+        <div style="color:var(--muted);font-size:.8rem;padding:4px 0">লোড হচ্ছে...</div>
+      </div>
+      <!-- Comparison chart -->
+      <div id="compare-chart-wrap" style="display:none">
+        <canvas id="compare-chart" height="180"></canvas>
+        <!-- Weekly comparison table -->
+        <div id="compare-table" style="margin-top:14px;display:flex;flex-direction:column;gap:6px"></div>
+      </div>
+      <div id="compare-empty" style="text-align:center;padding:20px;color:var(--muted);font-size:.82rem">
+        উপরের তালিকা থেকে ব্যবহারকারী বেছে নাও
+      </div>
+    </div>
 
-            sortedMonths.forEach(key => {
-                const [year, month] = key.split('-').map(Number);
-                const monthIdx = month - 1;
-                const headerText = `${months[monthIdx]} ${year}`;
-                container.innerHTML += `<div class="cal-header" style="margin-top:20px;">${headerText}</div>`;
-                const grid = document.createElement('div');
-                grid.className = 'cal-grid';
-                container.appendChild(grid);
+    <!-- Charts -->
+    <div style="display:grid;grid-template-columns:1fr;gap:16px">
+      <div class="card" style="padding:16px">
+        <canvas id="hist-weekly-chart" height="160"></canvas>
+      </div>
+      <div class="card" style="padding:16px">
+        <canvas id="hist-monthly-chart" height="160"></canvas>
+      </div>
+    </div>
+  </div>
 
-                ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(day => {
-                    const d = document.createElement('div');
-                    d.className = 'cal-day-name';
-                    d.textContent = day;
-                    grid.appendChild(d);
-                });
+  <!-- ── SHOP ── -->
+  <div id="view-shop" class="view">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:8px">
+      <h2 class="section-title" style="margin:0">শপ 🛍️</h2>
+      <div id="shop-balance" class="coin-display" style="font-size:.85rem">🟡 0</div>
+    </div>
+    <p style="color:var(--muted);font-size:.82rem;margin-bottom:20px">Study slots সম্পন্ন করে coins অর্জন করো এবং কিনে নাও।</p>
 
-                const firstDay = new Date(year, monthIdx, 1).getDay();
-                const daysInMonth = new Date(year, monthIdx+1, 0).getDate();
+    <!-- Themes -->
+    <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">🎨 থিম</div>
+    <div class="shop-grid" id="shop-themes" style="margin-bottom:24px"></div>
 
-                for (let i=0; i<firstDay; i++) {
-                    const empty = document.createElement('div');
-                    empty.className = 'cal-date empty';
-                    grid.appendChild(empty);
-                }
+    <!-- Boosts -->
+    <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">⚡ বুস্ট</div>
+    <div class="shop-grid" id="shop-boosts"></div>
+  </div>
 
-                for (let d=1; d<=daysInMonth; d++) {
-                    const dateStr = `${year}-${pad(month)}-${pad(d)}`;
-                    const exam = exams.find(e => e.date === dateStr);
-                    const cell = document.createElement('div');
-                    let cls = 'cal-date';
-                    if (dateStr === todayStr) cls += ' is-today';
-                    if (exam) {
-                        cls += ' has-exam';
-                        if (dateStr < todayStr) cls += ' completed';
-                    }
-                    cell.className = cls;
+</div><!-- /main-content -->
 
-                    const num = document.createElement('div');
-                    num.className = 'cal-num';
-                    num.textContent = d;
-                    cell.appendChild(num);
+<!-- ══════════════════════════════════════
+     MODALS
+══════════════════════════════════════ -->
 
-                    if (exam) {
-                        const sub = document.createElement('div');
-                        sub.className = 'cal-subject-text';
-                        sub.textContent = exam.subject;
-                        cell.appendChild(sub);
-                        
-                        const startTime = exam.startTime || examConfig.startTime;
-                        const timeEl = document.createElement('div');
-                        timeEl.className = 'cal-time-text';
-                        timeEl.textContent = formatTime(startTime);
-                        cell.appendChild(timeEl);
-                    }
-                    grid.appendChild(cell);
-                }
-            });
-        }
+<!-- CQ/MCQ/KO/KHO EDIT MODAL -->
+<div id="modal-cqmcq-edit" class="modal-overlay" onclick="if(event.target===this)closeCQMCQEditor()">
+  <div class="modal-box" style="padding:24px;max-width:400px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <h3 class="font-display" style="font-size:1.1rem;font-weight:800">📝 ট্র্যাকার এডিট</h3>
+      <button class="btn btn-ghost btn-xs" onclick="closeCQMCQEditor()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <!-- CQ -->
+      <div>
+        <div style="font-size:.7rem;font-weight:700;color:#f7a06a;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em">CQ সমাধান</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button class="cqmcq-btn cq-color" onclick="editorAdjust('cq',-1)">−</button>
+          <input id="edit-cq" type="number" min="0" class="cqmcq-form-input" style="text-align:center;font-size:1.1rem;font-weight:800;color:#f7a06a" oninput="editorPreview()">
+          <button class="cqmcq-btn cq-color" onclick="editorAdjust('cq',1)">+</button>
+        </div>
+      </div>
+      <!-- MCQ -->
+      <div>
+        <div style="font-size:.7rem;font-weight:700;color:#3b82f6;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em">MCQ সমাধান</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button class="cqmcq-btn mcq-color" onclick="editorAdjust('mcq',-1)">−</button>
+          <input id="edit-mcq" type="number" min="0" class="cqmcq-form-input" style="text-align:center;font-size:1.1rem;font-weight:800;color:#3b82f6" oninput="editorPreview()">
+          <button class="cqmcq-btn mcq-color" onclick="editorAdjust('mcq',1)">+</button>
+        </div>
+      </div>
+      <!-- ক -->
+      <div>
+        <div style="font-size:.7rem;font-weight:700;color:#10b981;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em">ক সমাধান</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button class="cqmcq-btn ko-color" onclick="editorAdjust('ko',-1)">−</button>
+          <input id="edit-ko" type="number" min="0" class="cqmcq-form-input" style="text-align:center;font-size:1.1rem;font-weight:800;color:#10b981" oninput="editorPreview()">
+          <button class="cqmcq-btn ko-color" onclick="editorAdjust('ko',1)">+</button>
+        </div>
+      </div>
+      <!-- খ -->
+      <div>
+        <div style="font-size:.7rem;font-weight:700;color:#ec4899;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em">খ সমাধান</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button class="cqmcq-btn kho-color" onclick="editorAdjust('kho',-1)">−</button>
+          <input id="edit-kho" type="number" min="0" class="cqmcq-form-input" style="text-align:center;font-size:1.1rem;font-weight:800;color:#ec4899" oninput="editorPreview()">
+          <button class="cqmcq-btn kho-color" onclick="editorAdjust('kho',1)">+</button>
+        </div>
+      </div>
+      <!-- CP Preview -->
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;background:#ec489908;border:1px solid #ec489922;border-radius:10px">
+        <span style="font-size:.72rem;color:var(--muted);font-weight:700">CP Preview</span>
+        <span class="cp-badge" id="edit-cp-preview" style="font-size:.72rem">💎 0</span>
+      </div>
+      <div style="font-size:.6rem;color:var(--muted);text-align:center">(CQ×10 + MCQ×0.2 + ক×1 + খ×2)</div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:18px">
+      <button class="btn btn-accent btn-full" onclick="saveCQMCQEditor()">
+        <i class="fa-solid fa-check"></i> সেভ করো
+      </button>
+      <button class="btn btn-ghost" onclick="closeCQMCQEditor()">বন্ধ</button>
+    </div>
+  </div>
+</div>
 
-        // ----- COUNTDOWN -----
-        function updateCountdown() {
-            const now = new Date();
-            const exams = examConfig.exams;
-            const next = exams.find(e => getExamEndDate(e) > now);
-            const el = document.getElementById('countdown');
-            if (!next) {
-                el.innerHTML = "✅ All Exams Finished!";
-                return;
-            }
-            
-            const startDate = getExamStartDate(next);
-            const endDate = getExamEndDate(next);
-            
-            if (now >= startDate && now <= endDate) {
-                const remaining = endDate - now;
-                const h = Math.floor((remaining % (1000*60*60*24)) / (1000*60*60));
-                const m = Math.floor((remaining % (1000*60*60)) / (1000*60));
-                const s = Math.floor((remaining % (1000*60)) / 1000);
-                el.innerHTML = `▶️ ${next.subject} · ${h}h ${m}m ${s}s remaining`;
-                return;
-            }
-            
-            const diff = startDate - now;
-            if (diff <= 0) {
-                el.innerHTML = `▶️ ${next.subject} is starting!`;
-                return;
-            }
-            const d = Math.floor(diff / (1000*60*60*24));
-            const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
-            const m = Math.floor((diff % (1000*60*60)) / (1000*60));
-            const s = Math.floor((diff % (1000*60)) / 1000);
-            el.innerHTML = `⏳ ${next.subject} in ${d}d ${h}h ${m}m ${s}s`;
-        }
+<!-- POMODORO -->
+<div id="modal-pomo" class="modal-overlay" onclick="if(event.target===this)closePomo()">
+  <div class="modal-box" style="padding:32px;text-align:center">
+    <div id="pomo-slot-name" style="color:var(--muted);font-size:.85rem;margin-bottom:8px">—</div>
+    <div id="pomo-timer-display" style="font-family:'Syne',sans-serif;font-size:5rem;font-weight:800;color:var(--accent);letter-spacing:-.04em;line-height:1;margin-bottom:8px">50:00</div>
+    <div id="pomo-xp-hint" style="color:var(--accent2);font-size:.82rem;font-weight:600;margin-bottom:28px">—</div>
+    <div style="display:flex;gap:12px;justify-content:center">
+      <button id="pomo-btn" class="btn btn-accent" style="padding:.75rem 2rem;font-size:1rem" onclick="togglePomo()">শুরু</button>
+      <button class="btn btn-ghost" style="padding:.75rem 1.5rem" onclick="closePomo()">বন্ধ</button>
+    </div>
+  </div>
+</div>
 
-        // ----- INIT -----
-        renderList();
-        switchView('list');
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
+<!-- ROUTINE EDITOR -->
+<div id="modal-routine" class="modal-overlay" onclick="if(event.target===this)closeRoutineEditor()">
+  <div class="modal-box" style="padding:24px;max-width:560px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <h3 class="font-display" style="font-size:1.2rem;font-weight:800" id="routine-modal-title">নতুন রুটিন</h3>
+      <button class="btn btn-ghost btn-xs" onclick="closeRoutineEditor()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    
+    <!-- Mode Toggle: Manual vs AI -->
+    <div id="routine-mode-toggle" style="display:flex;gap:6px;margin-bottom:16px">
+      <button class="btn btn-accent btn-sm btn-full" id="mode-manual-btn" onclick="switchRoutineMode('manual')">
+        <i class="fa-solid fa-pencil"></i> নিজে বানাই
+      </button>
+      <button class="btn btn-ghost btn-sm btn-full" id="mode-ai-btn" onclick="switchRoutineMode('ai')">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> AI দিয়ে বানাই
+      </button>
+    </div>
+    
+    <!-- Manual Mode -->
+    <div id="manual-mode-content" style="display:flex;flex-direction:column;gap:12px">
+      <input id="routine-name-inp" class="inp" placeholder="রুটিনের নাম (যেমন: Study Day)">
+      <div style="display:flex;gap:8px;align-items:center">
+        <label class="toggle"><input type="checkbox" id="routine-active-toggle"><span class="toggle-slider"></span></label>
+        <span style="font-size:.85rem;font-weight:600">এই রুটিনটি Active করো</span>
+      </div>
+      <div style="border-top:1px solid var(--border);padding-top:12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <span style="font-size:.85rem;font-weight:700">স্লটসমূহ</span>
+          <button class="btn btn-ghost btn-xs" onclick="addSlotRow()"><i class="fa-solid fa-plus"></i> স্লট যোগ</button>
+        </div>
+        <div id="slot-rows" style="display:flex;flex-direction:column;gap:8px;max-height:280px;overflow-y:auto"></div>
+      </div>
+      <div style="display:flex;gap:8px;padding-top:8px">
+        <button class="btn btn-accent btn-full" onclick="saveRoutine()"><i class="fa-solid fa-floppy-disk"></i> সেভ করো</button>
+        <button id="routine-delete-btn" class="btn btn-danger" onclick="deleteRoutine()" style="display:none"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    </div>
+    
+    <!-- AI Mode -->
+    <div id="ai-mode-content" style="display:none;flex-direction:column;gap:12px">
+      <div class="card" style="padding:16px;background:var(--bg);border-color:var(--border)">
+        <div style="font-size:.75rem;font-weight:700;color:var(--accent2);margin-bottom:12px">ধাপ ১ — তোমার দিনের তথ্য দাও</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <input id="ai-wake" class="inp" style="font-size:.82rem;padding:.5rem .7rem" placeholder="ঘুম থেকে ওঠার সময় (যেমন: 6:30 AM)">
+          <input id="ai-sleep" class="inp" style="font-size:.82rem;padding:.5rem .7rem" placeholder="ঘুমাতে যাওয়ার সময় (যেমন: 11:00 PM)">
+          <textarea id="ai-subjects" class="inp" rows="2" style="font-size:.82rem;resize:none" placeholder="পড়াশোনার বিষয় ও সময়"></textarea>
+          <textarea id="ai-extra" class="inp" rows="1" style="font-size:.82rem;resize:none" placeholder="অন্যান্য (ঐচ্ছিক)"></textarea>
+        </div>
+        <button class="btn btn-accent2 btn-full" onclick="generateAIPrompt()" style="margin-top:10px">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> প্রম্পট তৈরি করো
+        </button>
+      </div>
+      
+      <div id="ai-prompt-section" style="display:none">
+        <div class="card" style="padding:14px;background:var(--bg);border-color:var(--accent2);margin-bottom:10px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <span style="font-size:.7rem;font-weight:700;color:var(--accent2)">ধাপ ২ — প্রম্পট কপি করো</span>
+            <button class="btn btn-ghost btn-xs" onclick="copyPrompt()" id="copy-prompt-btn"><i class="fa-solid fa-copy"></i></button>
+          </div>
+          <div id="ai-generated-prompt" style="font-size:.7rem;color:var(--muted);background:var(--surface);padding:10px;border-radius:8px;max-height:120px;overflow-y:auto;white-space:pre-wrap"></div>
+        </div>
+        <div class="card" style="padding:14px;background:var(--bg);border-color:var(--border)">
+          <div style="font-size:.7rem;font-weight:700;color:var(--accent);margin-bottom:8px">ধাপ ৩ — AI JSON পেস্ট করো</div>
+          <textarea id="ai-json-input" class="inp" rows="4" style="font-size:.72rem;font-family:monospace;resize:vertical" placeholder='{"routine_name":"...","slots":[...]}'></textarea>
+          <div id="ai-json-error" style="display:none;color:var(--danger);font-size:.7rem;margin-top:4px"></div>
+          <div id="ai-json-preview" style="display:none;margin-top:8px"></div>
+          <div style="display:flex;gap:6px;margin-top:10px">
+            <button class="btn btn-ghost btn-xs" onclick="parseJSONPreview()"><i class="fa-solid fa-eye"></i> প্রিভিউ</button>
+            <button class="btn btn-accent btn-full btn-sm" onclick="importJSONRoutine()"><i class="fa-solid fa-file-import"></i> ইম্পোর্ট</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-        // ============================================================
-        //  SERVICE WORKER - Self-registering offline PWA
-        // ============================================================
-        if ('serviceWorker' in navigator) {
-            const swCode = `
-                const CACHE_NAME = 'hsc-routine-v2';
-                const urlsToCache = ['.', 'index.html'];
+<!-- TASK EDITOR -->
+<div id="modal-task" class="modal-overlay" onclick="if(event.target===this)closeTaskEditor()">
+  <div class="modal-box" style="padding:24px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <h3 class="font-display" style="font-size:1.2rem;font-weight:800" id="task-modal-title">নতুন টাস্ক</h3>
+      <button class="btn btn-ghost btn-xs" onclick="closeTaskEditor()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <input id="task-title-inp" class="inp" placeholder="টাস্কের নাম">
+      <div style="display:flex;gap:8px">
+        <select id="task-priority-inp" class="inp" style="flex:1">
+          <option value="low">সাধারণ</option>
+          <option value="medium" selected>মাঝারি</option>
+          <option value="high">জরুরি</option>
+        </select>
+        <input id="task-due-inp" class="inp" type="date" style="flex:1">
+      </div>
+      <textarea id="task-desc-inp" class="inp" rows="2" placeholder="বিবরণ (ঐচ্ছিক)" style="resize:none"></textarea>
+      <div style="display:flex;gap:8px;padding-top:8px">
+        <button class="btn btn-accent btn-full" onclick="saveTask()"><i class="fa-solid fa-floppy-disk"></i> সেভ করো</button>
+        <button id="task-delete-btn" class="btn btn-danger" onclick="deleteTask()" style="display:none"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
 
-                self.addEventListener('install', event => {
-                    event.waitUntil(
-                        caches.open(CACHE_NAME)
-                            .then(cache => cache.addAll(urlsToCache))
-                            .then(() => self.skipWaiting())
-                    );
-                });
+<!-- CUSTOM TIME MODAL FOR STUDY SLOTS -->
+<div id="modal-custom-time" class="modal-overlay" onclick="if(event.target===this)closeCustomTime()">
+  <div class="modal-box" style="padding:28px;text-align:center;max-width:340px">
+    <div style="font-size:1.5rem;margin-bottom:4px">⏱️</div>
+    <div id="custom-slot-name" style="color:var(--muted);font-size:.85rem;margin-bottom:20px">—</div>
+    
+    <!-- Hour & Minute Inputs -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:24px">
+      <div style="text-align:center">
+        <input type="number" id="custom-hours" min="0" max="8" value="0" oninput="updateCustomXP()" style="width:80px;font-family:'Inter',sans-serif;font-size:2.5rem;font-weight:800;text-align:center;background:var(--bg);border:2px solid var(--accent2);border-radius:12px;padding:12px;color:var(--text);outline:none">
+        <div style="font-size:.7rem;color:var(--muted);margin-top:6px">ঘণ্টা</div>
+      </div>
+      <div style="font-size:2rem;font-weight:800;color:var(--muted)">:</div>
+      <div style="text-align:center">
+        <input type="number" id="custom-minutes" min="0" max="59" value="30" oninput="updateCustomXP()" style="width:80px;font-family:'Inter',sans-serif;font-size:2.5rem;font-weight:800;text-align:center;background:var(--bg);border:2px solid var(--accent);border-radius:12px;padding:12px;color:var(--text);outline:none">
+        <div style="font-size:.7rem;color:var(--muted);margin-top:6px">মিনিট</div>
+      </div>
+    </div>
+    
+    <!-- XP & Coin Preview -->
+    <div style="display:flex;justify-content:center;gap:12px;margin-bottom:24px">
+      <div style="flex:1;text-align:center;padding:14px 12px;background:linear-gradient(135deg,#00e5a015,#00e5a008);border-radius:12px;border:1px solid var(--accent)33">
+        <div style="font-size:.65rem;color:var(--muted);margin-bottom:4px">অর্জিত XP</div>
+        <div id="custom-xp-preview" style="font-family:'Inter',sans-serif;font-size:1.4rem;font-weight:800;color:var(--accent)">+50</div>
+      </div>
+      <div style="flex:1;text-align:center;padding:14px 12px;background:linear-gradient(135deg,#fbbf2415,#fbbf2408);border-radius:12px;border:1px solid var(--coin)33">
+        <div style="font-size:.65rem;color:var(--muted);margin-bottom:4px">কয়েন</div>
+        <div id="custom-coin-preview" style="font-family:'Inter',sans-serif;font-size:1.4rem;font-weight:800;color:var(--coin)">+5</div>
+      </div>
+    </div>
+    
+    <div style="display:flex;gap:12px;justify-content:center">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeCustomTime()">বাতিল</button>
+      <button class="btn btn-accent" style="flex:1.5" onclick="confirmCustomTime()">✓ সম্পন্ন করো</button>
+    </div>
+  </div>
+</div>
 
-                self.addEventListener('activate', event => {
-                    event.waitUntil(
-                        caches.keys().then(cacheNames => {
-                            return Promise.all(
-                                cacheNames.map(name => {
-                                    if (name !== CACHE_NAME) return caches.delete(name);
-                                })
-                            );
-                        }).then(() => self.clients.claim())
-                    );
-                });
+<!-- USER PROFILE MODAL (Leaderboard) -->
+<div id="modal-user-profile" class="modal-overlay" onclick="if(event.target===this)closeUserProfile()">
+  <div class="modal-box" style="padding:24px;max-width:480px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div id="up-avatar" class="avatar" style="width:40px;height:40px;font-size:1rem">?</div>
+        <div>
+          <div id="up-username" style="font-weight:800;font-size:1.1rem">—</div>
+          <div id="up-xp" style="font-size:.75rem;color:var(--accent)">—</div>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-xs" onclick="closeUserProfile()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div id="up-topic-section" style="margin-bottom:16px;padding:12px;background:var(--bg);border-radius:10px;border:1px solid var(--border)">
+      <div style="font-size:.7rem;color:var(--accent);font-weight:700;margin-bottom:6px">📚 আজকের টপিক</div>
+      <div id="up-topic" style="font-size:.85rem;color:var(--text)">—</div>
+    </div>
+    <!-- XP Display in Spy Mode -->
+    <div id="up-xp-section" style="margin-bottom:16px;padding:12px;background:var(--bg);border-radius:10px;border:1px solid var(--border)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div style="font-size:.7rem;color:var(--muted);font-weight:700">⚡ XP</div>
+        <div id="up-period-label" class="badge badge-accent2" style="font-size:.58rem">আজ</div>
+      </div>
+      <div id="up-xp" style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--accent)">0</div>
+    </div>
+    <!-- CQ / MCQ / KO / KHO / CP Stats in Spy Mode -->
+    <div id="up-cqmcq-section" style="margin-bottom:16px;padding:12px;background:var(--bg);border-radius:10px;border:1px solid var(--border)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:.7rem;color:var(--muted);font-weight:700">📝 ট্র্যাকার</div>
+        <div id="up-period-label-2" class="badge badge-accent2" style="font-size:.58rem">আজ</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;align-items:center;text-align:center">
+        <div>
+          <div style="font-size:.6rem;color:#f7a06a;font-weight:700">CQ</div>
+          <div id="up-cq-count" style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:#f7a06a">0</div>
+        </div>
+        <div>
+          <div style="font-size:.6rem;color:#3b82f6;font-weight:700">MCQ</div>
+          <div id="up-mcq-count" style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:#3b82f6">0</div>
+        </div>
+        <div>
+          <div style="font-size:.6rem;color:#10b981;font-weight:700">ক</div>
+          <div id="up-ko-count" style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:#10b981">0</div>
+        </div>
+        <div>
+          <div style="font-size:.6rem;color:#ec4899;font-weight:700">খ</div>
+          <div id="up-kho-count" style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:#ec4899">0</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:10px;padding:6px;background:#ec489908;border:1px solid #ec489922;border-radius:8px">
+        <span style="font-size:.65rem;color:var(--muted)">CP</span>
+        <span id="up-cp-count" style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:#ec4899;margin-left:6px">0</span>
+        <span style="font-size:.6rem;color:var(--muted)">💎</span>
+      </div>
+    </div>
+    <div style="font-size:.75rem;font-weight:700;color:var(--muted);margin-bottom:10px">আজকের সম্পন্ন স্লট</div>
+    <div id="up-slots" style="display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto">—</div>
+  </div>
+</div>
 
-                self.addEventListener('fetch', event => {
-                    event.respondWith(
-                        caches.match(event.request)
-                            .then(response => response || fetch(event.request))
-                            .catch(() => new Response('Offline - please connect to internet', { status: 503 }))
-                    );
-                });
-            `;
+<!-- LOADING SCREEN -->
+<div id="loading-screen" style="position:fixed;inset:0;z-index:300;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px">
+  <div style="font-size:3rem">🚀</div>
+  <div style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800">RoutineX</div>
+  <div style="display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.85rem">
+    <i class="fa-solid fa-spinner fa-spin"></i> লোড হচ্ছে...
+  </div>
+</div>
 
-            const blob = new Blob([swCode], { type: 'application/javascript' });
-            const swUrl = URL.createObjectURL(blob);
 
-            navigator.serviceWorker.register(swUrl)
-                .then(registration => {
-                    console.log('✅ Service Worker registered successfully!');
-                    window.addEventListener('online', () => document.getElementById('offlineBadge').classList.remove('show'));
-                    window.addEventListener('offline', () => document.getElementById('offlineBadge').classList.add('show'));
-                    if (!navigator.onLine) document.getElementById('offlineBadge').classList.add('show');
-                })
-                .catch(err => console.warn('⚠️ Service Worker registration failed:', err));
-        }
 
-        setTimeout(() => {
-            if ('serviceWorker' in navigator && !navigator.serviceWorker.controller) {
-                navigator.serviceWorker.register('sw.js')
-                    .then(() => console.log('✅ SW registered from sw.js'))
-                    .catch(() => console.log('ℹ️ No sw.js file found'));
-            }
-        }, 1000);
-    })();
-</script>
 </body>
 </html>
+<script type="module">
+// ════════════════════════════════════════════════════════════════
+// SUPABASE INIT
+// ════════════════════════════════════════════════════════════════
+const { createClient } = supabase;
+const sb = createClient(
+  'https://olfvcgjabgciufqoufeq.supabase.co',
+  'sb_publishable_34y4AnLFW3bHCMoj6-tyrw_yb2CaGfq'
+);
+
+// ════════════════════════════════════════════════════════════════
+// CONSTANTS
+// ════════════════════════════════════════════════════════════════
+const LEVELS = [0,500,1500,3000,5000,8000,12000,17000,23000,30000,40000];
+const LEVEL_NAMES = ['','নতুন','শিক্ষার্থী','অনুসন্ধানকারী','চ্যালেঞ্জার','প্রো','এলিট','মাস্টার','গ্র্যান্ড','লেজেন্ড','মিথ','দেবতা'];
+const CAT_COLORS = {
+  study:'#7c6af7', break:'#3b82f6', rest:'#60a5fa',
+  nap:'#818cf8', wake:'#00e5a0', sleep:'#4b5563',
+  meal:'#f97316', prep:'#eab308', winddown:'#ec4899', other:'#6b6b7e'
+};
+
+// ════════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════════
+let currentUser   = null;   // { id, username, coins }
+let routines      = [];     // all routines for user
+let activeRoutine = null;   // the active one {id, name, slots[]}
+let completedSlots= {};     // {slotId: true}
+let xpHistory     = {};     // {"YYYY-MM-DD": xp}
+let coinsHistory  = {};     // {"YYYY-MM-DD": coins}
+let spentCoins    = {};     // {"YYYY-MM-DD": negative coins spent} <- FIX: track spending separately
+let todayLogId    = null;   // supabase row id for today's log
+let allLogs       = [];     // all daily_logs rows for leaderboard
+let tasks         = [];     // user's tasks [{id, title, desc, priority, due, done}]
+let editingTaskId = null;   // currently editing task
+
+let currentSlotIdx = 0;
+let clockInterval  = null;
+let syncTimer      = null;
+let pomSlotIdx     = 0;
+let pomInterval    = null;
+let pomSeconds     = 3000;
+let pomRunning     = false;
+
+let editingRoutineId  = null;
+let lbChart           = null;
+let histWeeklyChart   = null;
+let histMonthlyChart  = null;
+let studyTimeChart    = null;
+let currentLBTab      = 'today';
+let customTimeSlotId  = null;
+let customTimeSlotIdx = null;
+let todayTopic        = '';
+let todayCQ           = 0;  // CQ solved today
+let todayMCQ          = 0;  // MCQ solved today
+let todayKO           = 0;  // ক solved today
+let todayKHO          = 0;  // খ solved today
+
+// ════════════════════════════════════════════════════════════════
+// DATE HELPERS
+// ════════════════════════════════════════════════════════════════
+function todayKey() {
+  const d = new Date();
+  // Day resets at 5 AM, so before 5 AM it's still "yesterday"
+  if (d.getHours() < 5) {
+    d.setDate(d.getDate() - 1);
+  }
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function localDateKey(d) {
+  // For dates that are already set, use them as-is
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function lastNDays(n) {
+  const today = todayKey();
+  const [y, m, d] = today.split('-').map(Number);
+  return Array.from({length:n},(_,i)=>{
+    const date = new Date(y, m-1, d - (n-1-i));
+    return localDateKey(date);
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+// XP / LEVEL / COINS
+// ════════════════════════════════════════════════════════════════
+function getLevelInfo(totalXP) {
+  for (let i=LEVELS.length-1;i>=0;i--) if(totalXP>=LEVELS[i]) return {level:i+1,next:LEVELS[i+1]??null,prev:LEVELS[i]};
+  return {level:1,next:LEVELS[1],prev:0};
+}
+function getTodayXP()   { return xpHistory[todayKey()]  || 0; }
+function getTotalXP()   { return Object.values(xpHistory).reduce((s,v)=>s+v,0); }
+function getTodayCoins(){ return coinsHistory[todayKey()] || 0; }
+
+// FIXED: Calculate total coins purely dynamically (Total Earned - Total Spent)
+function getTotalCoins() {
+  const earned = Object.values(coinsHistory).reduce((s, v) => s + v, 0);
+  const spent = (typeof myPurchases !== 'undefined' ? myPurchases :[]).reduce((sum, p) => {
+    const t = typeof SHOP_THEMES !== 'undefined' ? SHOP_THEMES.find(x => x.id === p.item_id) : null;
+    const b = typeof SHOP_BOOSTS !== 'undefined' ? SHOP_BOOSTS.find(x => x.id === p.item_id) : null;
+    return sum + (t ? t.price : 0) + (b ? b.price : 0);
+  }, 0);
+  return Math.max(0, earned - spent);
+}
+
+function recalcToday() {
+  if (!activeRoutine) return;
+  let xp = 0, coins = 0;
+  
+  // FIXED: Apply active boosts logic
+  const xpMult = typeof getBoostMultiplier === 'function' ? getBoostMultiplier() : 1;
+  const coinMult = typeof getCoinMultiplier === 'function' ? getCoinMultiplier() : 1;
+
+  activeRoutine.slots.forEach(sl => {
+    const comp = completedSlots[sl.id];
+    if (comp) {
+      // Check if it's a custom time slot or regular slot
+      if (typeof comp === 'object' && comp.custom) {
+        // Custom time slot - already has calculated values
+        xp += comp.xp || 0;
+        coins += comp.coins || 0;
+      } else {
+        // Regular slot — cap non-study XP at 10
+        const rawXP = sl.xp || 0;
+        const isStudy = sl.category === 'study';
+        const slotXP = isStudy ? rawXP : Math.min(rawXP, 10);
+        xp += Math.round(slotXP * xpMult);
+        if (sl.category === 'study') {
+          const hrs = slotDurationHours(sl);
+          coins += Math.round(hrs * 10 * coinMult);
+        }
+      }
+    }
+  });
+  xpHistory[todayKey()]    = xp;
+  coinsHistory[todayKey()] = coins;
+  return { xp, coins };
+}
+
+function slotDurationHours(sl) {
+  const [sh,sm,sp] = parseT(sl.start), [eh,em,ep] = parseT(sl.end);
+  let s = toMins(sh,sm,sp), e = toMins(eh,em,ep);
+  if (e <= s) e += 1440;
+  return (e - s) / 60;
+}
+
+// ════════════════════════════════════════════════════════════════
+// TIME HELPERS
+// ════════════════════════════════════════════════════════════════
+function parseT(str) { const m=str.match(/(\d+):(\d+) ?([APap][Mm])/); if(!m)return[0,0,'AM']; return[+m[1],+m[2],m[3].toUpperCase()]; }
+function toMins(h,m,p) { let v=h*60+m; if(p==='PM'&&h!==12)v+=720; if(p==='AM'&&h===12)v=m; return v; }
+function minsToTime(v) { const h=Math.floor(v/60)%24,m=v%60,p=h>=12?'PM':'AM',h12=h%12||12; return `${h12}:${String(m).padStart(2,'0')} ${p}`; }
+
+// ════════════════════════════════════════════════════════════════
+// SUPABASE QUERIES
+// ════════════════════════════════════════════════════════════════
+async function dbGetUser(username) {
+  const {data} = await sb.from('users').select('*').eq('username', username.toLowerCase()).single();
+  return data;
+}
+async function dbCreateUser(username, password) {
+  const {data,error} = await sb.from('users').insert({username:username.toLowerCase(),password,coins:0}).select().single();
+  if(error) throw error;
+  return data;
+}
+async function dbUpdateCoins(userId, coins) {
+  await sb.from('users').update({coins}).eq('id',userId);
+}
+async function dbGetRoutines(username) {
+  const {data} = await sb.from('routines').select('*').eq('username',username.toLowerCase()).order('created_at',{ascending:false});
+  return data || [];
+}
+async function dbSaveRoutine(r) {
+  if (r.id) {
+    const {data} = await sb.from('routines').update({name:r.name,slots:r.slots,is_active:r.is_active}).eq('id',r.id).select().single();
+    return data;
+  } else {
+    const {data,error} = await sb.from('routines').insert({username:currentUser.username.toLowerCase(),name:r.name,slots:r.slots,is_active:r.is_active}).select().single();
+    if(error) throw error;
+    return data;
+  }
+}
+async function dbDeleteRoutine(id) {
+  await sb.from('routines').delete().eq('id',id);
+}
+async function dbSetActiveRoutine(username, activeId) {
+  // Deactivate all, then activate one
+  await sb.from('routines').update({is_active:false}).eq('username',username.toLowerCase());
+  if (activeId) await sb.from('routines').update({is_active:true}).eq('id',activeId);
+}
+async function dbGetLogs(username) {
+  const {data} = await sb.from('daily_logs').select('*').eq('username',username.toLowerCase());
+  return data || [];
+}
+async function dbGetAllLogs() {
+  const {data} = await sb.from('daily_logs').select('username,date,xp,coins,completed_slots');
+  return data || [];
+}
+async function dbUpsertLog(username, date, completedSlots, xp, coins) {
+  if (todayLogId) {
+    await sb.from('daily_logs').update({completed_slots:completedSlots,xp,coins}).eq('id',todayLogId);
+  } else {
+    const {data} = await sb.from('daily_logs').insert({username:username.toLowerCase(),date,completed_slots:completedSlots,xp,coins}).select().single();
+    if (data) todayLogId = data.id;
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+// SYNC (debounced)
+// ════════════════════════════════════════════════════════════════
+function scheduleSave() {
+  clearTimeout(syncTimer);
+  showSync('busy','⏳ সিঙ্ক...');
+  syncTimer = setTimeout(doSave, 1500);
+}
+async function doSave() {
+  if (!currentUser) return;
+  recalcToday();
+  const xp    = getTodayXP();
+  const coins = getTodayCoins();
+  try {
+    await dbUpsertLog(currentUser.username, todayKey(), completedSlots, xp, coins);
+    await dbUpdateCoins(currentUser.id, getTotalCoins());
+    showSync('ok','✓ সিঙ্ক');
+  } catch(e) { showSync('err','✗ ব্যর্থ'); }
+}
+
+// ════════════════════════════════════════════════════════════════
+// AUTH
+// ════════════════════════════════════════════════════════════════
+window.showAuthTab = function(tab) {
+  document.getElementById('auth-login').style.display    = tab==='login'    ? 'block' : 'none';
+  document.getElementById('auth-register').style.display = tab==='register' ? 'block' : 'none';
+};
+
+window.doLogin = async function() {
+  const user = document.getElementById('li-user').value.trim().toLowerCase();
+  const pass = document.getElementById('li-pass').value;
+  setAuthErr('li','');
+  if (!user||!pass) { setAuthErr('li','ইউজারনেম ও পাসওয়ার্ড দাও'); return; }
+  setBtnLoading('li-btn',true);
+  try {
+    const found = await dbGetUser(user);
+    if (!found || found.password !== pass) { setAuthErr('li','ইউজারনেম বা পাসওয়ার্ড ভুল'); setBtnLoading('li-btn',false); return; }
+    saveSession(found);
+    await bootApp(found);
+  } catch(e) { setAuthErr('li','সংযোগ ব্যর্থ।'); setBtnLoading('li-btn',false); }
+};
+
+window.doRegister = async function() {
+  const user  = document.getElementById('rg-user').value.trim().toLowerCase();
+  const pass  = document.getElementById('rg-pass').value;
+  const pass2 = document.getElementById('rg-pass2').value;
+  setAuthErr('rg','');
+  if (!user||!pass)  { setAuthErr('rg','সব ঘর পূরণ করো'); return; }
+  if (user.length<3) { setAuthErr('rg','ইউজারনেম কমপক্ষে ৩ অক্ষর'); return; }
+  if (pass.length<4) { setAuthErr('rg','পাসওয়ার্ড কমপক্ষে ৪ অক্ষর'); return; }
+  if (pass!==pass2)  { setAuthErr('rg','পাসওয়ার্ড মিলছে না'); return; }
+  setBtnLoading('rg-btn',true);
+  try {
+    const exists = await dbGetUser(user);
+    if (exists) { setAuthErr('rg','এই ইউজারনেম নেওয়া হয়েছে'); setBtnLoading('rg-btn',false); return; }
+    const newUser = await dbCreateUser(user, pass);
+    saveSession(newUser);
+    await bootApp(newUser);
+  } catch(e) { setAuthErr('rg','সংযোগ ব্যর্থ। '+e.message); setBtnLoading('rg-btn',false); }
+};
+
+window.doLogout = function() {
+  if (!confirm('লগআউট করতে চাও?')) return;
+  clearSession();
+  location.reload();
+};
+
+function saveSession(user)  { localStorage.setItem('rx_sess', JSON.stringify({id:user.id,username:user.username})); }
+function clearSession()     { localStorage.removeItem('rx_sess'); }
+function setAuthErr(pre,m)  { const e=document.getElementById(pre+'-err'); e.textContent=m; e.style.display=m?'block':'none'; }
+function setBtnLoading(id,on){ const b=document.getElementById(id); if(!b)return; b.disabled=on; b.innerHTML=on?'<i class="fa-solid fa-spinner fa-spin"></i> লোড হচ্ছে...': (id==='li-btn'?'<i class="fa-solid fa-arrow-right-to-bracket"></i> লগইন করো':'<i class="fa-solid fa-user-plus"></i> অ্যাকাউন্ট তৈরি করো'); }
+
+// ════════════════════════════════════════════════════════════════
+// BOOT APP
+// ════════════════════════════════════════════════════════════════
+async function bootApp(user) {
+  currentUser = { id: user.id, username: user.username, coins: user.coins||0 };
+
+  // Load routines
+  routines = await dbGetRoutines(user.username);
+  activeRoutine = routines.find(r=>r.is_active) || null;
+
+  // Load logs for this user
+  const logs = await dbGetLogs(user.username);
+  xpHistory = {}; coinsHistory = {};
+  logs.forEach(l => {
+    xpHistory[l.date]    = l.xp    || 0;
+    coinsHistory[l.date] = l.coins || 0;
+  });
+
+  // Load spent coins
+  spentCoins = await dbLoadSpentCoins(user.username);
+
+  // Load tasks
+  tasks = await dbGetTasks(user.username);
+
+  // Today's log
+  const tlog = logs.find(l=>l.date===todayKey());
+  if (tlog) { todayLogId = tlog.id; completedSlots = tlog.completed_slots || {}; }
+  else       { todayLogId = null;   completedSlots = {}; }
+
+  // Load today's CQ/MCQ/KO/KHO from completed_slots
+  const todayCM = getCQMCQFromSlots(completedSlots);
+  todayCQ = todayCM.cq;
+  todayMCQ = todayCM.mcq;
+  todayKO = todayCM.ko;
+  todayKHO = todayCM.kho;
+
+  // 5 AM reset check - if the stored day is different from current "today", reset completed slots
+  const lk = `rx_last_${user.username}`;
+  if (localStorage.getItem(lk) && localStorage.getItem(lk) !== todayKey()) completedSlots = {};
+  localStorage.setItem(lk, todayKey());
+
+  // Load purchases & restore theme
+  myPurchases = await dbGetPurchases(user.username);
+  const themeRow = myPurchases.find(p=>p.item_id==='active_theme');
+  if (themeRow?.expires_at) applyTheme(themeRow.expires_at); // expires_at stores theme id
+
+  // Hide loading screen
+  document.getElementById('loading-screen').style.display = 'none';
+
+  // Show app
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('main-content').style.display = 'block';
+
+  updateSidebar();
+  startClock();
+  renderTimeline();
+  updateStats();
+  updateCQMCQDisplay();
+  await loadTodayTopic();
+
+  // No routine? Show onboarding
+  if (!activeRoutine) { document.getElementById('onboarding').style.display = 'flex'; return; }
+  goTo('dashboard');
+}
+
+// ════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════════════════════════════
+window.goTo = function(view) {
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+view)?.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.view===view));
+  document.querySelectorAll('.bnav-item').forEach(n=>n.classList.toggle('active', n.dataset.view===view));
+  if (view==='leaderboard') loadLeaderboard();
+  if (view==='history')     renderHistory();
+  if (view==='routines')    renderRoutineList();
+  if (view==='tasks')       renderTasks();
+  if (view==='shop')        renderShop();
+};
+
+window.closeOnboarding = function() {
+  document.getElementById('onboarding').style.display='none';
+};
+
+// ════════════════════════════════════════════════════════════════
+// ROUTINE MODE SWITCHING (Manual vs AI)
+// ════════════════════════════════════════════════════════════════
+window.switchRoutineMode = function(mode) {
+  const manualBtn = document.getElementById('mode-manual-btn');
+  const aiBtn = document.getElementById('mode-ai-btn');
+  const manualContent = document.getElementById('manual-mode-content');
+  const aiContent = document.getElementById('ai-mode-content');
+  
+  if (mode === 'manual') {
+    manualBtn.className = 'btn btn-accent btn-sm btn-full';
+    aiBtn.className = 'btn btn-ghost btn-sm btn-full';
+    manualContent.style.display = 'flex';
+    aiContent.style.display = 'none';
+  } else {
+    manualBtn.className = 'btn btn-ghost btn-sm btn-full';
+    aiBtn.className = 'btn btn-accent2 btn-sm btn-full';
+    manualContent.style.display = 'none';
+    aiContent.style.display = 'flex';
+  }
+};
+
+// ════════════════════════════════════════════════════════════════
+// AI BUILDER FUNCTIONS (integrated into routine editor)
+// ════════════════════════════════════════════════════════════════
+window.generateAIPrompt = function() {
+  const wake = document.getElementById('ai-wake').value.trim();
+  const sleep = document.getElementById('ai-sleep').value.trim();
+  const subjects = document.getElementById('ai-subjects').value.trim();
+  const extra = document.getElementById('ai-extra').value.trim();
+  if (!wake || !sleep) { showToast('ঘুম ও ওঠার সময় দাও'); return; }
+  
+  const prompt = `আমার জন্য একটি পূর্ণ দৈনিক রুটিন তৈরি করো।
+
+আমার তথ্য:
+- ঘুম থেকে ওঠার সময়: ${wake}
+- ঘুমাতে যাওয়ার সময়: ${sleep}
+- পড়াশোনা: ${subjects || 'উল্লেখ নেই'}
+${extra ? `- অন্যান্য: ${extra}` : ''}
+
+প্রথমে আমাকে রুটিনটি দেখাও এবং জিজ্ঞেস করো আমি কনফার্ম করতে চাই কিনা।
+
+আমি কনফার্ম করলে, রুটিনটি নিচের JSON ফরম্যাটে দাও:
+{"routine_name":"রুটিনের নাম","slots":[{"id":"sl_1","title":"স্লটের নাম","desc":"বিবরণ","start":"07:00 AM","end":"08:00 AM","category":"study","xp":100}]}
+
+নিয়মাবলী:
+- category শুধুমাত্র এগুলোর একটি হবে: study, break, rest, nap, wake, sleep, meal, prep, winddown, other
+- সময় ফরম্যাট: "HH:MM AM" বা "HH:MM PM"
+- XP: study-এর জন্য প্রতি ঘণ্টায় ~100, বাকিগুলোর জন্য 20-50`;
+
+  document.getElementById('ai-generated-prompt').textContent = prompt;
+  document.getElementById('ai-prompt-section').style.display = 'block';
+};
+
+window.copyPrompt = function() {
+  const text = document.getElementById('ai-generated-prompt').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn = document.getElementById('copy-prompt-btn');
+    btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+    showToast('কপি হয়েছে ✓');
+    setTimeout(()=>{ btn.innerHTML='<i class="fa-solid fa-copy"></i>'; }, 2000);
+  }).catch(()=>showToast('কপি ব্যর্থ'));
+};
+
+window.parseJSONPreview = function() {
+  const raw = document.getElementById('ai-json-input').value.trim();
+  const errEl = document.getElementById('ai-json-error');
+  const previewEl = document.getElementById('ai-json-preview');
+  errEl.style.display = 'none'; previewEl.style.display = 'none';
+  if (!raw) { errEl.textContent = 'JSON পেস্ট করো'; errEl.style.display = 'block'; return null; }
+  let parsed;
+  try {
+    const match = raw.match(/\{[\s\S]*\}/);
+    parsed = JSON.parse(match?.[0] || raw);
+  } catch(e) { errEl.textContent = '❌ JSON ফরম্যাট ভুল'; errEl.style.display='block'; return null; }
+  if (!parsed.slots?.length) { errEl.textContent = '❌ slots পাওয়া যায়নি'; errEl.style.display='block'; return null; }
+  previewEl.innerHTML = `<div style="font-size:.7rem;color:var(--accent)">✓ ${parsed.slots.length} টি স্লট — "${parsed.routine_name||'রুটিন'}"</div>`;
+  previewEl.style.display = 'block';
+  return parsed;
+};
+
+window.importJSONRoutine = async function() {
+  const parsed = parseJSONPreview();
+  if (!parsed) return;
+  const r = {
+    id: null,
+    name: parsed.routine_name || 'AI রুটিন',
+    slots: parsed.slots.map((sl,i)=>({
+      id: sl.id || 'sl_ai_'+i,
+      title: sl.title || 'স্লট',
+      desc: sl.desc || '',
+      start: sl.start || '08:00 AM',
+      end: sl.end || '09:00 AM',
+      category: sl.category || 'other',
+      xp: sl.category === 'study' ? (sl.xp || 30) : Math.min(sl.xp || 5, 10)
+    })),
+    is_active: true
+  };
+  showSync('busy','⏳...');
+  try {
+    await dbSetActiveRoutine(currentUser.username, null);
+    const saved = await dbSaveRoutine(r);
+    routines = await dbGetRoutines(currentUser.username);
+    activeRoutine = routines.find(x=>x.id===saved.id) || routines.find(x=>x.is_active);
+    completedSlots = {};
+    closeRoutineEditor();
+    renderTimeline(); updateStats();
+    goTo('dashboard');
+    showSync('ok','✓'); showToast('রুটিন ইম্পোর্ট হয়েছে ✓');
+  } catch(e) { showSync('err','✗'); showToast('ইম্পোর্ট ব্যর্থ: '+e.message); }
+};
+
+// ════════════════════════════════════════════════════════════════
+// TASKS MANAGEMENT
+// ════════════════════════════════════════════════════════════════
+async function dbGetTasks(username) {
+  const {data} = await sb.from('tasks').select('*').eq('username', username.toLowerCase()).order('created_at',{ascending:false});
+  return data || [];
+}
+async function dbSaveTask(task) {
+  if (task.id) {
+    const {data,error} = await sb.from('tasks').update({
+      title: task.title, 
+      description: task.description,  // Changed from desc
+      priority: task.priority, 
+      due: task.due, 
+      done: task.done
+    }).eq('id', task.id).select().single();
+    if(error) throw error; return data;
+  } else {
+    const {data,error} = await sb.from('tasks').insert({
+      username: currentUser.username.toLowerCase(), 
+      title: task.title, 
+      description: task.description,  // Changed from desc
+      priority: task.priority, 
+      due: task.due, 
+      done: false
+    }).select().single();
+    if(error) throw error; return data;
+  }
+}
+async function dbDeleteTask(taskId) {
+  await sb.from('tasks').delete().eq('id', taskId);
+}
+
+function renderTasks() {
+  const today = todayKey();
+  const pending = tasks.filter(t=>!t.done);
+  const doneToday = tasks.filter(t=>t.done && t.due===today);
+  const total = pending.length + doneToday.length;
+  const done = doneToday.length;
+  
+  document.getElementById('tasks-progress').textContent = `${done}/${total}`;
+  document.getElementById('tasks-progress-bar').style.width = total ? `${(done/total)*100}%` : '0%';
+  
+  const listEl = document.getElementById('tasks-list');
+  if (!tasks.length) {
+    listEl.innerHTML = `<div class="empty-state"><div class="empty-icon">✅</div><p>কোনো টাস্ক নেই</p><button class="btn btn-accent btn-sm" onclick="openTaskEditor()">টাস্ক যোগ করো</button></div>`;
+    return;
+  }
+  
+  const priorityOrder = {high:0, medium:1, low:2};
+  const sorted = [...tasks].sort((a,b)=>{
+    if (a.done !== b.done) return a.done ? 1 : -1;
+    return priorityOrder[a.priority] - priorityOrder[b.priority];
+  });
+  
+  listEl.innerHTML = sorted.map(t=>{
+    const isDone = t.done;
+    const priorityColor = t.priority==='high'?'var(--danger)':t.priority==='medium'?'var(--accent3)':'var(--muted)';
+    const priorityBadge = t.priority==='high'?'জরুরি':t.priority==='medium'?'মাঝারি':'সাধারণ';
+    return `<div class="card" style="padding:12px 14px;display:flex;align-items:center;gap:12px;${isDone?'opacity:.5':''}">
+      <div onclick="toggleTask('${t.id}')" style="width:28px;height:28px;border-radius:50%;border:2px solid ${priorityColor};background:${isDone?priorityColor:'transparent'};display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .2s">
+        ${isDone?'<i class="fa-solid fa-check" style="font-size:.7rem;color:#fff"></i>':''}
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:.9rem;${isDone?'text-decoration:line-through;color:var(--muted)':''}">${t.title}</div>
+        ${t.description?`<div style="font-size:.75rem;color:var(--muted);margin-top:2px">${t.description}</div>`:''}
+        <div style="display:flex;gap:6px;margin-top:4px">
+          <span style="font-size:.62rem;padding:1px 6px;border-radius:99px;background:${priorityColor}22;color:${priorityColor};border:1px solid ${priorityColor}44">${priorityBadge}</span>
+          ${t.due?`<span style="font-size:.62rem;color:var(--muted)">📅 ${t.due}</span>`:''}
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-xs" onclick="openTaskEditor('${t.id}')"><i class="fa-solid fa-pen"></i></button>
+    </div>`;
+  }).join('');
+}
+
+window.toggleTask = async function(taskId) {
+  const task = tasks.find(t=>t.id===taskId);
+  if (!task) return;
+  task.done = !task.done;
+  try {
+    await dbSaveTask(task);
+    renderTasks();
+    if (task.done) showToast('টাস্ক সম্পন্ন! ✓');
+  } catch(e) { showToast('সেভ ব্যর্থ'); }
+};
+
+window.openTaskEditor = function(taskId) {
+  editingTaskId = taskId;
+  const task = taskId ? tasks.find(t=>t.id===taskId) : null;
+  document.getElementById('task-modal-title').textContent = task ? 'টাস্ক এডিট' : 'নতুন টাস্ক';
+  document.getElementById('task-title-inp').value = task?.title || '';
+  document.getElementById('task-priority-inp').value = task?.priority || 'medium';
+  document.getElementById('task-due-inp').value = task?.due || todayKey();
+  document.getElementById('task-desc-inp').value = task?.desc || '';
+  document.getElementById('task-delete-btn').style.display = task ? 'inline-flex' : 'none';
+  openModal('modal-task');
+};
+
+window.closeTaskEditor = function() { closeModal('modal-task'); };
+
+window.saveTask = async function() {
+  const title = document.getElementById('task-title-inp').value.trim();
+  if (!title) { showToast('টাস্কের নাম দাও'); return; }
+  const task = {
+    id: editingTaskId || null,
+    title,
+    desc: document.getElementById('task-desc-inp').value.trim(),
+    priority: document.getElementById('task-priority-inp').value,
+    due: document.getElementById('task-due-inp').value,
+    done: editingTaskId ? tasks.find(t=>t.id===editingTaskId)?.done || false : false
+  };
+  try {
+    const saved = await dbSaveTask(task);
+    tasks = await dbGetTasks(currentUser.username);
+    renderTasks(); closeTaskEditor();
+    showToast('টাস্ক সেভ হয়েছে ✓');
+  } catch(e) { showToast('সেভ ব্যর্থ'); }
+};
+
+window.deleteTask = async function() {
+  if (!editingTaskId || !confirm('এই টাস্ক মুছে ফেলবে?')) return;
+  try {
+    await dbDeleteTask(editingTaskId);
+    tasks = await dbGetTasks(currentUser.username);
+    renderTasks(); closeTaskEditor();
+    showToast('টাস্ক মুছে ফেলা হয়েছে');
+  } catch(e) { showToast('মুছতে ব্যর্থ'); }
+};
+
+// ════════════════════════════════════════════════════════════════
+// SPENT COINS DB HELPER
+// ════════════════════════════════════════════════════════════════
+async function dbSaveSpentCoins(username, spentData) {
+  // Store in user metadata or separate table
+  const {error} = await sb.from('user_meta').upsert({
+    username: username.toLowerCase(),
+    key: 'spent_coins',
+    value: JSON.stringify(spentData)
+  }, {onConflict: 'username,key'});
+  if (error) console.warn('Could not save spent coins:', error);
+}
+
+async function dbLoadSpentCoins(username) {
+  try {
+    const {data} = await sb.from('user_meta').select('value').eq('username', username.toLowerCase()).eq('key', 'spent_coins').single();
+    return data?.value ? JSON.parse(data.value) : {};
+  } catch(e) { return {}; }
+}
+
+// ════════════════════════════════════════════════════════════════
+// CLOCK & SLOT DETECTION
+// ════════════════════════════════════════════════════════════════
+function startClock() {
+  if (clockInterval) clearInterval(clockInterval);
+  tickClock();
+  clockInterval = setInterval(tickClock, 1000);
+}
+function tickClock() {
+  const now = new Date();
+  document.getElementById('clock-display').textContent = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true});
+  document.getElementById('date-display').textContent  = now.toLocaleDateString('bn-BD',{weekday:'long',month:'short',day:'numeric'});
+  detectCurrentSlot(now);
+  updateDayProgress(now);
+}
+function detectCurrentSlot(now) {
+  if (!activeRoutine?.slots?.length) return;
+  const cur = now.getHours()*60+now.getMinutes();
+  let found = -1;
+  activeRoutine.slots.forEach((sl,i)=>{
+    const [sh,sm,sp]=parseT(sl.start), [eh,em,ep]=parseT(sl.end);
+    const s=toMins(sh,sm,sp), e=toMins(eh,em,ep);
+    if(e<=s){ if(cur>=s||cur<e) found=i; }
+    else    { if(cur>=s&&cur<e) found=i; }
+  });
+  if (found!==-1 && found!==currentSlotIdx) { currentSlotIdx=found; renderTimeline(); }
+  if (found!==-1) {
+    const sl = activeRoutine.slots[found];
+    document.getElementById('cur-slot-title').textContent = sl.title;
+    document.getElementById('cur-slot-desc').textContent  = sl.desc||'';
+  }
+}
+function updateDayProgress(now) {
+  if (!activeRoutine?.slots?.length) return;
+  
+  // Calculate percentage of day passed from 12 AM
+  const cur = now.getHours() * 60 + now.getMinutes();
+  const totalDayMinutes = 24 * 60; // 1440 minutes in a day
+  
+  // Percentage from 12 AM (0 minutes) to current time
+  const pct = Math.max(0, Math.min(100, (cur / totalDayMinutes) * 100));
+  
+  document.getElementById('stat-day-pct').textContent = Math.round(pct) + '%';
+  document.getElementById('stat-day-bar').style.width = pct + '%';
+}
+
+// ════════════════════════════════════════════════════════════════
+// TIMELINE
+// ════════════════════════════════════════════════════════════════
+function renderTimeline() {
+  const cont = document.getElementById('timeline');
+  if (!activeRoutine?.slots?.length) {
+    cont.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><p>কোনো রুটিন সক্রিয় নেই</p><button class="btn btn-accent btn-sm" onclick="goTo('routines')">রুটিন তৈরি করো</button></div>`;
+    document.getElementById('active-routine-name').textContent = 'কোনো রুটিন নেই';
+    return;
+  }
+  document.getElementById('active-routine-name').textContent = activeRoutine.name;
+  cont.innerHTML = activeRoutine.slots.map((sl,i) => {
+    const comp = completedSlots[sl.id];
+    const done = !!comp; // Both true and object {custom: true} count as done
+    const isCustom = typeof comp === 'object' && comp.custom;
+    const active = i === currentSlotIdx;
+    const col    = CAT_COLORS[sl.category] || CAT_COLORS.other;
+    const isStudy = sl.category === 'study';
+    const displayXP = isCustom ? comp.xp : (sl.xp || 0);
+    return `<div class="slot-row">
+      <div class="slot-check ${done?'done':''}" onclick="toggleSlot('${sl.id}',${i})">
+        ${done?'<i class="fa-solid fa-check" style="font-size:.8rem"></i>':''}
+      </div>
+      <div class="slot-card ${active?'active':''}" onclick="openPomodoro(${i})" style="${active?'border-color:var(--accent)':''};${done?'opacity:.6':''}">
+        <div style="display:flex;justify-content:space-between;align-items:start;gap:8px">
+          <div style="flex:1;min-width:0">
+            <div style="font-size:.72rem;font-weight:700;color:var(--muted);margin-bottom:2px">${sl.start} — ${sl.end}${isCustom?` (${comp.minutes} মিনিট)`:''}</div>
+            <div style="font-weight:700;font-size:.95rem;${done?'text-decoration:line-through;color:var(--muted)':''}">${sl.title}</div>
+            ${sl.desc?`<div style="font-size:.78rem;color:var(--muted);margin-top:1px">${sl.desc}</div>`:''}
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+            <span style="font-size:.65rem;font-weight:800;padding:2px 7px;border-radius:99px;background:${col}22;color:${col};border:1px solid ${col}44">${displayXP} XP${isCustom?' ⏱️':''}</span>
+            ${isStudy && !isCustom?`<span class="badge badge-coin" style="font-size:.6rem">+${Math.round(slotDurationHours(sl)*10)}🟡</span>`:''}
+            ${isCustom?`<span class="badge badge-coin" style="font-size:.6rem">+${comp.coins}🟡</span>`:''}
+          </div>
+        </div>
+        ${isStudy && !done?`<div style="margin-top:10px"><button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();openCustomTime('${sl.id}',${i})"><i class="fa-solid fa-clock"></i> কাস্টম সময়</button></div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.toggleSlot = function(slotId, idx) {
+  const was = !!completedSlots[slotId];
+  completedSlots[slotId] = !was;
+  recalcToday();
+  if (!was) {
+    const sl = activeRoutine.slots[idx];
+    spawnXPPop(sl.xp||0, slotId);
+  }
+  updateStats();
+  renderTimeline();
+  scheduleSave();
+};
+
+function spawnXPPop(xp, slotId) {
+  const el = document.createElement('div');
+  el.className = 'xp-pop';
+  el.textContent = `+${xp} XP ⚡`;
+  el.style.color = 'var(--accent)';
+  const ref = document.querySelector(`[onclick*="'${slotId}'"]`);
+  const r   = ref ? ref.getBoundingClientRect() : {left:window.innerWidth/2-40,top:window.innerHeight/2};
+  el.style.left = (r.left+10)+'px';
+  el.style.top  = (r.top+window.scrollY-10)+'px';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),1500);
+}
+
+// ════════════════════════════════════════════════════════════════
+// STATS UPDATE
+// ════════════════════════════════════════════════════════════════
+function updateStats() {
+  const xp    = getTodayXP();
+  const coins = getTodayCoins();
+  const total = getTotalXP();
+  const {level,next,prev} = getLevelInfo(total);
+  const done  = activeRoutine?.slots?.filter(s=>completedSlots[s.id]).length || 0;
+  const total_slots = activeRoutine?.slots?.length || 0;
+  const donePct = total_slots ? (done/total_slots)*100 : 0;
+  const lvlPct  = next ? ((total-prev)/(next-prev))*100 : 100;
+  const cp = calcCP(todayCQ, todayMCQ, todayKO, todayKHO);
+
+  document.getElementById('stat-xp').textContent           = xp.toLocaleString();
+  document.getElementById('stat-cp').textContent           = cp.toLocaleString();
+  document.getElementById('stat-coins').textContent        = getTotalCoins().toLocaleString();
+  document.getElementById('stat-done').textContent         = `${done}/${total_slots}`;
+  document.getElementById('stat-prog-bar').style.width     = donePct+'%';
+  document.getElementById('stat-level-badge').textContent  = `লেভেল ${level} • ${LEVEL_NAMES[level]||'মহান'}`;
+  updateSidebar();
+}
+
+function updateSidebar() {
+  if (!currentUser) return;
+  const total = getTotalXP();
+  const {level,next,prev} = getLevelInfo(total);
+  const pct = next ? ((total-prev)/(next-prev))*100 : 100;
+  const cp = calcCP(todayCQ, todayMCQ, todayKO, todayKHO);
+  // Top header
+  document.getElementById('hdr-avatar').textContent   = currentUser.username.charAt(0).toUpperCase();
+  document.getElementById('hdr-username').textContent = currentUser.username;
+  document.getElementById('hdr-coins').textContent    = `🟡 ${getTotalCoins()}`;
+  document.getElementById('hdr-cp').textContent       = `💎 ${cp}`;
+  document.getElementById('hdr-level').textContent    = `Lv ${level} • ${LEVEL_NAMES[level]||''}`;
+  document.getElementById('hdr-xp-bar').style.width   = pct+'%';
+  document.getElementById('hdr-info').style.display   = 'block';
+  document.getElementById('hdr-xp-wrap').style.display= 'block';
+}
+
+// ════════════════════════════════════════════════════════════════
+// POMODORO
+// ════════════════════════════════════════════════════════════════
+window.openPomodoro = function(idx) {
+  if (idx===undefined) idx=currentSlotIdx;
+  if (!activeRoutine?.slots?.length) return;
+  pomSlotIdx = idx;
+  const sl = activeRoutine.slots[idx];
+  document.getElementById('pomo-slot-name').textContent = sl.title;
+  document.getElementById('pomo-xp-hint').textContent   = `✨ সম্পন্ন করলে +${sl.xp||0} XP পাবে`;
+  pomSeconds = 50*60; updatePomoDisplay();
+  openModal('modal-pomo');
+};
+window.closePomo = function() {
+  closeModal('modal-pomo');
+  clearInterval(pomInterval); pomRunning=false;
+  document.getElementById('pomo-btn').textContent='শুরু';
+};
+window.togglePomo = function() {
+  const btn = document.getElementById('pomo-btn');
+  if (!pomRunning) {
+    pomRunning=true; btn.textContent='থামুন';
+    pomInterval = setInterval(()=>{
+      pomSeconds--; updatePomoDisplay();
+      if (pomSeconds<=0) {
+        clearInterval(pomInterval); pomRunning=false; btn.textContent='শুরু';
+        const sl = activeRoutine.slots[pomSlotIdx];
+        if (!completedSlots[sl.id]) {
+          completedSlots[sl.id]=true; recalcToday();
+          updateStats(); renderTimeline(); scheduleSave();
+          spawnXPPop(sl.xp||0, sl.id);
+        }
+        showToast(`🎉 সেশন সম্পন্ন! +${sl.xp||0} XP`);
+        closePomo();
+      }
+    },1000);
+  } else {
+    pomRunning=false; btn.textContent='চালু'; clearInterval(pomInterval);
+  }
+};
+function updatePomoDisplay() {
+  const m=Math.floor(pomSeconds/60), s=pomSeconds%60;
+  document.getElementById('pomo-timer-display').textContent=`${m}:${s.toString().padStart(2,'0')}`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// SPEAK
+// ════════════════════════════════════════════════════════════════
+window.speakCurrent = function() {
+  if (!activeRoutine?.slots?.[currentSlotIdx]) return;
+  const sl = activeRoutine.slots[currentSlotIdx];
+  const msg = new SpeechSynthesisUtterance(`${sl.title}. ${sl.desc||''}`);
+  msg.lang='bn-BD'; window.speechSynthesis.speak(msg);
+};
+
+// ════════════════════════════════════════════════════════════════
+// ROUTINE EDITOR
+// ════════════════════════════════════════════════════════════════
+function renderRoutineList() {
+  const cont = document.getElementById('routines-list');
+  if (!routines.length) {
+    cont.innerHTML=`<div class="empty-state"><div class="empty-icon">📋</div><p>কোনো রুটিন নেই</p></div>`;
+    return;
+  }
+  cont.innerHTML = routines.map(r=>`
+    <div class="card" style="padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:.95rem;display:flex;align-items:center;gap:8px">
+          ${r.name}
+          ${r.is_active?'<span class="badge badge-accent">সক্রিয়</span>':''}
+        </div>
+        <div style="color:var(--muted);font-size:.78rem;margin-top:3px">${(r.slots||[]).length} টি স্লট</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        ${!r.is_active?`<button class="btn btn-ghost btn-xs" onclick="activateRoutine('${r.id}')">Activate</button>`:''}
+        <button class="btn btn-ghost btn-xs" onclick="openRoutineEditor('${r.id}')"><i class="fa-solid fa-pen"></i></button>
+      </div>
+    </div>`).join('');
+}
+
+window.activateRoutine = async function(id) {
+  showSync('busy','⏳...');
+  await dbSetActiveRoutine(currentUser.username, id);
+  routines.forEach(r=>r.is_active = r.id===id);
+  activeRoutine = routines.find(r=>r.id===id);
+  completedSlots={};
+  renderRoutineList(); renderTimeline(); updateStats();
+  showSync('ok','✓'); showToast('রুটিন সক্রিয় হয়েছে ✓');
+};
+
+window.openRoutineEditor = function(id) {
+  editingRoutineId = id;
+  const r = id ? routines.find(x=>x.id===id) : null;
+  document.getElementById('routine-modal-title').textContent = r ? 'রুটিন এডিট' : 'নতুন রুটিন';
+  document.getElementById('routine-name-inp').value = r?.name || '';
+  document.getElementById('routine-active-toggle').checked = r?.is_active || false;
+  document.getElementById('routine-delete-btn').style.display = r ? 'inline-flex' : 'none';
+  // Render slot rows
+  const rows = document.getElementById('slot-rows');
+  rows.innerHTML='';
+  const slots = r?.slots || [];
+  if (!slots.length) addSlotRow();
+  else slots.forEach(sl=>addSlotRow(sl));
+  openModal('modal-routine');
+};
+
+window.closeRoutineEditor = function() { closeModal('modal-routine'); };
+
+window.addSlotRow = function(sl=null) {
+  const id = sl?.id || 'sl_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+  const div = document.createElement('div');
+  div.className = 'slot-builder-row';
+  div.dataset.slotId = id;
+  div.style.cssText = 'display:grid;grid-template-columns:2fr 80px 80px 100px 36px;gap:6px;align-items:end;margin-bottom:4px;background:var(--surface);padding:10px;border-radius:10px;border:1px solid var(--border)';
+  div.innerHTML=`
+    <div>
+      <div style="font-size:.7rem;color:var(--muted);margin-bottom:3px">নাম</div>
+      <input class="inp" style="font-size:.82rem;padding:.45rem .7rem" placeholder="স্লটের নাম" value="${sl?.title||''}">
+    </div>
+    <div>
+      <div style="font-size:.7rem;color:var(--muted);margin-bottom:3px">শুরু</div>
+      <input class="inp" style="font-size:.78rem;padding:.45rem .5rem" placeholder="09:00 AM" value="${sl?.start||''}">
+    </div>
+    <div>
+      <div style="font-size:.7rem;color:var(--muted);margin-bottom:3px">শেষ</div>
+      <input class="inp" style="font-size:.78rem;padding:.45rem .5rem" placeholder="11:00 AM" value="${sl?.end||''}">
+    </div>
+    <div>
+      <div style="font-size:.7rem;color:var(--muted);margin-bottom:3px">ক্যাটাগরি</div>
+      <select class="inp" style="font-size:.78rem;padding:.45rem .5rem">
+        ${['study','break','rest','nap','wake','sleep','meal','prep','winddown','other'].map(c=>`<option value="${c}" ${sl?.category===c?'selected':''}>${c}</option>`).join('')}
+      </select>
+    </div>
+    <div style="display:flex;align-items:flex-end;padding-bottom:1px">
+      <button class="btn btn-danger btn-xs" onclick="this.closest('[data-slot-id]').remove()" style="width:32px;height:32px;padding:0"><i class="fa-solid fa-xmark"></i></button>
+    </div>`;
+  document.getElementById('slot-rows').appendChild(div);
+};
+
+window.saveRoutine = async function() {
+  const name = document.getElementById('routine-name-inp').value.trim();
+  if (!name) { showToast('রুটিনের নাম দাও'); return; }
+  const isActive = document.getElementById('routine-active-toggle').checked;
+  const rows = [...document.querySelectorAll('#slot-rows [data-slot-id]')];
+  const slots = rows.map(row=>{
+    const inps = row.querySelectorAll('input,select');
+    const title = inps[0].value.trim();
+    const start = inps[1].value.trim();
+    const end   = inps[2].value.trim();
+    const cat   = inps[3].value;
+    if (!title) return null;
+    // XP based on category + duration
+    let xp = 5; // default 5 XP for non-study
+    if (cat==='study') {
+      try { const [sh,sm,sp]=parseT(start),[eh,em,ep]=parseT(end); const dur=(toMins(eh,em,ep)-toMins(sh,sm,sp)+1440)%1440; xp=Math.round(dur/60*100)||50; } catch(e){}
+    } else {
+      xp = Math.min(xp, 10); // cap non-study at 10
+    }
+    return { id: row.dataset.slotId, title, start, end, category:cat, xp, desc:'' };
+  }).filter(Boolean);
+
+  if (!slots.length) { showToast('কমপক্ষে একটি স্লট যোগ করো'); return; }
+
+  showSync('busy','⏳...');
+  try {
+    if (isActive) await dbSetActiveRoutine(currentUser.username, null); // deactivate others first
+    const saved = await dbSaveRoutine({ id: editingRoutineId||null, name, slots, is_active: isActive });
+    routines = await dbGetRoutines(currentUser.username);
+    activeRoutine = routines.find(r=>r.is_active) || activeRoutine;
+    completedSlots = {};
+    renderRoutineList(); renderTimeline(); updateStats();
+    closeRoutineEditor();
+    showSync('ok','✓'); showToast('রুটিন সেভ হয়েছে ✓');
+    if (!document.getElementById('onboarding').style.display==='none') closeOnboarding();
+  } catch(e) { showSync('err','✗'); showToast('সেভ ব্যর্থ: '+e.message); }
+};
+
+window.deleteRoutine = async function() {
+  if (!editingRoutineId) return;
+  if (!confirm('এই রুটিন মুছে ফেলবে?')) return;
+  await dbDeleteRoutine(editingRoutineId);
+  routines = await dbGetRoutines(currentUser.username);
+  if (activeRoutine?.id===editingRoutineId) { activeRoutine=null; completedSlots={}; }
+  renderRoutineList(); renderTimeline(); updateStats();
+  closeRoutineEditor(); showToast('রুটিন মুছে ফেলা হয়েছে');
+};
+
+// ════════════════════════════════════════════════════════════════
+// AI BUILDER — Prompt generator + JSON importer (no API calls)
+// ════════════════════════════════════════════════════════════════
+window.generateAIPrompt = function() {
+  const wake     = document.getElementById('ai-wake').value.trim();
+  const sleep    = document.getElementById('ai-sleep').value.trim();
+  const subjects = document.getElementById('ai-subjects').value.trim();
+  const extra    = document.getElementById('ai-extra').value.trim();
+
+  if (!wake || !sleep) { showToast('ঘুম ও ওঠার সময় দাও'); return; }
+
+  const prompt = `আমার জন্য একটি পূর্ণ দৈনিক রুটিন তৈরি করো।
+
+আমার তথ্য:
+- ঘুম থেকে ওঠার সময়: ${wake}
+- ঘুমাতে যাওয়ার সময়: ${sleep}
+- পড়াশোনা: ${subjects || 'উল্লেখ নেই'}
+${extra ? `- অন্যান্য: ${extra}` : ''}
+
+প্রথমে আমাকে রুটিনটি দেখাও এবং জিজ্ঞেস করো আমি কনফার্ম করতে চাই কিনা বা পরিবর্তন করতে চাই কিনা।
+
+আমি কনফার্ম করলে, রুটিনটি নিচের JSON ফরম্যাটে দাও:
+
+{
+  "routine_name": "রুটিনের নাম",
+  "slots": [
+    {
+      "id": "sl_1",
+      "title": "স্লটের নাম",
+      "desc": "সংক্ষিপ্ত বিবরণ",
+      "start": "07:00 AM",
+      "end": "08:00 AM",
+      "category": "study",
+      "xp": 100
+    }
+  ]
+}
+
+নিয়মাবলী:
+- category শুধুমাত্র এগুলোর একটি হবে: study, break, rest, nap, wake, sleep, meal, prep, winddown, other
+- সময় ফরম্যাট: "HH:MM AM" বা "HH:MM PM" (যেমন "07:30 AM", "11:00 PM")
+- XP: study-এর জন্য প্রতি ঘণ্টায় ~100, বাকিগুলোর জন্য 20-50
+- সব স্লট মিলিয়ে পুরো দিন কভার করতে হবে, কোনো ফাঁক রাখা যাবে না
+- JSON ছাড়া আর কিছু লিখবে না কনফার্মের পরে`;
+
+  document.getElementById('ai-generated-prompt').textContent = prompt;
+  document.getElementById('ai-prompt-section').style.display = 'block';
+  document.getElementById('ai-prompt-section').scrollIntoView({behavior:'smooth', block:'start'});
+};
+
+window.copyPrompt = function() {
+  const text = document.getElementById('ai-generated-prompt').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn = document.getElementById('copy-prompt-btn');
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> কপি হয়েছে!';
+    btn.style.color = 'var(--accent)';
+    setTimeout(()=>{ btn.innerHTML='<i class="fa-solid fa-copy"></i> কপি'; btn.style.color=''; }, 2000);
+  }).catch(()=>{
+    // Fallback for older browsers
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('প্রম্পট কপি হয়েছে ✓');
+  });
+};
+
+window.parseJSONPreview = function() {
+  const raw = document.getElementById('ai-json-input').value.trim();
+  const errEl = document.getElementById('ai-json-error');
+  const previewEl = document.getElementById('ai-json-preview');
+  errEl.style.display = 'none'; previewEl.style.display = 'none';
+
+  if (!raw) { errEl.textContent = 'JSON পেস্ট করো'; errEl.style.display = 'block'; return null; }
+  let parsed;
+  try {
+    const match = raw.match(/\{[\s\S]*\}/);
+    parsed = JSON.parse(match?.[0] || raw);
+  } catch(e) {
+    errEl.textContent = '❌ JSON ফরম্যাট ভুল। ঠিকমতো কপি করো।'; errEl.style.display='block'; return null;
+  }
+  if (!parsed.slots?.length) {
+    errEl.textContent = '❌ slots পাওয়া যায়নি।'; errEl.style.display='block'; return null;
+  }
+  previewEl.innerHTML = `
+    <div style="font-size:.78rem;font-weight:700;color:var(--accent);margin-bottom:8px">✓ ${parsed.slots.length} টি স্লট পাওয়া গেছে — "${parsed.routine_name||'রুটিন'}"</div>
+    <div style="display:flex;flex-direction:column;gap:4px;max-height:200px;overflow-y:auto">
+      ${parsed.slots.map(sl=>`
+        <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--card);border-radius:7px;border:1px solid var(--border)">
+          <span style="font-size:.68rem;color:var(--muted);min-width:108px;flex-shrink:0">${sl.start||'?'} — ${sl.end||'?'}</span>
+          <span style="font-weight:600;font-size:.82rem;flex:1">${sl.title||'?'}</span>
+          <span style="font-size:.62rem;font-weight:800;padding:1px 6px;border-radius:99px;background:${CAT_COLORS[sl.category]||'#666'}22;color:${CAT_COLORS[sl.category]||'#666'};flex-shrink:0">${sl.xp||0} XP</span>
+        </div>`).join('')}
+    </div>`;
+  previewEl.style.display = 'block';
+  return parsed;
+};
+
+window.importJSONRoutine = async function() {
+  const parsed = parseJSONPreview();
+  if (!parsed) return;
+  const r = {
+    id: null,
+    name: parsed.routine_name || 'AI রুটিন',
+    slots: parsed.slots.map((sl,i)=>({
+      id: sl.id || 'sl_ai_'+i,
+      title: sl.title || 'স্লট',
+      desc:  sl.desc  || '',
+      start: sl.start || '08:00 AM',
+      end:   sl.end   || '09:00 AM',
+      category: sl.category || 'other',
+      xp: sl.category === 'study' ? (sl.xp || 30) : Math.min(sl.xp || 5, 10)
+    })),
+    is_active: true
+  };
+  showSync('busy','⏳...');
+  try {
+    await dbSetActiveRoutine(currentUser.username, null);
+    const saved = await dbSaveRoutine(r);
+    routines = await dbGetRoutines(currentUser.username);
+    activeRoutine = routines.find(x=>x.id===saved.id) || routines.find(x=>x.is_active);
+    completedSlots = {};
+    closeOnboarding();
+    renderTimeline(); updateStats();
+    document.getElementById('ai-json-input').value = '';
+    document.getElementById('ai-json-preview').style.display = 'none';
+    document.getElementById('ai-prompt-section').style.display = 'none';
+    goTo('dashboard');
+    showSync('ok','✓'); showToast('রুটিন ইম্পোর্ট হয়েছে ✓');
+  } catch(e) { showSync('err','✗'); showToast('ইম্পোর্ট ব্যর্থ: '+e.message); }
+};
+
+// ════════════════════════════════════════════════════════════════
+// CQ / MCQ TRACKER
+// ════════════════════════════════════════════════════════════════
+// Hidden scoring (never shown to users, only affects rank sorting):
+// 2 hours of study = 200 XP (study is 100 XP/hr)
+// 5 CQ  = same rank weight as 2hr study → 200/5 = 40 pts per CQ
+// 100 MCQ = same rank weight as 2hr study → 200/100 = 2 pts per MCQ
+const CQ_HIDDEN_PTS  = 40;
+const MCQ_HIDDEN_PTS = 2;
+
+function getCQMCQFromSlots(slots) {
+  if (!slots || typeof slots !== 'object') return { cq: 0, mcq: 0, ko: 0, kho: 0 };
+  return { cq: slots._cq || 0, mcq: slots._mcq || 0, ko: slots._ko || 0, kho: slots._kho || 0 };
+}
+
+// CP (Coin Points) calculation: 1 CQ=10 CP, 1 MCQ=0.2 CP, 1 KO=1 CP, 1 KHO=2 CP
+function calcCP(cq, mcq, ko, kho) {
+  return Math.round((cq * 10) + (mcq * 0.2) + (ko * 1) + (kho * 2));
+}
+
+window.changeCQ = function(delta) {
+  todayCQ = Math.max(0, todayCQ + delta);
+  completedSlots._cq = todayCQ;
+  updateCQMCQDisplay();
+  scheduleSave();
+};
+window.changeMCQ = function(delta) {
+  todayMCQ = Math.max(0, todayMCQ + delta);
+  completedSlots._mcq = todayMCQ;
+  updateCQMCQDisplay();
+  scheduleSave();
+};
+window.changeKO = function(delta) {
+  todayKO = Math.max(0, todayKO + delta);
+  completedSlots._ko = todayKO;
+  updateCQMCQDisplay();
+  scheduleSave();
+};
+window.changeKHO = function(delta) {
+  todayKHO = Math.max(0, todayKHO + delta);
+  completedSlots._kho = todayKHO;
+  updateCQMCQDisplay();
+  scheduleSave();
+};
+
+function updateCQMCQDisplay() {
+  const cqEl = document.getElementById('cq-count');
+  const mcqEl = document.getElementById('mcq-count');
+  const koEl = document.getElementById('ko-count');
+  const khoEl = document.getElementById('kho-count');
+  const cpEl = document.getElementById('cp-display-val');
+  if (cqEl) cqEl.textContent = todayCQ;
+  if (mcqEl) mcqEl.textContent = todayMCQ;
+  if (koEl) koEl.textContent = todayKO;
+  if (khoEl) khoEl.textContent = todayKHO;
+  if (cpEl) cpEl.textContent = calcCP(todayCQ, todayMCQ, todayKO, todayKHO);
+  // Compact chips
+  const cqChip = document.getElementById('cq-chip');
+  const mcqChip = document.getElementById('mcq-chip');
+  const koChip = document.getElementById('ko-chip');
+  const khoChip = document.getElementById('kho-chip');
+  const cpChip = document.getElementById('cp-chip');
+  if (cqChip) cqChip.textContent = `CQ ${todayCQ}`;
+  if (mcqChip) mcqChip.textContent = `MCQ ${todayMCQ}`;
+  if (koChip) koChip.textContent = `ক ${todayKO}`;
+  if (khoChip) khoChip.textContent = `খ ${todayKHO}`;
+  if (cpChip) cpChip.textContent = `💎 ${calcCP(todayCQ, todayMCQ, todayKO, todayKHO)} CP`;
+}
+
+window.setCQFromInput = function() {
+  const inp = document.getElementById('cq-input');
+  const val = parseInt(inp.value);
+  if (isNaN(val) || val < 0) { inp.value = ''; return; }
+  todayCQ = val;
+  completedSlots._cq = todayCQ;
+  updateCQMCQDisplay();
+  inp.value = '';
+  scheduleSave();
+};
+
+window.setMCQFromInput = function() {
+  const inp = document.getElementById('mcq-input');
+  const val = parseInt(inp.value);
+  if (isNaN(val) || val < 0) { inp.value = ''; return; }
+  todayMCQ = val;
+  completedSlots._mcq = todayMCQ;
+  updateCQMCQDisplay();
+  inp.value = '';
+  scheduleSave();
+};
+
+window.setKOFromInput = function() {
+  const inp = document.getElementById('ko-input');
+  const val = parseInt(inp.value);
+  if (isNaN(val) || val < 0) { inp.value = ''; return; }
+  todayKO = val;
+  completedSlots._ko = todayKO;
+  updateCQMCQDisplay();
+  inp.value = '';
+  scheduleSave();
+};
+
+window.setKHOFromInput = function() {
+  const inp = document.getElementById('kho-input');
+  const val = parseInt(inp.value);
+  if (isNaN(val) || val < 0) { inp.value = ''; return; }
+  todayKHO = val;
+  completedSlots._kho = todayKHO;
+  updateCQMCQDisplay();
+  inp.value = '';
+  scheduleSave();
+};
+
+// ════════════════════════════════════════════════════════════════
+// CQ/MCQ/KO/KHO EDITOR MODAL
+// ════════════════════════════════════════════════════════════════
+window.openCQMCQEditor = function() {
+  document.getElementById('edit-cq').value = todayCQ;
+  document.getElementById('edit-mcq').value = todayMCQ;
+  document.getElementById('edit-ko').value = todayKO;
+  document.getElementById('edit-kho').value = todayKHO;
+  editorPreview();
+  openModal('modal-cqmcq-edit');
+};
+window.closeCQMCQEditor = function() {
+  closeModal('modal-cqmcq-edit');
+};
+window.editorAdjust = function(field, delta) {
+  const inp = document.getElementById('edit-' + field);
+  let val = parseInt(inp.value) || 0;
+  val = Math.max(0, val + delta);
+  inp.value = val;
+  editorPreview();
+};
+window.editorPreview = function() {
+  const cq = Math.max(0, parseInt(document.getElementById('edit-cq').value) || 0);
+  const mcq = Math.max(0, parseInt(document.getElementById('edit-mcq').value) || 0);
+  const ko = Math.max(0, parseInt(document.getElementById('edit-ko').value) || 0);
+  const kho = Math.max(0, parseInt(document.getElementById('edit-kho').value) || 0);
+  document.getElementById('edit-cp-preview').textContent = `💎 ${calcCP(cq, mcq, ko, kho)}`;
+};
+window.saveCQMCQEditor = function() {
+  const cq = Math.max(0, parseInt(document.getElementById('edit-cq').value) || 0);
+  const mcq = Math.max(0, parseInt(document.getElementById('edit-mcq').value) || 0);
+  const ko = Math.max(0, parseInt(document.getElementById('edit-ko').value) || 0);
+  const kho = Math.max(0, parseInt(document.getElementById('edit-kho').value) || 0);
+  todayCQ = cq;
+  todayMCQ = mcq;
+  todayKO = ko;
+  todayKHO = kho;
+  completedSlots._cq = todayCQ;
+  completedSlots._mcq = todayMCQ;
+  completedSlots._ko = todayKO;
+  completedSlots._kho = todayKHO;
+  updateCQMCQDisplay();
+  updateStats();
+  scheduleSave();
+  closeCQMCQEditor();
+};
+
+// ════════════════════════════════════════════════════════════════
+// LEADERBOARD
+// ════════════════════════════════════════════════════════════════
+window.switchLBTab = function(tab) {
+  currentLBTab = tab;
+  document.getElementById('lb-tab-all').className    = tab==='all'    ? 'btn btn-accent btn-sm' : 'btn btn-ghost btn-sm';
+  document.getElementById('lb-tab-weekly').className = tab==='weekly' ? 'btn btn-accent btn-sm' : 'btn btn-ghost btn-sm';
+  document.getElementById('lb-tab-today').className  = tab==='today'  ? 'btn btn-accent btn-sm' : 'btn btn-ghost btn-sm';
+  document.getElementById('lb-today-banner').style.display = tab==='today' ? 'block' : 'none';
+  renderLeaderboard();
+};
+
+async function loadLeaderboard() {
+  document.getElementById('lb-list').innerHTML = `<div style="text-align:center;padding:24px;color:var(--muted)"><i class="fa-solid fa-spinner fa-spin"></i> লোড হচ্ছে...</div>`;
+  try {
+    allLogs = await dbGetAllLogs();
+    renderLeaderboard();
+  } catch(e) { document.getElementById('lb-list').innerHTML = '<div class="empty-state"><p>লোড ব্যর্থ</p></div>'; }
+}
+
+function renderLeaderboard() {
+  const days7  = new Set(lastNDays(7));
+  const today  = todayKey();
+  // Aggregate XP per user + CQ/MCQ/KO/KHO counts
+  const agg = {};
+  allLogs.forEach(l=>{
+    if (!agg[l.username]) agg[l.username]={username:l.username,total:0,weekly:0,today:0,todayMax:0,totalCQ:0,totalMCQ:0,weeklyCQ:0,weeklyMCQ:0,todayCQ:0,todayMCQ:0,totalKO:0,totalKHO:0,weeklyKO:0,weeklyKHO:0,todayKO:0,todayKHO:0};
+    agg[l.username].total  += l.xp||0;
+    if (days7.has(l.date)) agg[l.username].weekly += l.xp||0;
+    if (l.date===today)    agg[l.username].today   = l.xp||0;
+
+    // Extract CQ/MCQ/KO/KHO from completed_slots JSONB
+    const cm = getCQMCQFromSlots(l.completed_slots);
+    agg[l.username].totalCQ  += cm.cq;
+    agg[l.username].totalMCQ += cm.mcq;
+    agg[l.username].totalKO  += cm.ko;
+    agg[l.username].totalKHO += cm.kho;
+    if (days7.has(l.date)) { agg[l.username].weeklyCQ += cm.cq; agg[l.username].weeklyMCQ += cm.mcq; agg[l.username].weeklyKO += cm.ko; agg[l.username].weeklyKHO += cm.kho; }
+    if (l.date===today)     { agg[l.username].todayCQ = cm.cq; agg[l.username].todayMCQ = cm.mcq; agg[l.username].todayKO = cm.ko; agg[l.username].todayKHO = cm.kho; }
+  });
+
+  const todayMax = Math.max(1,...Object.values(agg).map(u=>u.today));
+
+  // Calculate hidden rank score: XP + (CQ * hidden_pts) + (MCQ * hidden_pts) + KO + KHO*2
+  // This score is ONLY used for sorting, never displayed
+  let sorted = Object.values(agg).sort((a,b)=>{
+    const scoreA = (currentLBTab==='weekly' ? a.weekly : currentLBTab==='today' ? a.today : a.total)
+                 + (currentLBTab==='weekly' ? a.weeklyCQ : currentLBTab==='today' ? a.todayCQ : a.totalCQ) * CQ_HIDDEN_PTS
+                 + (currentLBTab==='weekly' ? a.weeklyMCQ : currentLBTab==='today' ? a.todayMCQ : a.totalMCQ) * MCQ_HIDDEN_PTS
+                 + (currentLBTab==='weekly' ? a.weeklyKO : currentLBTab==='today' ? a.todayKO : a.totalKO) * 1
+                 + (currentLBTab==='weekly' ? a.weeklyKHO : currentLBTab==='today' ? a.todayKHO : a.totalKHO) * 2;
+    const scoreB = (currentLBTab==='weekly' ? b.weekly : currentLBTab==='today' ? b.today : b.total)
+                 + (currentLBTab==='weekly' ? b.weeklyCQ : currentLBTab==='today' ? b.todayCQ : b.totalCQ) * CQ_HIDDEN_PTS
+                 + (currentLBTab==='weekly' ? b.weeklyMCQ : currentLBTab==='today' ? b.todayMCQ : b.totalMCQ) * MCQ_HIDDEN_PTS
+                 + (currentLBTab==='weekly' ? b.weeklyKO : currentLBTab==='today' ? b.todayKO : b.totalKO) * 1
+                 + (currentLBTab==='weekly' ? b.weeklyKHO : currentLBTab==='today' ? b.todayKHO : b.totalKHO) * 2;
+    return scoreB - scoreA;
+  });
+  const scoreKey = currentLBTab==='weekly' ? 'weekly' : currentLBTab==='today' ? 'today' : 'total';
+  const top5 = sorted.slice(0,5);
+  const COLORS = ['#00e5a0','#7c6af7','#f7a06a','#3b82f6','#ec4899'];
+
+  // Chart
+  if (lbChart) lbChart.destroy();
+  const ctx = document.getElementById('lb-chart').getContext('2d');
+  lbChart = new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels: top5.map(u=>u.username),
+      datasets:[{
+        label:'XP',
+        data:top5.map(u=>u[scoreKey]),
+        backgroundColor:top5.map((_,i)=>COLORS[i]||'#6b6b7e'),
+        borderRadius:8
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{display:false},
+        title:{display:true,text:currentLBTab==='weekly'?'সাপ্তাহিক টপ ৫':currentLBTab==='today'?'আজকের টপ ৫':'সর্বকালীন টপ ৫',color:'#f0f0f5',font:{size:13}}
+      },
+      scales:{x:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'}},y:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'},beginAtZero:true}}
+    }
+  });
+
+  // List — show CQ/MCQ chips beside name, only display XP (not hidden score)
+  const list = document.getElementById('lb-list');
+  if (!sorted.length) { list.innerHTML='<div class="empty-state"><div class="empty-icon">🏆</div><p>এখনো কোনো ডেটা নেই</p></div>'; return; }
+
+  // Helper to pick CQ/MCQ/KO/KHO counts based on tab
+  function cmCounts(u) {
+    if (currentLBTab==='today')  return { cq: u.todayCQ,  mcq: u.todayMCQ, ko: u.todayKO, kho: u.todayKHO };
+    if (currentLBTab==='weekly') return { cq: u.weeklyCQ, mcq: u.weeklyMCQ, ko: u.weeklyKO, kho: u.weeklyKHO };
+    return { cq: u.totalCQ, mcq: u.totalMCQ, ko: u.totalKO, kho: u.totalKHO };
+  }
+
+  list.innerHTML = sorted.slice(0,20).map((u,i)=>{
+    const rankClass = i===0?'gold':i===1?'silver':i===2?'bronze':'';
+    const isMe = u.username===currentUser?.username?.toLowerCase();
+    const todayPct = Math.round((u.today/todayMax)*100);
+    const cm = cmCounts(u);
+    const cqChip = cm.cq > 0 ? `<span class="cqmcq-chip cqmcq-chip-cq">CQ ${cm.cq}</span>` : '';
+    const mcqChip = cm.mcq > 0 ? `<span class="cqmcq-chip cqmcq-chip-mcq">MCQ ${cm.mcq}</span>` : '';
+    const koChip = cm.ko > 0 ? `<span class="cqmcq-chip cqmcq-chip-ko">ক ${cm.ko}</span>` : '';
+    const khoChip = cm.kho > 0 ? `<span class="cqmcq-chip cqmcq-chip-kho">খ ${cm.kho}</span>` : '';
+    const cpVal = calcCP(cm.cq, cm.mcq, cm.ko, cm.kho);
+    const cpChip = cpVal > 0 ? `<span class="cp-badge">💎 ${cpVal}</span>` : '';
+    return `<div class="lb-row ${isMe?'me':''}" style="cursor:pointer" onclick="openUserProfile('${u.username}')">
+      <span class="lb-rank ${rankClass}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</span>
+      <div class="avatar" style="width:28px;height:28px;font-size:.78rem;background:${COLORS[i]||'#6b7b8a'}44">${u.username.charAt(0).toUpperCase()}</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+          <span style="font-weight:700;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+            ${u.username}${isMe?' <span style="font-size:.65rem;color:var(--accent)">(তুমি)</span>':''}
+          </span>
+          ${cqChip}${mcqChip}${koChip}${khoChip}${cpChip}
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:2px">
+          <div class="lb-today-bar" style="flex:1;max-width:80px"><div class="lb-today-fill" style="width:${todayPct}%"></div></div>
+          <span style="font-size:.65rem;color:var(--accent);font-weight:700">${u.today>0?'+'+u.today+' আজ':''}</span>
+        </div>
+      </div>
+      <div style="font-family:'Syne',sans-serif;font-weight:800;color:${i<3?['#fbbf24','#a0a0b0','#cd7f32'][i]:'var(--muted)'};font-size:.92rem;flex-shrink:0">${u[scoreKey].toLocaleString()}</div>
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════════════════
+// HISTORY
+// ════════════════════════════════════════════════════════════════
+let compareSelected = [];   // max 2 usernames
+let compareChart    = null;
+let compareAllLogs  = null; // cache
+
+const COMPARE_COLORS = ['#7c6af7','#f7a06a','#ec4899','#3b82f6'];
+
+async function renderHistory() {
+  const days90  = lastNDays(90);
+  const days30  = lastNDays(30);
+  const days7   = lastNDays(7);
+
+  // Stats
+  const streak  = calcStreak();
+  const best    = Object.values(xpHistory).length ? Math.max(0,...Object.values(xpHistory)) : 0;
+  const weekXP  = days7.reduce((s,d)=>s+(xpHistory[d]||0),0);
+  const total   = getTotalXP();
+  document.getElementById('hist-streak').textContent = streak;
+  document.getElementById('hist-best').textContent   = best;
+  document.getElementById('hist-week').textContent   = weekXP;
+  document.getElementById('hist-total').textContent  = total;
+
+  // Heatmap
+  renderHeatmap(days90);
+
+  // Study Time Chart (hours from coins: 10 coins = 1 hour)
+  const studyHours7 = days7.map(d => {
+    const coins = coinsHistory[d] || 0;
+    return Math.round((coins / 10) * 10) / 10; // Convert coins to hours, round to 1 decimal
+  });
+  const totalStudyHours = studyHours7.reduce((s, h) => s + h, 0);
+  const avgStudyHours = totalStudyHours / 7;
+
+  document.getElementById('study-hours-week').textContent = totalStudyHours.toFixed(1) + 'h';
+  document.getElementById('study-hours-avg').textContent = avgStudyHours.toFixed(1) + 'h';
+
+  if (studyTimeChart) studyTimeChart.destroy();
+  const stCtx = document.getElementById('study-time-chart').getContext('2d');
+  studyTimeChart = new Chart(stCtx, {
+    type: 'bar',
+    data: {
+      labels: days7.map(d => new Date(d + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short' })),
+      datasets: [{
+        label: 'ঘণ্টা',
+        data: studyHours7,
+        backgroundColor: days7.map((_, i) => i === 6 ? 'var(--accent)' : 'var(--accent2)'),
+        borderRadius: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        x: { ticks: { color: '#6b6b7e' }, grid: { color: '#ffffff08' } },
+        y: { 
+          ticks: { color: '#6b6b7e', callback: v => v + 'h' }, 
+          grid: { color: '#ffffff08' }, 
+          beginAtZero: true 
+        }
+      }
+    }
+  });
+
+  // Weekly chart
+  if (histWeeklyChart) histWeeklyChart.destroy();
+  const wCtx = document.getElementById('hist-weekly-chart').getContext('2d');
+  histWeeklyChart = new Chart(wCtx,{
+    type:'bar',
+    data:{
+      labels:days7.map(d=>new Date(d+'T00:00:00').toLocaleDateString('en-US',{weekday:'short',day:'numeric'})),
+      datasets:[{label:'তোমার XP',data:days7.map(d=>xpHistory[d]||0),backgroundColor:days7.map((_,i)=>i===6?'var(--accent)':'#7c6af766'),borderRadius:8}]
+    },
+    options:{responsive:true,plugins:{legend:{display:false},title:{display:true,text:'সাপ্তাহিক XP',color:'#f0f0f5',font:{size:12}}},scales:{x:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'}},y:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'},beginAtZero:true}}}
+  });
+
+  // Monthly chart
+  if (histMonthlyChart) histMonthlyChart.destroy();
+  const mCtx = document.getElementById('hist-monthly-chart').getContext('2d');
+  histMonthlyChart = new Chart(mCtx,{
+    type:'line',
+    data:{
+      labels:days30.map((d,i)=>i%5===0?new Date(d+'T00:00:00').getDate()+'':''),
+      datasets:[{label:'দৈনিক XP',data:days30.map(d=>xpHistory[d]||0),borderColor:'var(--accent)',backgroundColor:'#00e5a012',fill:true,tension:.4,pointRadius:2}]
+    },
+    options:{responsive:true,plugins:{legend:{display:false},title:{display:true,text:'মাসিক XP (৩০ দিন)',color:'#f0f0f5',font:{size:12}}},scales:{x:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'}},y:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'},beginAtZero:true}}}
+  });
+
+  // Load comparison data
+  await loadCompareUsers();
+}
+
+async function loadCompareUsers() {
+  const listEl = document.getElementById('compare-user-list');
+  if (!compareAllLogs) {
+    listEl.innerHTML = '<div style="color:var(--muted);font-size:.8rem">লোড হচ্ছে...</div>';
+    try {
+      compareAllLogs = await dbGetAllLogs();
+    } catch(e) { listEl.innerHTML = '<div style="color:var(--danger);font-size:.8rem">লোড ব্যর্থ</div>'; return; }
+  }
+  // Build per-user map
+  const users = {};
+  compareAllLogs.forEach(l => {
+    if (l.username === currentUser.username.toLowerCase()) return; // skip self
+    if (!users[l.username]) users[l.username] = {};
+    users[l.username][l.date] = l.xp || 0;
+  });
+  const userList = Object.keys(users);
+  if (!userList.length) {
+    listEl.innerHTML = '<div style="color:var(--muted);font-size:.8rem">এখনো কোনো অন্য ব্যবহারকারী নেই</div>';
+    return;
+  }
+  listEl.innerHTML = userList.map((u,i) => {
+    const sel = compareSelected.includes(u);
+    return `<div class="compare-chip ${sel?'selected':''}" onclick="toggleCompareUser('${u}')" data-user="${u}">
+      <div class="compare-dot" style="background:${sel?COMPARE_COLORS[compareSelected.indexOf(u)]:'var(--muted)'}"></div>
+      ${u}
+    </div>`;
+  }).join('');
+  renderCompareChart(users);
+}
+
+window.toggleCompareUser = function(username) {
+  if (compareSelected.includes(username)) {
+    compareSelected = compareSelected.filter(u=>u!==username);
+  } else {
+    if (compareSelected.length >= 2) { showToast('সর্বোচ্চ ২ জন বেছে নেওয়া যাবে'); return; }
+    compareSelected.push(username);
+  }
+  // Re-build users map from cache
+  const users = {};
+  (compareAllLogs||[]).forEach(l => {
+    if (l.username === currentUser.username.toLowerCase()) return;
+    if (!users[l.username]) users[l.username] = {};
+    users[l.username][l.date] = l.xp || 0;
+  });
+  // Update chip styles
+  document.querySelectorAll('.compare-chip').forEach(chip => {
+    const u = chip.dataset.user;
+    const sel = compareSelected.includes(u);
+    chip.classList.toggle('selected', sel);
+    chip.querySelector('.compare-dot').style.background = sel ? COMPARE_COLORS[compareSelected.indexOf(u)] : 'var(--muted)';
+  });
+  renderCompareChart(users);
+};
+
+function renderCompareChart(users) {
+  const days30 = lastNDays(30);
+  const chartWrap = document.getElementById('compare-chart-wrap');
+  const emptyEl   = document.getElementById('compare-empty');
+  const tableEl   = document.getElementById('compare-table');
+
+  if (!compareSelected.length) {
+    chartWrap.style.display = 'none';
+    emptyEl.style.display   = 'block';
+    return;
+  }
+  chartWrap.style.display = 'block';
+  emptyEl.style.display   = 'none';
+
+  // Build datasets: me + selected users
+  const meData = days30.map(d=>xpHistory[d]||0);
+  const datasets = [
+    { label:'তুমি', data:meData, borderColor:'var(--accent)', backgroundColor:'#00e5a015', fill:true, tension:.4, pointRadius:2, borderWidth:2 },
+    ...compareSelected.map((u,i)=>({
+      label:u,
+      data:days30.map(d=>(users[u]||{})[d]||0),
+      borderColor:COMPARE_COLORS[i],
+      backgroundColor:COMPARE_COLORS[i]+'18',
+      fill:false, tension:.4, pointRadius:2, borderWidth:2
+    }))
+  ];
+
+  if (compareChart) compareChart.destroy();
+  const ctx = document.getElementById('compare-chart').getContext('2d');
+  compareChart = new Chart(ctx,{
+    type:'line',
+    data:{
+      labels:days30.map((d,i)=>i%5===0?new Date(d+'T00:00:00').getDate()+'':''),
+      datasets
+    },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{display:true,labels:{color:'#f0f0f5',font:{size:11},boxWidth:12}},
+        title:{display:true,text:'গত ৩০ দিনের তুলনা',color:'#f0f0f5',font:{size:12}}
+      },
+      scales:{x:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'}},y:{ticks:{color:'#6b6b7e'},grid:{color:'#ffffff08'},beginAtZero:true}}
+    }
+  });
+
+  // Summary table
+  const days7 = lastNDays(7);
+  const allUsers = ['তুমি',...compareSelected];
+  const allData  = [xpHistory,...compareSelected.map(u=>users[u]||{})];
+  const colors   = ['var(--accent)',...COMPARE_COLORS];
+  tableEl.innerHTML = allUsers.map((label,i)=>{
+    const hist = allData[i];
+    const wk = days7.reduce((s,d)=>s+(hist[d]||0),0);
+    const tot = Object.values(hist).reduce((s,v)=>s+v,0);
+    const best= Object.values(hist).length ? Math.max(0,...Object.values(hist)) : 0;
+    return `<div style="display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:8px;align-items:center;padding:8px 10px;background:var(--bg);border-radius:8px;border:1px solid var(--border)">
+      <div style="width:10px;height:10px;border-radius:50%;background:${colors[i]};flex-shrink:0"></div>
+      <div style="font-weight:700;font-size:.82rem">${label}</div>
+      <div style="text-align:center">
+        <div style="font-size:.62rem;color:var(--muted)">সপ্তাহ</div>
+        <div style="font-weight:800;font-size:.85rem;color:${colors[i]}">${wk}</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:.62rem;color:var(--muted)">মোট</div>
+        <div style="font-weight:800;font-size:.85rem;color:${colors[i]}">${tot}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function calcStreak() {
+  let streak=0, d=new Date();
+  for (let i=0;i<365;i++) {
+    const k=localDateKey(d);
+    if ((xpHistory[k]||0)>0) streak++;
+    else if (i>0) break;
+    d.setDate(d.getDate()-1);
+  }
+  return streak;
+}
+
+function renderHeatmap(days) {
+  const maxXP = Math.max(1,...days.map(d=>xpHistory[d]||0));
+  const cont = document.getElementById('heatmap-container');
+  const grid = document.createElement('div');
+  grid.className='heatmap-grid';
+  let col=null;
+  days.forEach((d,i)=>{
+    if (i%7===0){ col=document.createElement('div'); col.className='heatmap-col'; grid.appendChild(col); }
+    const xp=xpHistory[d]||0;
+    const level=xp===0?0:xp<maxXP*.25?1:xp<maxXP*.5?2:xp<maxXP*.75?3:4;
+    const cell=document.createElement('div');
+    cell.className='heatmap-cell'; if(level) cell.dataset.level=level;
+    cell.title=`${d}: ${xp} XP`;
+    col.appendChild(cell);
+  });
+  cont.innerHTML=''; cont.appendChild(grid);
+}
+
+// ════════════════════════════════════════════════════════════════
+// SHOP
+// ════════════════════════════════════════════════════════════════
+const SHOP_THEMES = [
+  { id:'theme_default', name:'ডিফল্ট', price:0, rental:false, preview:'linear-gradient(135deg,#0c0c10,#13131a)', vars:{ '--bg':'#0c0c10','--surface':'#13131a','--card':'#1a1a24','--accent':'#6ee7b7','--accent2':'#818cf8','--accent3':'#fb923c' } },
+  { id:'theme_ocean', name:'মহাসাগর', price:80, rental:false, preview:'linear-gradient(135deg,#040f1e,#071e3d)', vars:{ '--bg':'#040f1e','--surface':'#071e3d','--card':'#0b2a52','--accent':'#38bdf8','--accent2':'#6366f1','--accent3':'#34d399' } },
+  { id:'theme_sunset', name:'সূর্যাস্ত', price:80, rental:true, rentalDays:3, preview:'linear-gradient(135deg,#18080a,#2d1018)', vars:{ '--bg':'#18080a','--surface':'#2d1018','--card':'#3d1620','--accent':'#fb7185','--accent2':'#f97316','--accent3':'#fbbf24' } },
+  { id:'theme_galaxy', name:'গ্যালাক্সি', price:120, rental:false, preview:'linear-gradient(135deg,#080616,#110c2e)', vars:{ '--bg':'#080616','--surface':'#110c2e','--card':'#1a1244','--accent':'#a78bfa','--accent2':'#e879f9','--accent3':'#67e8f9' } },
+  { id:'theme_forest', name:'বন', price:80, rental:true, rentalDays:3, preview:'linear-gradient(135deg,#051a0c,#0a2e18)', vars:{ '--bg':'#051a0c','--surface':'#0a2e18','--card':'#0f3d22','--accent':'#4ade80','--accent2':'#a3e635','--accent3':'#fde68a' } },
+  { id:'theme_cherry', name:'চেরি', price:120, rental:false, preview:'linear-gradient(135deg,#1a0814,#2e0f22)', vars:{ '--bg':'#1a0814','--surface':'#2e0f22','--card':'#3d1430','--accent':'#f472b6','--accent2':'#e879f9','--accent3':'#fb7185' } },
+  // PREMIUM RENTAL THEMES (3-day rental, very expensive)
+  { id:'theme_aurora', name:'অরোরা ⭐', price:400, rental:false, preview:'linear-gradient(135deg,#091520,#101830,#091e1e)', vars:{ '--bg':'#091520','--surface':'#101830','--card':'#162240','--accent':'#2dd4bf','--accent2':'#a78bfa','--accent3':'#38bdf8' } },
+  { id:'theme_neon', name:'নিয়ন ⭐⭐', price:450, rental:true, rentalDays:3, preview:'linear-gradient(135deg,#0d0d1a,#12101e,#0d1a1a)', vars:{ '--bg':'#0d0d1a','--surface':'#12101e','--card':'#1a1830','--accent':'#e879f9','--accent2':'#22d3ee','--accent3':'#facc15' } },
+];
+const SHOP_BOOSTS = [
+  { id:'boost_xp_1d',  name:'XP বুস্ট ×১.৫', price:500, desc:'২৪ ঘণ্টার জন্য XP ১.৫× হবে', icon:'⚡' },
+  { id:'boost_xp_3d',  name:'XP বুস্ট ×১.৫', price:1500, desc:'৩ দিনের জন্য XP ১.৫× হবে',   icon:'⚡⚡' },
+  { id:'boost_coin_2d',name:'কয়েন বুস্ট ×২', price:150, desc:'২ দিনের জন্য কয়েন ২× হবে',   icon:'🟡🟡' },
+];
+
+let myPurchases    = [];   // array of {item_id, purchased_at, expires_at}
+let activeThemeId  = 'theme_default';
+
+// DB helpers for purchases
+async function dbGetPurchases(username) {
+  const {data} = await sb.from('purchases').select('*').eq('username', username.toLowerCase());
+  return data || [];
+}
+async function dbAddPurchase(username, itemId, expiresAt) {
+  const {data,error} = await sb.from('purchases').insert({username:username.toLowerCase(), item_id:itemId, purchased_at:new Date().toISOString(), expires_at:expiresAt}).select().single();
+  if(error) throw error;
+  return data;
+}
+async function dbSetActiveTheme(username, themeId) {
+  // Store active theme in user preferences via a special purchases row
+  await sb.from('purchases').delete().eq('username',username.toLowerCase()).eq('item_id','active_theme');
+  await sb.from('purchases').insert({username:username.toLowerCase(), item_id:'active_theme', purchased_at:new Date().toISOString(), expires_at:themeId});
+}
+
+function applyTheme(themeId) {
+  const theme = SHOP_THEMES.find(t=>t.id===themeId) || SHOP_THEMES[0];
+  Object.entries(theme.vars).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));
+  activeThemeId = themeId;
+}
+
+function isBoostActive(itemId) {
+  const now = Date.now();
+  return myPurchases.some(p=>p.item_id===itemId && p.expires_at && new Date(p.expires_at).getTime()>now);
+}
+function getBoostMultiplier() {
+  if (isBoostActive('boost_xp_1d')||isBoostActive('boost_xp_3d')) return 1.5;
+  return 1;
+}
+function getCoinMultiplier() {
+  return isBoostActive('boost_coin_2d') ? 2 : 1;
+}
+
+function renderShop() {
+  const coins = getTotalCoins();
+  document.getElementById('shop-balance').textContent = `🟡 ${coins}`;
+
+  // Check for expired rental themes and deactivate
+  const now = Date.now();
+  myPurchases.filter(p => p.item_id.startsWith('theme_') && p.expires_at && new Date(p.expires_at).getTime() <= now)
+    .forEach(p => { if(activeThemeId === p.item_id) applyTheme('theme_default'); });
+
+  // Themes
+  const ownedThemeIds = new Set();
+  const rentalExpiries = {};
+  myPurchases.filter(p=>p.item_id.startsWith('theme_')).forEach(p => {
+    if (!p.expires_at || new Date(p.expires_at).getTime() > now) {
+      ownedThemeIds.add(p.item_id);
+      if (p.expires_at) rentalExpiries[p.item_id] = new Date(p.expires_at);
+    }
+  });
+  ownedThemeIds.add('theme_default'); // always owned
+  
+  document.getElementById('shop-themes').innerHTML = SHOP_THEMES.map(t=>{
+    const owned  = ownedThemeIds.has(t.id);
+    const active = t.id === activeThemeId;
+    const canBuy = coins >= t.price && !owned;
+    const isRental = t.rental;
+    const expiry = rentalExpiries[t.id];
+    const timeLeft = expiry ? Math.max(0, Math.ceil((expiry - new Date()) / 3600000)) : null; // hours left
+    
+    let statusHtml = '';
+    if (active) {
+      statusHtml = `<div style="font-size:.68rem;color:var(--accent2);font-weight:700">✓ চালু আছে${isRental && timeLeft ? ` (${timeLeft}ঘণ্টা বাকি)` : ''}</div>`;
+    } else if (owned) {
+      statusHtml = `<button class="btn btn-ghost btn-xs btn-full" onclick="activateTheme('${t.id}')">চালু করো</button>`;
+    } else {
+      statusHtml = `<button class="btn ${canBuy?'btn-accent':'btn-ghost'} btn-xs btn-full" ${canBuy?'':'disabled'} onclick="buyTheme('${t.id}',${t.price})">
+        <span class="shop-price">🟡 ${t.price}</span>
+        ${isRental ? '<span style="font-size:.6rem;opacity:.7">/৩দিন</span>' : ''}
+      </button>`;
+    }
+    
+    return `<div class="shop-item ${owned?'owned':''} ${active?'active-theme':''}" style="${isRental && !owned?'border-color:var(--coin)44':''}">
+      <div class="shop-preview" style="background:${t.preview}"></div>
+      <div style="font-weight:700;font-size:.85rem">${t.name}</div>
+      ${isRental && !owned ? '<div style="font-size:.6rem;color:var(--coin);font-weight:700">⭐ প্রিমিয়াম (৩দিন)</div>' : ''}
+      ${statusHtml}
+    </div>`;
+  }).join('');
+
+  // Boosts
+  document.getElementById('shop-boosts').innerHTML = SHOP_BOOSTS.map(b=>{
+    const active  = isBoostActive(b.id);
+    const canBuy  = coins >= b.price;
+    return `<div class="shop-item">
+      <div style="font-size:2rem;margin-bottom:2px">${b.icon}</div>
+      <div style="font-weight:700;font-size:.82rem">${b.name}</div>
+      <div style="font-size:.72rem;color:var(--muted);line-height:1.4">${b.desc}</div>
+      ${active
+        ? '<div style="font-size:.68rem;color:var(--accent);font-weight:700">✓ সক্রিয়</div>'
+        : `<button class="btn ${canBuy?'btn-accent2':'btn-ghost'} btn-xs btn-full" ${canBuy?'':'disabled'} onclick="buyBoost('${b.id}',${b.price})">
+             <span class="shop-price">🟡 ${b.price}</span>
+           </button>`}
+    </div>`;
+  }).join('');
+}
+
+window.buyTheme = async function(themeId, price) {
+  if (getTotalCoins() < price) { showToast('পর্যাপ্ত কয়েন নেই'); return; }
+  try {
+    showSync('busy','⏳...');
+    
+    // ১. ডাটাবেজে কেনাকাটার তথ্য সেভ করুন
+    await dbAddPurchase(currentUser.username, themeId, null);
+    
+    // ২. নতুন purchase লিস্ট ফেচ করে আনুন (ফলে getTotalCoins() নিজে থেকেই আপডেট হয়ে যাবে)
+    myPurchases = await dbGetPurchases(currentUser.username);
+    
+    // ৩. ইউজারের total coins ডাটাবেজে আপডেট করুন
+    await dbUpdateCoins(currentUser.id, getTotalCoins());
+    
+    activateTheme(themeId);
+    renderShop(); 
+    updateSidebar();
+    updateStats(); // মূল ড্যাশবোর্ডের ব্যালেন্স আপডেট করার জন্য
+    
+    showSync('ok','✓'); showToast(`${SHOP_THEMES.find(t=>t.id===themeId)?.name} কেনা হয়েছে! ✓`);
+  } catch(e) { 
+    showSync('err','✗'); 
+    showToast('কেনা ব্যর্থ'); 
+  }
+};
+
+window.activateTheme = async function(themeId) {
+  applyTheme(themeId);
+  try { await dbSetActiveTheme(currentUser.username, themeId); } catch(e){}
+  renderShop();
+  showToast('থিম পরিবর্তন হয়েছে ✓');
+};
+
+window.buyBoost = async function(boostId, price) {
+  if (getTotalCoins() < price) { showToast('পর্যাপ্ত কয়েন নেই'); return; }
+  const boost = SHOP_BOOSTS.find(b=>b.id===boostId);
+  const days  = boostId.includes('3d') ? 3 : boostId.includes('2d') ? 2 : 1;
+  const exp   = new Date(Date.now() + days*86400000).toISOString();
+  try {
+    showSync('busy','⏳...');
+    
+    // ১. ডাটাবেজে কেনাকাটার তথ্য সেভ করুন
+    await dbAddPurchase(currentUser.username, boostId, exp);
+    
+    // ২. নতুন purchase লিস্ট রিফ্রেশ করুন
+    myPurchases = await dbGetPurchases(currentUser.username);
+    
+    // ৩. ডাটাবেজে ব্যালেন্স আপডেট করুন
+    await dbUpdateCoins(currentUser.id, getTotalCoins());
+    
+    renderShop(); 
+    updateSidebar();
+    updateStats(); // মূল ড্যাশবোর্ডের ব্যালেন্স আপডেট করার জন্য
+    
+    showSync('ok','✓'); showToast(`${boost?.name} সক্রিয় হয়েছে! ✓`);
+  } catch(e) { 
+    showSync('err','✗'); 
+    showToast('কেনা ব্যর্থ'); 
+  }
+};
+
+window.activateTheme = async function(themeId) {
+  // Check if theme has expired
+  const purchase = myPurchases.find(p=>p.item_id===themeId);
+  if (purchase?.expires_at && new Date(purchase.expires_at).getTime() <= Date.now()) {
+    showToast('এই থিমের মেয়াদ শেষ হয়েছে');
+    return;
+  }
+  applyTheme(themeId);
+  try { await dbSetActiveTheme(currentUser.username, themeId); } catch(e){}
+  renderShop();
+  showToast('থিম পরিবর্তন হয়েছে ✓');
+};
+
+window.buyBoost = async function(boostId, price) {
+  if (getTotalCoins() < price) { showToast('পর্যাপ্ত কয়েন নেই'); return; }
+  const boost = SHOP_BOOSTS.find(b=>b.id===boostId);
+  const days  = boostId.includes('3d') ? 3 : boostId.includes('2d') ? 2 : 1;
+  const exp   = new Date(Date.now() + days*86400000).toISOString();
+  try {
+    showSync('busy','⏳...');
+    await dbAddPurchase(currentUser.username, boostId, exp);
+    await dbUpdateCoins(currentUser.id, getTotalCoins() - price);
+    // FIX: Record spent coins separately
+    const today = todayKey();
+    if (!spentCoins[today]) spentCoins[today] = 0;
+    spentCoins[today] -= price;
+    await dbSaveSpentCoins(currentUser.username, spentCoins);
+    myPurchases = await dbGetPurchases(currentUser.username);
+    renderShop(); updateSidebar();
+    showSync('ok','✓'); showToast(`${boost?.name} সক্রিয় হয়েছে! ✓`);
+  } catch(e) { showSync('err','✗'); showToast('কেনা ব্যর্থ'); }
+};
+
+// ════════════════════════════════════════════════════════════════
+// CUSTOM TIME FOR STUDY SLOTS
+// ════════════════════════════════════════════════════════════════
+window.openCustomTime = function(slotId, idx) {
+  customTimeSlotId = slotId;
+  customTimeSlotIdx = idx;
+  const sl = activeRoutine.slots[idx];
+  document.getElementById('custom-slot-name').textContent = sl.title;
+  document.getElementById('custom-hours').value = 0;
+  document.getElementById('custom-minutes').value = 30;
+  updateCustomXP();
+  openModal('modal-custom-time');
+};
+
+window.closeCustomTime = function() {
+  closeModal('modal-custom-time');
+  customTimeSlotId = null;
+  customTimeSlotIdx = null;
+};
+
+window.updateCustomXP = function() {
+  const hours = parseInt(document.getElementById('custom-hours').value) || 0;
+  const mins = parseInt(document.getElementById('custom-minutes').value) || 0;
+  const totalMinutes = (hours * 60) + mins;
+  
+  const xp = Math.round(totalMinutes * (100/60)); // 100 XP per hour
+  const coins = (totalMinutes * (10/60)).toFixed(1); // 10 coins per hour
+  
+  document.getElementById('custom-xp-preview').textContent = `+${xp}`;
+  document.getElementById('custom-coin-preview').textContent = `+${coins}`;
+};
+
+window.confirmCustomTime = function() {
+  if (!customTimeSlotId || customTimeSlotIdx === null) return;
+  
+  const hours = parseInt(document.getElementById('custom-hours').value) || 0;
+  const mins = parseInt(document.getElementById('custom-minutes').value) || 0;
+  const totalMinutes = (hours * 60) + mins;
+  
+  if (totalMinutes < 1) { showToast('সময় দাও'); return; }
+  
+  const sl = activeRoutine.slots[customTimeSlotIdx];
+  const xp = Math.round(totalMinutes * (100/60));
+  const coins = Math.round(totalMinutes * (10/60) * 10) / 10;
+  
+  // Apply multipliers
+  const xpMult = typeof getBoostMultiplier === 'function' ? getBoostMultiplier() : 1;
+  const coinMult = typeof getCoinMultiplier === 'function' ? getCoinMultiplier() : 1;
+  
+  const finalXP = Math.round(xp * xpMult);
+  const finalCoins = Math.round(coins * coinMult);
+  
+  // Mark slot as done and add custom XP/coins
+  completedSlots[sl.id] = { custom: true, minutes: totalMinutes, xp: finalXP, coins: finalCoins };
+  
+  // Update XP history
+  const today = todayKey();
+  xpHistory[today] = (xpHistory[today] || 0) + finalXP;
+  coinsHistory[today] = (coinsHistory[today] || 0) + finalCoins;
+  
+  spawnXPPop(finalXP, sl.id);
+  updateStats();
+  renderTimeline();
+  scheduleSave();
+  closeCustomTime();
+  
+  const timeStr = hours > 0 ? `${hours}ঘণ্টা ${mins}মিনিট` : `${mins} মিনিট`;
+  showToast(`✓ ${timeStr} সম্পন্ন! +${finalXP} XP, +${finalCoins} 🟡`);
+};
+
+// ════════════════════════════════════════════════════════════════
+// TODAY'S TOPIC
+// ════════════════════════════════════════════════════════════════
+let topicSaveTimer = null;
+
+window.saveTodayTopic = function(sourceId) {
+  // Clear any pending save
+  clearTimeout(topicSaveTimer);
+  
+  // Debounce: wait 500ms after user stops typing
+  topicSaveTimer = setTimeout(() => {
+    // Get value from the source input that triggered the save
+    const sourceInput = document.getElementById(sourceId);
+    if (!sourceInput) return;
+    
+    todayTopic = sourceInput.value.trim();
+    
+    // Sync the other input
+    const otherId = sourceId === 'today-topic-input' ? 'today-topic-input-desktop' : 'today-topic-input';
+    const otherInput = document.getElementById(otherId);
+    if (otherInput) otherInput.value = todayTopic;
+    
+    // Save to localStorage immediately
+    const key = `rx_topic_${todayKey()}_${currentUser?.username || 'guest'}`;
+    localStorage.setItem(key, todayTopic);
+    
+    // Save to database
+    dbSaveTodayTopic(currentUser?.username, todayKey(), todayTopic);
+  }, 500);
+};
+
+// Function to update topic from either input
+window.updateTopicFromInput = function(inputElement) {
+  todayTopic = inputElement.value.trim();
+  
+  // Sync the other input
+  const otherId = inputElement.id === 'today-topic-input' ? 'today-topic-input-desktop' : 'today-topic-input';
+  const otherInput = document.getElementById(otherId);
+  if (otherInput) otherInput.value = todayTopic;
+};
+
+async function dbSaveTodayTopic(username, date, topic) {
+  try {
+    await sb.from('user_meta').upsert({
+      username: username?.toLowerCase(),
+      key: `topic_${date}`,
+      value: topic
+    }, { onConflict: 'username,key' });
+  } catch(e) {
+    console.error('Failed to save topic:', e);
+  }
+}
+
+async function dbGetTodayTopic(username, date) {
+  try {
+    const {data} = await sb.from('user_meta').select('value').eq('username', username?.toLowerCase()).eq('key', `topic_${date}`).single();
+    return data?.value || '';
+  } catch(e) { return ''; }
+}
+
+async function loadTodayTopic() {
+  // Try to load from database first
+  try {
+    const dbTopic = await dbGetTodayTopic(currentUser?.username, todayKey());
+    if (dbTopic) {
+      todayTopic = dbTopic;
+      if (document.getElementById('today-topic-input')) document.getElementById('today-topic-input').value = dbTopic;
+      if (document.getElementById('today-topic-input-desktop')) document.getElementById('today-topic-input-desktop').value = dbTopic;
+      // Also save to localStorage as cache
+      const key = `rx_topic_${todayKey()}_${currentUser?.username || 'guest'}`;
+      localStorage.setItem(key, dbTopic);
+      return;
+    }
+  } catch(e) {}
+  
+  // Fall back to localStorage
+  const key = `rx_topic_${todayKey()}_${currentUser?.username || 'guest'}`;
+  const saved = localStorage.getItem(key) || '';
+  todayTopic = saved;
+  if (document.getElementById('today-topic-input')) document.getElementById('today-topic-input').value = saved;
+  if (document.getElementById('today-topic-input-desktop')) document.getElementById('today-topic-input-desktop').value = saved;
+}
+
+// ════════════════════════════════════════════════════════════════
+// USER PROFILE MODAL (Leaderboard)
+// ════════════════════════════════════════════════════════════════
+window.openUserProfile = async function(username) {
+  document.getElementById('up-avatar').textContent = username.charAt(0).toUpperCase();
+  document.getElementById('up-username').textContent = username;
+  document.getElementById('up-xp').textContent = '...';
+  document.getElementById('up-topic').textContent = '—';
+  document.getElementById('up-cq-count').textContent = '0';
+  document.getElementById('up-mcq-count').textContent = '0';
+  document.getElementById('up-ko-count').textContent = '0';
+  document.getElementById('up-kho-count').textContent = '0';
+  document.getElementById('up-cp-count').textContent = '0';
+  document.getElementById('up-slots').innerHTML = '<div style="color:var(--muted);font-size:.8rem;text-align:center;padding:20px">লোড হচ্ছে...</div>';
+
+  // Set period labels based on current leaderboard tab
+  const tab = currentLBTab;
+  const periodLabel = tab === 'today' ? 'আজ' : tab === 'weekly' ? 'সাপ্তাহিক' : 'সর্বকালীন';
+  document.getElementById('up-period-label').textContent = periodLabel;
+  document.getElementById('up-period-label-2').textContent = periodLabel;
+
+  openModal('modal-user-profile');
+  
+  try {
+    const {data: allUserLogs} = await sb.from('daily_logs').select('date,xp,completed_slots').eq('username', username.toLowerCase());
+    const logs = allUserLogs || [];
+
+    // Determine date filter
+    const today = todayKey();
+    const days7 = new Set(lastNDays(7));
+
+    // Calculate XP based on tab
+    let xp = 0, cq = 0, mcq = 0, ko = 0, kho = 0;
+
+    logs.forEach(l => {
+      const isToday = l.date === today;
+      const isWeek = days7.has(l.date);
+      const include = tab === 'all' || (tab === 'today' && isToday) || (tab === 'weekly' && isWeek);
+      if (!include) return;
+
+      xp += l.xp || 0;
+      const cm = getCQMCQFromSlots(l.completed_slots);
+      cq += cm.cq;
+      mcq += cm.mcq;
+      ko += cm.ko;
+      kho += cm.kho;
+    });
+
+    const cp = calcCP(cq, mcq, ko, kho);
+    const xpLabel = tab === 'today' ? `${xp.toLocaleString()} XP` : tab === 'weekly' ? `${xp.toLocaleString()} XP` : `${xp.toLocaleString()} XP সর্বমোট`;
+
+    document.getElementById('up-xp').textContent = xpLabel;
+    document.getElementById('up-cq-count').textContent = cq;
+    document.getElementById('up-mcq-count').textContent = mcq;
+    document.getElementById('up-ko-count').textContent = ko;
+    document.getElementById('up-kho-count').textContent = kho;
+    document.getElementById('up-cp-count').textContent = cp;
+    
+    // Get user's today topic
+    const topic = await dbGetTodayTopic(username, todayKey());
+    document.getElementById('up-topic').textContent = topic || 'কিছু লেখা নেই';
+    
+    // Get user's active routine
+    const {data: routineData} = await sb.from('routines').select('*').eq('username', username.toLowerCase()).eq('is_active', true).single();
+    
+    if (!routineData?.slots?.length) {
+      document.getElementById('up-slots').innerHTML = '<div style="color:var(--muted);font-size:.8rem;text-align:center;padding:12px">কোনো রুটিন নেই</div>';
+      return;
+    }
+    
+    const todayLog = logs.find(l => l.date === todayKey());
+    const completedToday = todayLog?.completed_slots || {};
+    
+    document.getElementById('up-slots').innerHTML = routineData.slots.map(sl => {
+      const done = completedToday[sl.id];
+      const col = CAT_COLORS[sl.category] || CAT_COLORS.other;
+      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--bg);border-radius:8px;border:1px solid var(--border);${done?'border-color:var(--accent)44':''}">
+        <div style="width:20px;height:20px;border-radius:50%;border:2px solid ${done?'var(--accent)':col};background:${done?'var(--accent)':'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          ${done?'<i class="fa-solid fa-check" style="font-size:.55rem;color:#000"></i>':''}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:600;font-size:.8rem">${sl.title}</div>
+          <div style="font-size:.65rem;color:var(--muted)">${sl.start} — ${sl.end}</div>
+        </div>
+        <span style="font-size:.6rem;font-weight:700;padding:2px 6px;border-radius:99px;background:${col}22;color:${col}">${sl.category}</span>
+      </div>`;
+    }).join('');
+    
+  } catch(e) {
+    document.getElementById('up-slots').innerHTML = '<div style="color:var(--danger);font-size:.8rem;text-align:center;padding:12px">লোড ব্যর্থ</div>';
+  }
+};
+
+window.closeUserProfile = function() {
+  closeModal('modal-user-profile');
+};
+
+// ════════════════════════════════════════════════════════════════
+// MODAL HELPERS
+// ════════════════════════════════════════════════════════════════
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ════════════════════════════════════════════════════════════════
+// SYNC BADGE & TOAST
+// ════════════════════════════════════════════════════════════════
+let syncHideT = null;
+function showSync(state,text) {
+  const el=document.getElementById('sync-badge');
+  el.className='sync-'+state; el.textContent=text; el.style.display='block';
+  clearTimeout(syncHideT);
+  if (state==='ok') syncHideT=setTimeout(()=>el.style.display='none',3000);
+}
+let toastT=null;
+function showToast(msg) {
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.style.display='block';
+  clearTimeout(toastT); toastT=setTimeout(()=>el.style.display='none',2800);
+}
+window.showToast = showToast;
+
+// ════════════════════════════════════════════════════════════════
+// AUTO SESSION RESTORE
+// ════════════════════════════════════════════════════════════════
+(async function init() {
+  const saved = localStorage.getItem('rx_sess');
+  if (saved) {
+    try {
+      const sess = JSON.parse(saved);
+      // Show loading screen for returning users
+      document.getElementById('loading-screen').style.display = 'flex';
+      const user = await dbGetUser(sess.username);
+      if (user) { await bootApp(user); return; }
+    } catch(e) {}
+    localStorage.removeItem('rx_sess');
+  }
+  // Hide loading screen if not logged in
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'flex';
+})();
+
+</script>
